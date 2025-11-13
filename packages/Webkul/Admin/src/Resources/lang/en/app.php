@@ -2221,6 +2221,9 @@ return [
         'index' => [
             'title' => 'Dashboard',
 
+            'start-date' => 'Start Date',
+            'end-date'   => 'End Date',
+
             'revenue' => [
                 'lost-revenue' => 'Lost Revenue',
                 'won-revenue'  => 'Won Revenue',

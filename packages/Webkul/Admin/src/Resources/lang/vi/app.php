@@ -2027,6 +2027,11 @@ return [
     'dashboard' => [
         'index' => [
             'title'   => 'Bảng Điều Khiển',
+
+            // TODO: Needs translation
+            'start-date' => 'Start Date',
+            'end-date'   => 'End Date',
+            
             'revenue' => [
                 'lost-revenue' => 'Doanh Thu Bị Mất',
                 'won-revenue'  => 'Doanh Thu Đã Đạt',
