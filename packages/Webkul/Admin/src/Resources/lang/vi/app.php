@@ -2026,13 +2026,10 @@ return [
     ],
     'dashboard' => [
         'index' => [
-            'title'   => 'Bảng Điều Khiển',
-
-            // TODO: Needs translation
+            'title'      => 'Bảng Điều Khiển',
             'start-date' => 'Start Date',
             'end-date'   => 'End Date',
-            
-            'revenue' => [
+            'revenue'    => [
                 'lost-revenue' => 'Doanh Thu Bị Mất',
                 'won-revenue'  => 'Doanh Thu Đã Đạt',
             ],
