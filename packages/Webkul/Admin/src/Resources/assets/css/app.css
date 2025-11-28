@@ -2,6 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+/* -------------------------------- ProvenSuccess Brand Colors -------------------------------- */
+:root {
+    --proven-primary: #3D3552;
+    --proven-secondary: #EFEFEF;
+    --proven-accent: #5B5270;
+    --proven-dark: #2A2438;
+    --proven-light: #F8F8F8;
+    --brand-color: #3D3552;
+}
+
 /* -------------------------------- new css -------------------------------- */
 
 @font-face {

@@ -28,6 +28,11 @@ module.exports = {
         extend: {
             colors: {
                 brandColor: "var(--brand-color)",
+                provenPrimary: "#3D3552",
+                provenSecondary: "#EFEFEF",
+                provenAccent: "#5B5270",
+                provenDark: "#2A2438",
+                provenLight: "#F8F8F8",
             },
 
             fontFamily: {
