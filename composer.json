@@ -1,7 +1,7 @@
 {
-    "name": "krayin/laravel-crm",
+    "name": "hamzahllc/provensuccess-crm",
     "type": "project",
-    "description": "Krayin CRM",
+    "description": "ProvenSuccess CRM by hamzah LLC",
     "keywords": [
         "framework",
         "laravel"
@@ -29,7 +29,7 @@
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.6",
         "fakerphp/faker": "^1.9.1",
-        "krayin/krayin-package-generator": "dev-master",
+        "hamzahllc/provensuccess-package-generator": "dev-master",
         "laravel/pint": "^1.16",
         "laravel/sail": "^1.0.1",
         "mockery/mockery": "^1.4.2",

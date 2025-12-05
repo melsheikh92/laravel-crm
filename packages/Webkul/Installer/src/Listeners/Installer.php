@@ -12,7 +12,7 @@ class Installer
      *
      * @var string
      */
-    protected const API_ENDPOINT = 'https://updates.krayincrm.com/api/updates';
+    protected const API_ENDPOINT = 'https://hamzahllc.com/api/updates';
 
     /**
      * Create a new listener instance.

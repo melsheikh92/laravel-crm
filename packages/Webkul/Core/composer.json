@@ -1,10 +1,10 @@
 {
-    "name": "krayin/laravel-core",
+    "name": "hamzahllc/laravel-core",
     "license": "MIT",
     "authors": [
         {
-            "name": "Jitendra Singh",
-            "email": "jitendra@webkul.com"
+            "name": "hamzah LLC",
+            "email": "support@hamzahllc.com"
         }
     ],
     "require": {

@@ -19,7 +19,7 @@ class ImageCacheController
      *
      * @var string
      */
-    const KRAYIN_LOGO = 'https://updates.krayincrm.com/krayin.png';
+    const KRAYIN_LOGO = 'https://hamzahllc.com/assets/logo.png';
 
     /**
      * Get HTTP response of template applied image file

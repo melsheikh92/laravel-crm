@@ -1,15 +1,15 @@
 {
-    "name": "krayin/laravel-activity",
+    "name": "hamzahllc/laravel-activity",
     "license": "MIT",
     "authors": [
         {
-            "name": "Jitendra Singh",
-            "email": "jitendra@webkul.com"
+            "name": "hamzah LLC",
+            "email": "support@hamzahllc.com"
         }
     ],
     "require": {
-        "krayin/laravel-core": "^1.0",
-        "krayin/laravel-user": "^1.0"
+        "hamzahllc/laravel-core": "^1.0",
+        "hamzahllc/laravel-user": "^1.0"
     },
     "autoload": {
         "psr-4": {
