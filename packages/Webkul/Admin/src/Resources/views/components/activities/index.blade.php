@@ -67,15 +67,20 @@
                             <!-- Activity Item -->
                             <div
                                 class="flex gap-2"
-                                v-for="(activity, index) in filteredActivities"
+                                v-for="(activity, index) in displayActivities"
                             >
                                 {!! view_render_event('admin.components.activities.content.activity.item.icon.before') !!}
 
                                 <!-- Activity Icon -->
                                 <div
                                     class="mt-2 flex h-9 min-h-9 w-9 min-w-9 items-center justify-center rounded-full text-xl"
-                                    :class="typeClasses[activity.type] ?? typeClasses['default']"
+                                    :class="[
+                                        typeClasses[activity.type] ?? typeClasses['default'],
+                                        activity.isThread ? 'cursor-pointer' : ''
+                                    ]"
+                                    @click="activity.isThread ? toggleThread(activity) : null"
                                 >
+                                    <span v-if="activity.isThread" :class="activity.expanded ? 'icon-down-arrow' : 'icon-right-arrow'"></span>
                                 </div>
 
                                 {!! view_render_event('admin.components.activities.content.activity.item.icon.after') !!}
@@ -85,15 +90,49 @@
                                 <!-- Activity Details -->
                                 <div
                                     class="flex w-full justify-between gap-4 rounded-md p-4"
-                                    :class="{'bg-gray-100 dark:bg-gray-950': index % 2 != 0 }"
+                                    :class="{
+                                        'bg-gray-100 dark:bg-gray-950': index % 2 != 0,
+                                        'cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900': activity.isThread,
+                                        'ml-11 border-l-2 border-emerald-300 dark:border-emerald-700': selectedType == 'whatsapp' && !activity.isThread && displayActivities[index - 1]?.isThread
+                                    }"
+                                    @click="activity.isThread ? toggleThread(activity) : null"
                                 >
                                     <div class="flex flex-col gap-2">
                                         {!! view_render_event('admin.components.activities.content.activity.item.title.before') !!}
 
+                                        <!-- Thread Header for WhatsApp Conversations -->
+                                        <template v-if="activity.isThread">
+                                            <div class="flex flex-col gap-1">
+                                                <p class="flex items-center gap-2 font-semibold text-emerald-700 dark:text-emerald-400">
+                                                    <span class="icon-message text-xl"></span>
+                                                    @lang('admin::app.components.activities.index.whatsapp-conversation')
+                                                </p>
+
+                                                <p class="dark:text-white">
+                                                    @lang('admin::app.components.activities.index.phone-number'):
+                                                    @{{ activity.phoneNumber }}
+                                                </p>
+
+                                                <p class="text-sm text-gray-600 dark:text-gray-400">
+                                                    @{{ activity.messageCount }} @{{ activity.messageCount === 1 ? '@lang('admin::app.components.activities.index.message')' : '@lang('admin::app.components.activities.index.messages')' }}
+                                                    &middot;
+                                                    @{{ activity.expanded ? '@lang('admin::app.components.activities.index.click-to-collapse')' : '@lang('admin::app.components.activities.index.click-to-expand')' }}
+                                                </p>
+
+                                                <p
+                                                    v-if="activity.latestMessage?.comment"
+                                                    class="text-sm italic text-gray-500 dark:text-gray-400"
+                                                >
+                                                    @lang('admin::app.components.activities.index.latest'):
+                                                    "@{{ activity.latestMessage.comment.substring(0, 100) }}@{{ activity.latestMessage.comment.length > 100 ? '...' : '' }}"
+                                                </p>
+                                            </div>
+                                        </template>
+
                                         <!-- Activity Title -->
                                         <div
                                             class="flex flex-col gap-1"
-                                            v-if="activity.title"
+                                            v-else-if="activity.title"
                                         >
                                             <p class="flex flex-wrap items-center gap-1 font-medium dark:text-white">
                                                 @{{ activity.title }}
@@ -203,7 +242,7 @@
                                         <!-- Activity Description -->
                                         <p
                                             class="dark:text-white"
-                                            v-if="activity.comment"
+                                            v-if="activity.comment && !activity.isThread"
                                             v-safe-html="activity.comment"
                                         ></p>
 
@@ -214,7 +253,7 @@
                                         <!-- Attachments -->
                                         <div
                                             class="flex flex-wrap gap-2"
-                                            v-if="activity.files.length"
+                                            v-if="activity.files?.length && !activity.isThread"
                                         >
                                             <a
                                                 :href="
@@ -240,9 +279,16 @@
 
                                         <!-- Activity Time and User -->
                                         <div class="text-gray-500 dark:text-gray-300">
-                                            @{{ $admin.formatDate(activity.created_at, 'd MMM yyyy, h:mm A', timezone) }},
+                                            <template v-if="activity.isThread">
+                                                @{{ $admin.formatDate(activity.firstMessage.created_at, 'd MMM yyyy, h:mm A', timezone) }}
+                                                -
+                                                @{{ $admin.formatDate(activity.latestMessage.created_at, 'd MMM yyyy, h:mm A', timezone) }}
+                                            </template>
+                                            <template v-else>
+                                                @{{ $admin.formatDate(activity.created_at, 'd MMM yyyy, h:mm A', timezone) }},
 
-                                            @{{ "@lang('admin::app.components.activities.index.by-user', ['user' => 'replace'])".replace('replace', activity.user?.name ?? '@lang('admin::app.components.activities.index.system')') }}
+                                                @{{ "@lang('admin::app.components.activities.index.by-user', ['user' => 'replace'])".replace('replace', activity.user?.name ?? '@lang('admin::app.components.activities.index.system')') }}
+                                            </template>
                                         </div>
 
                                         {!! view_render_event('admin.components.activities.content.activity.item.time_and_user.after') !!}
@@ -251,7 +297,7 @@
                                     {!! view_render_event('admin.components.activities.content.activity.item.more_actions.before') !!}
 
                                     <!-- Activity More Options -->
-                                    <template v-if="activity.type != 'system'">
+                                    <template v-if="activity.type != 'system' && !activity.isThread">
                                         {!! view_render_event('admin.components.activities.content.activity.item.more_actions.dropdown.after') !!}
 
                                         <x-admin::dropdown position="bottom-{{ in_array(app()->getLocale(), ['fa', 'ar']) ? 'left' : 'right' }}">
@@ -366,7 +412,7 @@
                             <!-- Empty Placeholder -->
                             <div
                                 class="grid justify-center justify-items-center gap-3.5 py-12"
-                                v-if="! filteredActivities.length"
+                                v-if="! displayActivities.length"
                             >
                                 <img
                                     class="dark:mix-blend-exclusion dark:invert"
@@ -565,7 +611,32 @@
                         return this.activities.filter(activity => ! activity.is_done);
                     }
 
-                    return this.activities.filter(activity => activity.type == this.selectedType);
+                    let filtered = this.activities.filter(activity => activity.type == this.selectedType);
+
+                    if (this.selectedType == 'whatsapp') {
+                        return this.groupWhatsAppConversations(filtered);
+                    }
+
+                    return filtered;
+                },
+
+                displayActivities() {
+                    if (this.selectedType !== 'whatsapp') {
+                        return this.filteredActivities;
+                    }
+
+                    let result = [];
+                    this.filteredActivities.forEach(item => {
+                        if (item.isThread) {
+                            result.push(item);
+                            if (item.expanded) {
+                                item.messages.forEach(msg => result.push(msg));
+                            }
+                        } else {
+                            result.push(item);
+                        }
+                    });
+                    return result;
                 }
             },
 
@@ -594,6 +665,66 @@
                         .catch(error => {
                             console.error(error);
                         });
+                },
+
+                groupWhatsAppConversations(activities) {
+                    if (!activities.length) {
+                        return [];
+                    }
+
+                    let threads = [];
+                    let currentThread = null;
+                    let threadMap = new Map();
+
+                    activities.forEach(activity => {
+                        const phoneNumber = activity.additional?.phone_number;
+
+                        if (!phoneNumber) {
+                            threads.push(activity);
+                            return;
+                        }
+
+                        if (!threadMap.has(phoneNumber)) {
+                            currentThread = {
+                                id: `thread-${phoneNumber}`,
+                                isThread: true,
+                                expanded: false,
+                                phoneNumber: phoneNumber,
+                                messages: [],
+                                latestMessage: null,
+                                firstMessage: null,
+                                messageCount: 0,
+                                type: 'whatsapp',
+                                created_at: activity.created_at,
+                                updated_at: activity.updated_at,
+                            };
+                            threadMap.set(phoneNumber, currentThread);
+                            threads.push(currentThread);
+                        } else {
+                            currentThread = threadMap.get(phoneNumber);
+                        }
+
+                        currentThread.messages.push(activity);
+                        currentThread.messageCount = currentThread.messages.length;
+                        currentThread.latestMessage = currentThread.messages[0];
+                        currentThread.firstMessage = currentThread.messages[currentThread.messages.length - 1];
+                        currentThread.created_at = currentThread.firstMessage.created_at;
+                        currentThread.updated_at = currentThread.latestMessage.updated_at;
+                    });
+
+                    return threads.filter(thread => {
+                        if (thread.isThread && thread.messageCount === 1) {
+                            const index = threads.indexOf(thread);
+                            threads[index] = thread.messages[0];
+                            return true;
+                        }
+                        return true;
+                    });
+                },
+
+                toggleThread(thread) {
+                    thread.expanded = !thread.expanded;
+                    this.$forceUpdate();
                 },
 
                 markAsDone(activity) {

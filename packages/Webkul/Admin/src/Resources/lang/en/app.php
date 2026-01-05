@@ -218,11 +218,17 @@ return [
                 'to'           => 'To',
                 'unlink'       => 'Unlink',
                 'view'         => 'View',
-                'whatsapps'    => 'WhatsApp',
-                'phone-number' => 'Phone Number',
-                'direction'    => 'Direction',
-                'outbound'     => 'Outbound',
-                'inbound'      => 'Inbound',
+                'whatsapps'            => 'WhatsApp',
+                'phone-number'         => 'Phone Number',
+                'direction'            => 'Direction',
+                'outbound'             => 'Outbound',
+                'inbound'              => 'Inbound',
+                'whatsapp-conversation' => 'WhatsApp Conversation',
+                'message'              => 'message',
+                'messages'             => 'messages',
+                'click-to-expand'      => 'Click to expand',
+                'click-to-collapse'    => 'Click to collapse',
+                'latest'               => 'Latest',
 
                 'empty-placeholders' => [
                     'all' => [
