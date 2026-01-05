@@ -76,13 +76,13 @@
                                                 <!-- Message Templates (Optional) -->
                                                 <x-admin::form.control-group>
                                                     <x-admin::form.control-group.label>
-                                                        Quick Templates (Optional)
+                                                        WhatsApp Templates (Optional)
                                                     </x-admin::form.control-group.label>
 
                                                     <select
                                                         class="w-full px-3 py-2 border border-gray-300 rounded-lg dark:border-gray-800 dark:bg-gray-900 dark:text-white"
                                                         x-data="{ selectedTemplate: '' }" x-model="selectedTemplate"
-                                                        @change="if (selectedTemplate) { 
+                                                        @change="if (selectedTemplate) {
                                                                 const textarea = document.getElementById('whatsapp_message');
                                                                 if (textarea) {
                                                                     textarea.value = selectedTemplate;
@@ -90,19 +90,20 @@
                                                                 }
                                                             }">
                                                         <option value="">-- Select a template --</option>
-                                                        <option
-                                                            value="Hi {{ $person->name }}, I wanted to follow up on our previous conversation. Are you available for a quick call?">
-                                                            Follow-up Message</option>
-                                                        <option
-                                                            value="Hello {{ $person->name }}, thank you for your interest! I'd love to discuss how we can help you.">
-                                                            Introduction</option>
-                                                        <option
-                                                            value="Hi {{ $person->name }}, just checking in to see if you have any questions. Feel free to reach out anytime!">
-                                                            Check-in</option>
-                                                        <option
-                                                            value="Hello {{ $person->name }}, I have some exciting updates to share with you. When would be a good time to connect?">
-                                                            Update Notification</option>
+                                                        @forelse($whatsappTemplates as $template)
+                                                            <option value="{{ $template->body }}">
+                                                                {{ $template->name }}
+                                                            </option>
+                                                        @empty
+                                                            <option value="" disabled>No templates available</option>
+                                                        @endforelse
                                                     </select>
+
+                                                    @if($whatsappTemplates->isEmpty())
+                                                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                                                            Create templates in <a href="{{ route('whatsapp.templates.index') }}" class="text-blue-600 hover:underline dark:text-blue-400" target="_blank">WhatsApp Templates</a>
+                                                        </p>
+                                                    @endif
                                                 </x-admin::form.control-group>
 
                                                 <!-- Message Text Area -->
