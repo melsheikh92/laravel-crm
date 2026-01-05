@@ -335,6 +335,29 @@ class WhatsAppController extends Controller
             $activity->leads()->attach($lead->id);
         }
 
+        // Create notification for the WhatsApp account owner
+        $this->whatsAppService->createIncomingMessageNotification(
+            $user,
+            $person,
+            $activity,
+            $messageText,
+            $fromPhoneNumber
+        );
+
+        // If there's a lead with a different assigned user, notify them too
+        if ($lead && $lead->user_id && $lead->user_id !== $user->id) {
+            $leadUser = \Webkul\User\Models\User::find($lead->user_id);
+            if ($leadUser) {
+                $this->whatsAppService->createIncomingMessageNotification(
+                    $leadUser,
+                    $person,
+                    $activity,
+                    $messageText,
+                    $fromPhoneNumber
+                );
+            }
+        }
+
         \Log::info('WhatsApp message processed', [
             'person_id' => $person->id,
             'activity_id' => $activity->id,
