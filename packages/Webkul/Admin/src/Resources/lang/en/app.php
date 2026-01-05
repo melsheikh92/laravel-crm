@@ -108,6 +108,12 @@ return [
             'title'             => 'My Account',
             'update-success'    => 'Account updated successfully',
             'upload-image-info' => 'Upload a Profile Image (110px X 110px) in PNG or JPG Format',
+            'whatsapp-configuration' => 'WhatsApp Configuration',
+            'whatsapp-phone-number-id' => 'Phone Number ID',
+            'whatsapp-access-token' => 'Access Token',
+            'whatsapp-phone-number-id-placeholder' => 'Meta API Phone Number ID',
+            'whatsapp-access-token-placeholder' => 'Temporary or Permanent Access Token',
+            'whatsapp-configuration-info' => 'Enter your Meta Cloud API credentials to enable WhatsApp messaging from your profile.',
         ],
     ],
 
