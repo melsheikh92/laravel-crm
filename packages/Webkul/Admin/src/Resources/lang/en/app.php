@@ -1829,6 +1829,7 @@ return [
                 'call'          => 'Call',
                 'meeting'       => 'Meeting',
                 'lunch'         => 'Lunch',
+                'whatsapp'      => 'WhatsApp',
             ],
         ],
 
@@ -1840,6 +1841,7 @@ return [
             'call'            => 'Call',
             'meeting'         => 'Meeting',
             'lunch'           => 'Lunch',
+            'whatsapp'        => 'WhatsApp',
             'schedule_to'     => 'Schedule To',
             'schedule_from'   => 'Schedule From',
             'location'        => 'Location',
@@ -1980,6 +1982,12 @@ return [
             'update-emails-title'  => 'Update Contact Emails',
             'work'                 => 'Work',
         ],
+
+        'select-type'     => 'Select Type',
+        'select-call'     => 'Call',
+        'select-meeting'  => 'Meeting',
+        'select-lunch'    => 'Lunch',
+        'select-whatsapp' => 'WhatsApp',
     ],
 
     'leads' => [

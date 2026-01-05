@@ -135,11 +135,6 @@
     "docker-buildx",
     "docker-compose",
     "dockerfile",
-    "erb",
-    "gem",
-    "ipython",
-    "irb",
-    "jupyter",
     "mysql",
     "mysqladmin",
     "mysqlcheck",
@@ -147,22 +142,13 @@
     "mysqlimport",
     "mysqlshow",
     "node",
-    "notebook",
     "npm",
     "npx",
-    "pdb",
     "php",
     "phpunit",
-    "pip",
-    "pip3",
-    "pipx",
-    "pudb",
-    "python",
-    "python3",
     "redis-benchmark",
     "redis-cli",
     "redis-server",
-    "ruby",
     "sail",
     "ts-node",
     "tsc",
@@ -180,14 +166,11 @@
   "custom_commands": [],
   "detected_stack": {
     "languages": [
-      "python",
       "javascript",
       "typescript",
-      "ruby",
       "php"
     ],
     "package_managers": [
-      "npm",
       "composer"
     ],
     "frameworks": [
@@ -219,7 +202,7 @@
       "docker-start.sh"
     ]
   },
-  "project_dir": "/Users/mahmoudelsheikh/Downloads/Workspace/laravel-crm",
-  "created_at": "2026-01-05T17:47:13.050684",
-  "project_hash": "8e8d89c6ff85ce8acc781fe8e4699ab4"
+  "project_dir": "/Users/mahmoudelsheikh/Downloads/Workspace/laravel-crm/.auto-claude/worktrees/tasks/001-complete-whatsapp-integration",
+  "created_at": "2026-01-05T18:10:43.632979",
+  "project_hash": "ffb84215da9dc836afb7419c24defc35"
 }

@@ -219,6 +219,11 @@ trait ProvideDropdownOptions
                 'value'    => 'lunch',
                 'disabled' => false,
                 'selected' => false,
+            ], [
+                'label'    => trans('admin::app.common.select-whatsapp'),
+                'value'    => 'whatsapp',
+                'disabled' => false,
+                'selected' => false,
             ],
         ];
     }
