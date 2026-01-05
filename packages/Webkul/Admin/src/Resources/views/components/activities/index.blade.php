@@ -147,6 +147,20 @@
                                                 </p>
                                             </template>
 
+                                            <template v-else-if="activity.type == 'whatsapp' && activity.additional">
+                                                <p class="dark:text-white">
+                                                    @lang('admin::app.components.activities.index.phone-number'):
+
+                                                    @{{ activity.additional.phone_number }}
+                                                </p>
+
+                                                <p class="dark:text-white">
+                                                    @lang('admin::app.components.activities.index.direction'):
+
+                                                    @{{ activity.additional.direction == 'outbound' ? '@lang('admin::app.components.activities.index.outbound')' : '@lang('admin::app.components.activities.index.inbound')' }}
+                                                </p>
+                                            </template>
+
                                             <template v-else>
                                                 <!-- Activity Schedule -->
                                                 <p
@@ -260,7 +274,7 @@
                                             <x-slot:menu class="!min-w-40">
                                                 {!! view_render_event('admin.components.activities.content.activity.item.more_actions.dropdown.menu_item.before') !!}
 
-                                                <template v-if="activity.type != 'email'">
+                                                <template v-if="activity.type != 'email' && activity.type != 'whatsapp'">
                                                     @if (bouncer()->hasPermission('activities.edit'))
                                                         <x-admin::dropdown.menu.item
                                                             v-if="! activity.is_done && ['call', 'meeting', 'lunch'].includes(activity.type)"
@@ -297,7 +311,7 @@
                                                     @endif
                                                 </template>
 
-                                                <template v-else>
+                                                <template v-else-if="activity.type == 'email'">
                                                     @if (bouncer()->hasPermission('mail.view'))
                                                         <x-admin::dropdown.menu.item>
                                                             <a
@@ -320,6 +334,19 @@
                                                         </div>
                                                     </x-admin::dropdown.menu.item>
                                                 </template>
+
+                                                <template v-else-if="activity.type == 'whatsapp'">
+                                                    @if (bouncer()->hasPermission('activities.delete'))
+                                                        <x-admin::dropdown.menu.item @click="remove(activity)">
+                                                            <div class="flex items-center gap-2">
+                                                                <span class="icon-delete text-2xl"></span>
+
+                                                                @lang('admin::app.components.activities.index.delete')
+                                                            </div>
+                                                        </x-admin::dropdown.menu.item>
+                                                    @endif
+                                                </template>
+
 
                                                 {!! view_render_event('admin.components.activities.content.activity.item.more_actions.dropdown.menu_item.after') !!}
                                             </x-slot>
@@ -427,6 +454,9 @@
                             name: 'email',
                             label: "{{ trans('admin::app.components.activities.index.emails') }}",
                         }, {
+                            name: 'whatsapp',
+                            label: "{{ trans('admin::app.components.activities.index.whatsapps') }}",
+                        }, {
                             name: 'system',
                             label: "{{ trans('admin::app.components.activities.index.change-log') }}",
                         }
@@ -456,6 +486,7 @@
                         meeting: 'icon-activity bg-blue-200 text-blue-800 dark:!text-blue-800',
                         lunch: 'icon-activity bg-blue-200 text-blue-800 dark:!text-blue-800',
                         file: 'icon-file bg-green-200 text-green-900 dark:!text-green-900',
+                        whatsapp: 'icon-message bg-emerald-200 text-emerald-800 dark:!text-emerald-800',
                         system: 'icon-system-generate bg-yellow-200 text-yellow-900 dark:!text-yellow-900',
                         default: 'icon-activity bg-blue-200 text-blue-800 dark:!text-blue-800',
                     },
@@ -507,6 +538,12 @@
                             image: "{{ vite()->asset('images/empty-placeholders/emails.svg') }}",
                             title: "{{ trans('admin::app.components.activities.index.empty-placeholders.emails.title') }}",
                             description: "{{ trans('admin::app.components.activities.index.empty-placeholders.emails.description') }}",
+                        },
+
+                        whatsapp: {
+                            image: "{{ vite()->asset('images/empty-placeholders/activities.svg') }}",
+                            title: "{{ trans('admin::app.components.activities.index.empty-placeholders.whatsapp.title') }}",
+                            description: "{{ trans('admin::app.components.activities.index.empty-placeholders.whatsapp.description') }}",
                         },
 
                         system: {

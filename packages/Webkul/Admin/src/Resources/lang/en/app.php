@@ -192,6 +192,11 @@ return [
                 'to'           => 'To',
                 'unlink'       => 'Unlink',
                 'view'         => 'View',
+                'whatsapps'    => 'WhatsApp',
+                'phone-number' => 'Phone Number',
+                'direction'    => 'Direction',
+                'outbound'     => 'Outbound',
+                'inbound'      => 'Inbound',
 
                 'empty-placeholders' => [
                     'all' => [
@@ -237,6 +242,11 @@ return [
                     'system' => [
                         'title'       => 'No Changelogs Found',
                         'description' => 'No changelogs found for this.',
+                    ],
+
+                    'whatsapp' => [
+                        'title'       => 'No WhatsApp Messages Found',
+                        'description' => 'No WhatsApp messages found for this. WhatsApp messages will appear here when you send or receive them.',
                     ],
                 ],
             ],
