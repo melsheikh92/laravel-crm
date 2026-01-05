@@ -194,6 +194,46 @@ class WhatsAppController extends Controller
     }
 
     /**
+     * Handle WhatsApp webhook (verification and incoming messages)
+     */
+    public function webhook(Request $request)
+    {
+        // Handle GET request for webhook verification
+        if ($request->isMethod('get')) {
+            return $this->verifyWebhook($request);
+        }
+
+        // Handle POST request for incoming messages (to be implemented)
+        // This will be implemented in subtask 2.3
+        return response()->json(['success' => true], 200);
+    }
+
+    /**
+     * Verify WhatsApp webhook with Meta
+     */
+    private function verifyWebhook(Request $request)
+    {
+        $mode = $request->query('hub_mode');
+        $token = $request->query('hub_verify_token');
+        $challenge = $request->query('hub_challenge');
+
+        $verifyToken = config('services.whatsapp.verify_token');
+
+        // Check if a token and mode were sent
+        if ($mode && $token) {
+            // Check the mode and token sent are correct
+            if ($mode === 'subscribe' && $token === $verifyToken) {
+                // Respond with 200 OK and challenge token from the request
+                return response($challenge, 200)
+                    ->header('Content-Type', 'text/plain');
+            }
+        }
+
+        // Responds with '403 Forbidden' if verify tokens do not match
+        return response()->json(['error' => 'Forbidden'], 403);
+    }
+
+    /**
      * Extract phone number from contact_numbers array
      * Prioritizes 'mobile' or 'whatsapp' labeled numbers
      */
