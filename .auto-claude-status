@@ -3,13 +3,13 @@
   "spec": "001-complete-whatsapp-integration",
   "state": "building",
   "subtasks": {
-    "completed": 17,
+    "completed": 19,
     "total": 26,
     "in_progress": 1,
     "failed": 0
   },
   "phase": {
-    "current": "Notifications System",
+    "current": "Conversation History and Timeline",
     "id": null,
     "total": 3
   },
@@ -18,8 +18,8 @@
     "max": 1
   },
   "session": {
-    "number": 17,
+    "number": 19,
     "started_at": "2026-01-05T22:18:44.787569"
   },
-  "last_update": "2026-01-05T23:14:17.084272"
+  "last_update": "2026-01-05T23:20:33.602537"
 }
