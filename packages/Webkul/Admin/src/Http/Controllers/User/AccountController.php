@@ -31,11 +31,13 @@ class AccountController extends Controller
         $user = auth()->guard('user')->user();
 
         $this->validate(request(), [
-            'name'             => 'required',
-            'email'            => 'email|unique:users,email,'.$user->id,
-            'password'         => 'nullable|min:6|confirmed',
+            'name' => 'required',
+            'email' => 'email|unique:users,email,' . $user->id,
+            'password' => 'nullable|min:6|confirmed',
             'current_password' => 'required|min:6',
-            'image.*'          => 'nullable|mimes:bmp,jpeg,jpg,png,webp',
+            'image.*' => 'nullable|mimes:bmp,jpeg,jpg,png,webp',
+            'whatsapp_phone_number_id' => 'nullable|string',
+            'whatsapp_access_token' => 'nullable|string',
         ]);
 
         $data = request()->only([
@@ -45,9 +47,11 @@ class AccountController extends Controller
             'password_confirmation',
             'current_password',
             'image',
+            'whatsapp_phone_number_id',
+            'whatsapp_access_token',
         ]);
 
-        if (! Hash::check($data['current_password'], $user->password)) {
+        if (!Hash::check($data['current_password'], $user->password)) {
             session()->flash('warning', trans('admin::app.account.edit.invalid-password'));
 
             return redirect()->back();
@@ -61,7 +65,7 @@ class AccountController extends Controller
 
         $isPasswordChanged = false;
 
-        if (! $data['password']) {
+        if (!$data['password']) {
             unset($data['password']);
         } else {
             $isPasswordChanged = true;
@@ -70,10 +74,10 @@ class AccountController extends Controller
         }
 
         if (request()->hasFile('image')) {
-            $data['image'] = current(request()->file('image'))->store('admins/'.$user->id);
+            $data['image'] = current(request()->file('image'))->store('admins/' . $user->id);
         } else {
-            if (! isset($data['image'])) {
-                if (! empty($data['image'])) {
+            if (!isset($data['image'])) {
+                if (!empty($data['image'])) {
                     Storage::delete($user->image);
                 }
 

@@ -58,7 +58,7 @@ return [
                 'name'       => 'label',
                 'title'      => 'admin::app.configuration.index.general.settings.footer.powered-by',
                 'type'       => 'editor',
-                'default'    => 'Powered by <span style="color: rgb(14, 144, 217);"><a href="https://hamzahllc.com" target="_blank">ProvenSuccess</a></span> by <span style="color: rgb(14, 144, 217);"><a href="https://hamzahllc.com" target="_blank">hamzah LLC</a></span>.',
+                'default'    => 'Powered by <span style="color: rgb(83, 49, 129);"><a href="https://hamzahllc.com" target="_blank">ProvenSuccess</a></span> by <span style="color: rgb(83, 49, 129);"><a href="https://hamzahllc.com" target="_blank">Hamzah LLC</a></span>.',
                 'tinymce'    => true,
             ],
         ],
@@ -176,7 +176,7 @@ return [
                 'name'    => 'brand_color',
                 'title'   => 'admin::app.configuration.index.general.settings.menu-color.brand-color',
                 'type'    => 'color',
-                'default' => '#0E90D9',
+                'default' => '#533181',
             ],
         ],
     ], [

@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Webkul\Admin\Http\Controllers\Mail\AIEmailController;
 use Webkul\Admin\Http\Controllers\Mail\EmailController;
 use Webkul\Admin\Http\Controllers\Mail\TagController;
 
@@ -23,6 +24,11 @@ Route::prefix('mail')->middleware('sanitize_url')->group(function () {
         Route::post('mass-destroy', 'massDestroy')->name('admin.mail.mass_delete');
 
         Route::post('inbound-parse', 'inboundParse')->name('admin.mail.inbound_parse')->withoutMiddleware('user');
+    });
+
+    Route::controller(AIEmailController::class)->prefix('ai')->group(function () {
+        Route::post('generate-reply', 'generateReply')->name('admin.mail.ai.generate_reply');
+        Route::get('{id}/summary', 'getSummary')->name('admin.mail.ai.summary');
     });
 
     Route::controller(TagController::class)->prefix('{id}/tags')->group(function () {

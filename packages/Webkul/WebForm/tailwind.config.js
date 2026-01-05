@@ -25,7 +25,7 @@ module.exports = {
 
         extend: {
             colors: {
-                brandColor: '#0E90D9',
+                brandColor: '#533181',
             },
 
             fontFamily: {

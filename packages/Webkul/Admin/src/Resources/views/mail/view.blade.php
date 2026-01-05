@@ -240,6 +240,41 @@
 
                     {!! view_render_event('admin.mail.view.mail_body.before', ['email' => $email]) !!}
 
+                    <!-- AI Summary (for threads with multiple emails) -->
+                    <template v-if="email.emails && email.emails.length >= 2">
+                        <div class="mb-4 rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-900/20">
+                            <div class="flex items-start justify-between gap-2">
+                                <div class="flex-1">
+                                    <div class="mb-2 flex items-center gap-2">
+                                        <span class="text-sm font-semibold text-blue-800 dark:text-blue-300">✨ @lang('admin::app.mail.view.ai-summary')</span>
+                                        <span 
+                                            v-if="emailSummaryLoading" 
+                                            class="text-xs text-gray-500 dark:text-gray-400"
+                                        >@lang('admin::app.mail.view.generating')...</span>
+                                    </div>
+                                    <div 
+                                        v-if="emailSummary" 
+                                        class="text-sm text-gray-700 dark:text-gray-300"
+                                        v-safe-html="emailSummary"
+                                    ></div>
+                                    <div 
+                                        v-else-if="!emailSummaryLoading"
+                                        class="text-sm text-gray-500 dark:text-gray-400"
+                                    >
+                                        @lang('admin::app.mail.view.no-summary')
+                                    </div>
+                                </div>
+                                <button
+                                    v-if="!emailSummaryLoading && !emailSummary"
+                                    @click="loadEmailSummary(email)"
+                                    class="rounded-md bg-blue-600 px-3 py-1 text-xs text-white hover:bg-blue-700"
+                                >
+                                    @lang('admin::app.mail.view.generate-summary')
+                                </button>
+                            </div>
+                        </div>
+                    </template>
+
                     <!-- Mail Body -->
                     <div
                         class="dark:text-gray-300"
@@ -321,6 +356,15 @@
                                 @lang('admin::app.mail.view.forward')
 
                                 <i class="icon-forward text-2xl"></i>
+                            </label>
+
+                            <label
+                                class="flex cursor-pointer items-center gap-2 text-brandColor"
+                                @click="generateAIReply(email)"
+                                :class="{'opacity-50 cursor-not-allowed': isGeneratingAIReply}"
+                            >
+                                <span v-if="!isGeneratingAIReply">✨ @lang('admin::app.mail.view.ai-reply')</span>
+                                <span v-else>@lang('admin::app.mail.view.generating')...</span>
                             </label>
                         </div>
                     </template>
@@ -1242,6 +1286,11 @@
                         if (! this.action.email) {
                             this.action.email = this.lastEmail();
                         }
+
+                        // If AI reply is provided, set it in the action
+                        if (action.ai_reply) {
+                            this.action[action.email.id].ai_reply = action.ai_reply;
+                        }
                     },
 
                     scrollBottom() {
@@ -1280,6 +1329,21 @@
 
                 emits: ['on-discard', 'on-email-action'],
 
+                data() {
+                    return {
+                        isGeneratingAIReply: false,
+                        emailSummary: null,
+                        emailSummaryLoading: false,
+                    };
+                },
+
+                mounted() {
+                    // Auto-load summary for threads with 3+ emails (only for root email, index 0)
+                    if (this.index === 0 && this.email.emails && this.email.emails.length >= 3) {
+                        this.loadEmailSummary(this.email);
+                    }
+                },
+
                 methods: {
                     isImage(path) {
                         return /\.(jpg|jpeg|png|gif|webp)$/i.test(path);
@@ -1313,6 +1377,75 @@
                                 }
                             });
                         }
+                    },
+
+                    generateAIReply(email) {
+                        if (this.isGeneratingAIReply) {
+                            return;
+                        }
+
+                        this.isGeneratingAIReply = true;
+
+                        this.$axios.post("{{ route('admin.mail.ai.generate_reply') }}", {
+                                email_id: email.id,
+                                tone: 'professional',
+                                length: 'medium',
+                            })
+                            .then((response) => {
+                                this.isGeneratingAIReply = false;
+
+                                if (response.data.data && response.data.data.reply) {
+                                    // Trigger reply action with AI-generated content
+                                    this.$emit('on-email-action', {
+                                        type: 'reply',
+                                        email: email,
+                                        ai_reply: response.data.data.reply
+                                    });
+                                } else {
+                                    this.$emitter.emit('add-flash', {
+                                        type: 'error',
+                                        message: response.data.message || 'Failed to generate AI reply'
+                                    });
+                                }
+                            })
+                            .catch((error) => {
+                                this.isGeneratingAIReply = false;
+
+                                this.$emitter.emit('add-flash', {
+                                    type: 'error',
+                                    message: error.response?.data?.message || 'Failed to generate AI reply'
+                                });
+                            });
+                    },
+
+                    loadEmailSummary(email) {
+                        if (this.emailSummaryLoading || this.emailSummary) {
+                            return;
+                        }
+
+                        this.emailSummaryLoading = true;
+
+                        this.$axios.get(`{{ route('admin.mail.ai.summary', ':id') }}`.replace(':id', email.id))
+                            .then((response) => {
+                                this.emailSummaryLoading = false;
+
+                                if (response.data.data && response.data.data.summary) {
+                                    this.emailSummary = response.data.data.summary;
+                                } else {
+                                    this.$emitter.emit('add-flash', {
+                                        type: 'error',
+                                        message: response.data.message || 'Failed to generate summary'
+                                    });
+                                }
+                            })
+                            .catch((error) => {
+                                this.emailSummaryLoading = false;
+
+                                this.$emitter.emit('add-flash', {
+                                    type: 'error',
+                                    message: error.response?.data?.message || 'Failed to generate summary'
+                                });
+                            });
                     },
                 },
             });
@@ -1379,6 +1512,11 @@
                     reply() {
                         if (this.getActionType == 'forward') {
                             return this.action.email.reply;
+                        }
+
+                        // Return AI-generated reply if available
+                        if (this.action[this.email.id]?.ai_reply) {
+                            return this.action[this.email.id].ai_reply;
                         }
 
                         return '';

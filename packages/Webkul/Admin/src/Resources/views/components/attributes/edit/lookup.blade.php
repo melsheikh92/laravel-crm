@@ -169,10 +169,6 @@
                         name: ''
                     },
 
-                    searchRoute: `{{ route('admin.settings.attributes.lookup') }}/${this.attribute.lookup_type}`,
-
-                    lookupEntityRoute: `{{ route('admin.settings.attributes.lookup_entity') }}/${this.attribute.lookup_type}`,
-
                     isSearching: false,
                 };
             },
@@ -193,13 +189,35 @@
 
             computed: {
                 /**
+                 * Get the search route for the lookup type.
+                 *
+                 * @return {String}
+                 */
+                searchRoute() {
+                    return `{{ route('admin.settings.attributes.lookup') }}/${this.attribute?.lookup_type}`;
+                },
+
+                /**
+                 * Get the lookup entity route for the lookup type.
+                 *
+                 * @return {String}
+                 */
+                lookupEntityRoute() {
+                    return `{{ route('admin.settings.attributes.lookup_entity') }}/${this.attribute?.lookup_type}`;
+                },
+
+                /**
                  * Filter the searchedResults based on the search query.
                  *
                  * @return {Array}
                  */
                 filteredResults() {
+                    if (!this.searchTerm) {
+                        return this.searchedResults;
+                    }
+
                     return this.searchedResults.filter(item =>
-                        item.name.toLowerCase().includes(this.searchTerm.toLowerCase())
+                        item.name && item.name.toLowerCase().includes(this.searchTerm.toLowerCase())
                     );
                 }
             },
@@ -234,7 +252,11 @@
                             params: { query: this.searchTerm }
                         })
                         .then (response => {
-                            this.searchedResults = response.data;
+                            // Transform the response to extract only id and name, filtering out null names
+                            this.searchedResults = (response.data || []).map(item => ({
+                                id: item.id,
+                                name: item.name || ''
+                            })).filter(item => item.name && item.name.trim() !== '');
                         })
                         .catch (error => {})
                         .finally(() => this.isSearching = false);

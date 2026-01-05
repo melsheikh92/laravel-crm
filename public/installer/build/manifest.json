@@ -1,6 +1,6 @@
 {
   "src/Resources/assets/css/app.css": {
-    "file": "assets/app-e0866a20.css",
+    "file": "assets/app-72e2c777.css",
     "isEntry": true,
     "src": "src/Resources/assets/css/app.css"
   },
@@ -24,16 +24,24 @@
     "file": "assets/favicon-a99d4e55.ico",
     "src": "src/Resources/assets/images/favicon.ico"
   },
+  "src/Resources/assets/images/favicon.svg": {
+    "file": "assets/favicon-0500c627.svg",
+    "src": "src/Resources/assets/images/favicon.svg"
+  },
   "src/Resources/assets/images/krayin-logo.svg": {
     "file": "assets/krayin-logo-4636add7.svg",
     "src": "src/Resources/assets/images/krayin-logo.svg"
+  },
+  "src/Resources/assets/images/provensuccess-logo.svg": {
+    "file": "assets/provensuccess-logo-cd40e072.svg",
+    "src": "src/Resources/assets/images/provensuccess-logo.svg"
   },
   "src/Resources/assets/images/spinner.svg": {
     "file": "assets/spinner-51c5cf50.svg",
     "src": "src/Resources/assets/images/spinner.svg"
   },
   "src/Resources/assets/js/app.js": {
-    "file": "assets/app-aec2df31.js",
+    "file": "assets/app-074f90ae.js",
     "isEntry": true,
     "src": "src/Resources/assets/js/app.js"
   }

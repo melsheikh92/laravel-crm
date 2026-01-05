@@ -67,33 +67,84 @@ class InstallerController extends Controller
     /**
      * Run Migration
      */
-    public function runMigration(): mixed
+    public function runMigration(): JsonResponse
     {
-        return $this->databaseManager->migration();
+        // Disable Debugbar for this response to ensure clean JSON
+        if (class_exists(\Barryvdh\Debugbar\Facades\Debugbar::class)) {
+            \Barryvdh\Debugbar\Facades\Debugbar::disable();
+        }
+
+        // Increase execution time and memory for migrations
+        set_time_limit(300); // 5 minutes
+        ini_set('memory_limit', '256M');
+
+        try {
+            $result = $this->databaseManager->migration();
+
+            // Ensure we return a proper JsonResponse
+            if ($result instanceof JsonResponse) {
+                return $result;
+            }
+
+            return new JsonResponse([
+                'success' => true,
+                'message' => 'Migration completed successfully.',
+            ]);
+        } catch (\Exception $e) {
+            return new JsonResponse([
+                'success' => false,
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     /**
      * Run Seeder.
      *
-     * @return void|string
+     * @return JsonResponse
      */
-    public function runSeeder()
+    public function runSeeder(): JsonResponse
     {
-        $allParameters = request()->allParameters;
+        // Disable Debugbar for this response to ensure clean JSON
+        if (class_exists(\Barryvdh\Debugbar\Facades\Debugbar::class)) {
+            \Barryvdh\Debugbar\Facades\Debugbar::disable();
+        }
 
-        $parameter = [
-            'parameter' => [
-                'default_locales'  => $allParameters['app_locale'] ?? null,
-                'default_currency' => $allParameters['app_currency'] ?? null,
-            ],
-        ];
+        // Increase execution time and memory for seeding
+        set_time_limit(300); // 5 minutes
+        ini_set('memory_limit', '256M');
 
-        $response = $this->environmentManager->setEnvConfiguration($allParameters);
+        try {
+            $allParameters = request()->allParameters;
 
-        if ($response) {
-            $seeder = $this->databaseManager->seeder($parameter);
+            $parameter = [
+                'parameter' => [
+                    'default_locales'  => $allParameters['app_locale'] ?? null,
+                    'default_currency' => $allParameters['app_currency'] ?? null,
+                ],
+            ];
 
-            return $seeder;
+            $response = $this->environmentManager->setEnvConfiguration($allParameters);
+
+            if ($response) {
+                $seeder = $this->databaseManager->seeder($parameter);
+
+                if (isset($seeder['success']) && $seeder['success']) {
+                    return new JsonResponse($seeder);
+                } else {
+                    return new JsonResponse($seeder, 500);
+                }
+            }
+
+            return new JsonResponse([
+                'success' => false,
+                'error' => 'Failed to update environment configuration.',
+            ], 500);
+        } catch (\Exception $e) {
+            return new JsonResponse([
+                'success' => false,
+                'error' => $e->getMessage(),
+            ], 500);
         }
     }
 
@@ -134,7 +185,7 @@ class InstallerController extends Controller
     {
         $filePath = storage_path('installed');
 
-        File::put($filePath, 'Your Krayin App is Successfully Installed');
+        File::put($filePath, 'Your ProvenSuccess App is Successfully Installed');
 
         Event::dispatch('krayin.installed');
 

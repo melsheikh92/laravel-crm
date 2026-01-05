@@ -28,6 +28,11 @@
         />
 
         <link
+            type="image/svg+xml"
+            href="{{ vite()->asset('images/favicon.svg', 'installer') }}"
+            rel="icon"
+        />
+        <link
             type="image/x-icon"
             href="{{ vite()->asset('images/favicon.ico', 'installer') }}"
             rel="shortcut icon"
@@ -35,6 +40,12 @@
         />
 
         @stack('styles')
+
+        <style>
+            :root {
+                --brand-color: #533181; /* ProvenSuccess primary brand color */
+            }
+        </style>
     </head>
 
     @php
@@ -129,7 +140,7 @@
                     <div class="m-auto grid h-[100vh] max-w-[362px] items-end">
                         <div class="grid gap-4">
                             <img
-                                src="{{ vite()->asset('images/krayin-logo.svg', 'installer') }}"
+                                src="{{ vite()->asset('images/provensuccess-logo.svg', 'installer') }}"
                                 alt="@lang('installer::app.installer.index.krayin-logo')"
                             >
 
@@ -474,7 +485,7 @@
                                     <x-installer::form.control-group.control
                                         type="text"
                                         name="db_hostname"
-                                        ::value="envData.db_hostname ?? '127.0.0.1'"
+                                        ::value="envData.db_hostname ?? 'mysql'"
                                         rules="required"
                                         :label="trans('installer::app.installer.index.environment-configuration.database-hostname')"
                                         :placeholder="trans('installer::app.installer.index.environment-configuration.database-hostname')"
@@ -1158,41 +1169,233 @@
                         startMigration(setErrors) {
                             this.currentStep = 'installProgress';
 
-                            this.$axios.post("{{ route('installer.env_file_setup') }}", this.envData)
-                                .then((response) => {
-                                    this.runMigartion(setErrors);
-                            })
-                            .catch(error => {
-                                setErrors(error.response.data.errors);
+                            // setErrors might not always be available, create a safe wrapper
+                            const safeSetErrors = setErrors || ((errors) => {
+                                console.error('Form errors:', errors);
+                                if (errors && typeof errors === 'object') {
+                                    const errorMessages = Object.values(errors).flat().join(', ');
+                                    alert('Error: ' + errorMessages);
+                                }
                             });
+
+                            // First, setup env file (this might restart the server)
+                            this.$axios.post("{{ route('installer.env_file_setup') }}", this.envData, {
+                                timeout: 60000, // 60 seconds
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-Requested-With': 'XMLHttpRequest'
+                                },
+                                validateStatus: function (status) {
+                                    return status >= 200 && status < 500; // Accept 4xx as valid responses
+                                }
+                            })
+                                .then((response) => {
+                                    if (!response || !response.data) {
+                                        throw new Error('Invalid response from server');
+                                    }
+                                    
+                                    // Wait a bit for server to restart if it did
+                                    // The server restarts when .env changes, so we need to wait
+                                    setTimeout(() => {
+                                        this.runMigartion(safeSetErrors);
+                                    }, 2000); // Wait 2 seconds for server restart
+                                })
+                                .catch(error => {
+                                    console.error('Env file setup error:', error);
+                                    let errorMessage = 'Failed to setup environment file.';
+                                    
+                                    if (error.response) {
+                                        if (error.response.data && error.response.data.errors) {
+                                            safeSetErrors(error.response.data.errors);
+                                            return;
+                                        } else if (error.response.data && error.response.data.message) {
+                                            errorMessage = error.response.data.message;
+                                        } else if (error.response.status === 419) {
+                                            errorMessage = 'CSRF token expired. Please refresh the page and try again.';
+                                        }
+                                    } else if (error.message) {
+                                        errorMessage = error.message;
+                                    }
+                                    
+                                    alert(errorMessage);
+                                });
                         },
 
                         runMigartion(setErrors) {
-                            this.$axios.post("{{ route('installer.run_migration') }}")
-                                .then((response) => {
-                                    this.completeStep('readyForInstallation', 'envConfiguration', 'active', 'complete');
+                            // setErrors might not always be available, create a safe wrapper
+                            const safeSetErrors = setErrors || ((errors) => {
+                                console.error('Form errors:', errors);
+                                if (errors && typeof errors === 'object') {
+                                    const errorMessages = Object.values(errors).flat().join(', ');
+                                    alert('Error: ' + errorMessages);
+                                }
+                            });
 
-                                    this.currentStep = 'envConfiguration';
+                            // Show loading state
+                            this.isLoading = true;
+                            
+                            // Retry logic for migration (server might have just restarted)
+                            const attemptMigration = (retryCount = 0) => {
+                                const maxRetries = 3;
+                                
+                                this.$axios.post("{{ route('installer.run_migration') }}", {}, {
+                                    timeout: 180000, // 180 second timeout for migrations (3 minutes)
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'X-Requested-With': 'XMLHttpRequest',
+                                        'Connection': 'keep-alive'
+                                    },
+                                    validateStatus: function (status) {
+                                        return status >= 200 && status < 500; // Accept 4xx as valid responses
+                                    }
+                                })
+                                .then((response) => {
+                                    this.isLoading = false;
+                                    
+                                    // Ensure response is valid JSON
+                                    if (!response || !response.data) {
+                                        throw new Error('Invalid response from server');
+                                    }
+
+                                    // Check if envConfiguration data already exists (from previous step)
+                                    if (this.envData.app_locale && this.envData.app_currency) {
+                                        // If env data exists, wait a bit then auto-advance to seeding
+                                        // Small delay to ensure server is ready after migration
+                                        setTimeout(() => {
+                                            this.startSeeding(this.envData);
+                                        }, 1000);
+                                    } else {
+                                        // Otherwise, show envConfiguration form
+                                        this.completeStep('readyForInstallation', 'envConfiguration', 'active', 'complete');
+                                        this.currentStep = 'envConfiguration';
+                                    }
                                 })
                                 .catch(error => {
-                                    alert(error.response.data.error);
+                                    console.error('Migration error (attempt ' + (retryCount + 1) + '):', error);
+                                    
+                                    // Retry on network errors (server might be restarting)
+                                    if ((error.code === 'ERR_NETWORK' || error.message === 'Network Error' || error.code === 'ERR_EMPTY_RESPONSE') && retryCount < maxRetries) {
+                                        console.log('Retrying migration in 3 seconds... (attempt ' + (retryCount + 1) + '/' + maxRetries + ')');
+                                        setTimeout(() => {
+                                            attemptMigration(retryCount + 1);
+                                        }, 3000);
+                                        return;
+                                    }
+                                    
+                                    this.isLoading = false;
+                                    let errorMessage = 'Migration failed. Please try again.';
+                                    
+                                    if (error.code === 'ECONNABORTED' || error.message.includes('timeout')) {
+                                        errorMessage = 'Migration timed out. This may take a few minutes. Please wait and try again.';
+                                    } else if (error.code === 'ERR_NETWORK' || error.message === 'Network Error' || error.code === 'ERR_EMPTY_RESPONSE') {
+                                        errorMessage = 'Network error. The server may have restarted. Please refresh the page and try again.';
+                                    } else if (error.response && error.response.data) {
+                                        if (error.response.data.error) {
+                                            errorMessage = error.response.data.error;
+                                        } else if (error.response.data.message) {
+                                            errorMessage = error.response.data.message;
+                                        }
+                                    } else if (error.message) {
+                                        errorMessage = error.message;
+                                    }
 
+                                    alert(errorMessage);
                                     this.currentStep = 'envDatabase';
                                 });
+                            };
+                            
+                            // Start migration attempt
+                            attemptMigration();
                         },
 
                         startSeeding(allParameters) {
+                            // Show loading state
+                            this.isLoading = true;
+                            
+                            // Retry logic for seeding (server might have just restarted)
+                            const attemptSeeding = (retryCount = 0) => {
+                                const maxRetries = 3;
+                                
                                 this.$axios.post("{{ route('installer.run_seeder') }}", {
                                     'allParameters': allParameters,
+                                }, {
+                                    timeout: 60000, // 60 second timeout for seeding (increased)
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'X-Requested-With': 'XMLHttpRequest',
+                                        'Connection': 'keep-alive'
+                                    },
+                                    validateStatus: function (status) {
+                                        return status >= 200 && status < 500; // Accept 4xx as valid responses
+                                    }
                                 })
                                 .then((response) => {
-                                    this.completeStep('readyForInstallation', 'createAdmin', 'active', 'complete');
+                                    this.isLoading = false;
+                                    
+                                    // Ensure response is valid JSON
+                                    if (!response || !response.data) {
+                                        throw new Error('Invalid response from server');
+                                    }
 
-                                    this.currentStep = 'createAdmin';
+                                    if (response.data && response.data.success) {
+                                        this.completeStep('readyForInstallation', 'createAdmin', 'active', 'complete');
+                                        this.completeStep('envConfiguration', 'createAdmin', 'complete', 'complete');
+                                        this.currentStep = 'createAdmin';
+                                    } else {
+                                        throw new Error(response.data.error || 'Seeding failed');
+                                    }
                                 })
                                 .catch(error => {
-                                    setErrors(error.response.data.errors);
+                                    console.error('Seeding error (attempt ' + (retryCount + 1) + '):', error);
+                                    
+                                    // Retry on network errors (server might be restarting)
+                                    if ((error.code === 'ERR_NETWORK' || error.message === 'Network Error' || error.code === 'ERR_EMPTY_RESPONSE') && retryCount < maxRetries) {
+                                        console.log('Retrying seeding in 3 seconds... (attempt ' + (retryCount + 1) + '/' + maxRetries + ')');
+                                        setTimeout(() => {
+                                            attemptSeeding(retryCount + 1);
+                                        }, 3000);
+                                        return;
+                                    }
+                                    
+                                    this.isLoading = false;
+                                    
+                                    // If seeding already completed, check if we can advance anyway
+                                    if (error.response && error.response.status === 500) {
+                                        // Check if we should still advance (seeding might have partially completed)
+                                        this.completeStep('readyForInstallation', 'createAdmin', 'active', 'complete');
+                                        this.completeStep('envConfiguration', 'createAdmin', 'complete', 'complete');
+                                        this.currentStep = 'createAdmin';
+                                        return;
+                                    }
+                                    
+                                    let errorMessage = 'Seeding failed. Please try again.';
+                                    
+                                    if (error.code === 'ECONNABORTED' || error.message.includes('timeout')) {
+                                        errorMessage = 'Seeding timed out. Please try again.';
+                                    } else if (error.code === 'ERR_NETWORK' || error.message === 'Network Error' || error.code === 'ERR_EMPTY_RESPONSE') {
+                                        errorMessage = 'Network error. The server may have restarted. Please refresh the page and try again.';
+                                    } else if (error.response && error.response.data) {
+                                        if (error.response.data.errors) {
+                                            // setErrors might not be available, use alert as fallback
+                                            const safeSetErrors = setErrors || ((errors) => {
+                                                const errorMessages = Object.values(errors).flat().join(', ');
+                                                alert('Error: ' + errorMessages);
+                                            });
+                                            safeSetErrors(error.response.data.errors);
+                                            return;
+                                        } else if (error.response.data.error) {
+                                            errorMessage = error.response.data.error;
+                                        }
+                                    } else if (error.message) {
+                                        errorMessage = error.message;
+                                    }
+                                    
+                                    alert(errorMessage);
                                 });
+                            };
+                            
+                            // Start seeding attempt
+                            attemptSeeding();
                         },
 
                         saveAdmin(params, setErrors) {

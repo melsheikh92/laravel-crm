@@ -49,3 +49,28 @@ require 'configuration-routes.php';
  * Rest routes.
  */
 require 'rest-routes.php';
+
+/**
+ * AI routes.
+ */
+require 'ai-routes.php';
+
+/**
+ * Marketing routes.
+ */
+require 'marketing-routes.php';
+
+/**
+ * Collaboration routes.
+ */
+require 'collaboration-routes.php';
+
+/**
+ * Support routes.
+ */
+require 'support-routes.php';
+
+/**
+ * Integrations routes.
+ */
+require 'integrations-routes.php';

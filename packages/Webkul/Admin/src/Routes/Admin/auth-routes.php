@@ -10,7 +10,7 @@ Route::withoutMiddleware(['user'])->group(function () {
     /**
      * Redirect route.
      */
-    Route::get('/', [Controller::class, 'redirectToLogin']);
+    // Route::get('/', [Controller::class, 'redirectToLogin']);
 
     /**
      * Session routes.

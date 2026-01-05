@@ -40,6 +40,13 @@ class InstallerServiceProvider extends ServiceProvider
         $this->loadTranslationsFrom(__DIR__.'/../Resources/lang', 'installer');
 
         /**
+         * Disable Debugbar for installer API routes to prevent HTML injection in JSON responses
+         */
+        if (class_exists(\Barryvdh\Debugbar\ServiceProvider::class)) {
+            $this->app['config']->set('debugbar.enabled', false);
+        }
+
+        /**
          * Route to access template applied image file
          */
         $this->app['router']->get('cache/{filename}', [

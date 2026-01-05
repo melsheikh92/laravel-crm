@@ -29,7 +29,6 @@
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.6",
         "fakerphp/faker": "^1.9.1",
-        "hamzahllc/provensuccess-package-generator": "dev-master",
         "laravel/pint": "^1.16",
         "laravel/sail": "^1.0.1",
         "mockery/mockery": "^1.4.2",
@@ -45,6 +44,11 @@
         "sort-packages": true,
         "allow-plugins": {
             "pestphp/pest-plugin": true
+        },
+        "audit": {
+            "ignore": [
+                "PKSA-4g5g-4rkv-myqs"
+            ]
         }
     },
     "extra": {
@@ -59,6 +63,7 @@
             "Database\\Seeders\\": "database/seeders/",
             "Webkul\\Activity\\": "packages/Webkul/Activity/src",
             "Webkul\\Admin\\": "packages/Webkul/Admin/src",
+            "Webkul\\AI\\": "packages/Webkul/AI/src",
             "Webkul\\Attribute\\": "packages/Webkul/Attribute/src",
             "Webkul\\Contact\\": "packages/Webkul/Contact/src",
             "Webkul\\Core\\": "packages/Webkul/Core/src",
@@ -75,7 +80,10 @@
             "Webkul\\User\\": "packages/Webkul/User/src",
             "Webkul\\Warehouse\\": "packages/Webkul/Warehouse/src",
             "Webkul\\WebForm\\": "packages/Webkul/WebForm/src",
-            "Webkul\\Automation\\": "packages/Webkul/Automation/src"
+            "Webkul\\Automation\\": "packages/Webkul/Automation/src",
+            "Webkul\\Collaboration\\": "packages/Webkul/Collaboration/src",
+            "Webkul\\Support\\": "packages/Webkul/Support/src",
+            "Webkul\\Integration\\": "packages/Webkul/Integration/src"
         }
     },
     "autoload-dev": {

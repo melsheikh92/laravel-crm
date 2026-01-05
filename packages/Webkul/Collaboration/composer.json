@@ -1,0 +1,29 @@
+{
+    "name": "hamzahllc/laravel-collaboration",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "hamzah LLC",
+            "email": "support@hamzahllc.com"
+        }
+    ],
+    "require": {
+        "hamzahllc/laravel-core": "^1.0",
+        "hamzahllc/laravel-user": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Webkul\\Collaboration\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Webkul\\Collaboration\\Providers\\CollaborationServiceProvider"
+            ],
+            "aliases": {}
+        }
+    },
+    "minimum-stability": "dev"
+}
+

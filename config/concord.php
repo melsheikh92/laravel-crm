@@ -19,6 +19,9 @@ return [
         \Webkul\Warehouse\Providers\ModuleServiceProvider::class,
         \Webkul\WebForm\Providers\ModuleServiceProvider::class,
         \Webkul\DataTransfer\Providers\ModuleServiceProvider::class,
+        \Webkul\Collaboration\Providers\ModuleServiceProvider::class,
+        \Webkul\Support\Providers\ModuleServiceProvider::class,
+        \Webkul\Integration\Providers\ModuleServiceProvider::class,
     ],
 
     'register_route_models' => true,

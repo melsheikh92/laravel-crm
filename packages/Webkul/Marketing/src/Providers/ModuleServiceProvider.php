@@ -14,5 +14,8 @@ class ModuleServiceProvider extends BaseModuleServiceProvider
     protected $models = [
         \Webkul\Marketing\Models\Event::class,
         \Webkul\Marketing\Models\Campaign::class,
+        \Webkul\Marketing\Models\EmailCampaign::class,
+        \Webkul\Marketing\Models\CampaignRecipient::class,
+        \Webkul\Marketing\Models\EmailTemplate::class,
     ];
 }

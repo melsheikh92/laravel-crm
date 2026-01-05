@@ -26,6 +26,8 @@ class User extends Authenticatable implements UserContract
         'role_id',
         'status',
         'view_permission',
+        'whatsapp_phone_number_id',
+        'whatsapp_access_token',
     ];
 
     /**
@@ -44,7 +46,7 @@ class User extends Authenticatable implements UserContract
      */
     public function image_url()
     {
-        if (! $this->image) {
+        if (!$this->image) {
             return;
         }
 
@@ -95,7 +97,7 @@ class User extends Authenticatable implements UserContract
      */
     public function hasPermission($permission)
     {
-        if ($this->role->permission_type == 'custom' && ! $this->role->permissions) {
+        if ($this->role->permission_type == 'custom' && !$this->role->permissions) {
             return false;
         }
 

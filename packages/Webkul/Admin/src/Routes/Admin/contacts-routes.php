@@ -44,6 +44,12 @@ Route::prefix('contacts')->group(function () {
         Route::controller(ActivityController::class)->prefix('{id}/activities')->group(function () {
             Route::get('', 'index')->name('admin.contacts.persons.activities.index');
         });
+
+        /**
+         * WhatsApp routes.
+         */
+        Route::post('{id}/whatsapp/send', [\App\Http\Controllers\WhatsAppController::class, 'sendFromPerson'])
+            ->name('admin.contacts.persons.whatsapp.send');
     });
 
     /**

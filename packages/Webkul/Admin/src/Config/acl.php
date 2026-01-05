@@ -112,6 +112,146 @@ return [
         'route' => 'admin.activities.index',
         'sort'  => 5,
     ], [
+        'key'   => 'marketing.campaigns',
+        'name'  => 'admin::app.acl.marketing-campaigns',
+        'route' => 'admin.marketing.campaigns.index',
+        'sort'  => 6,
+    ], [
+        'key'   => 'marketing.campaigns.create',
+        'name'  => 'admin::app.acl.create',
+        'route' => ['admin.marketing.campaigns.create', 'admin.marketing.campaigns.store'],
+        'sort'  => 1,
+    ], [
+        'key'   => 'marketing.campaigns.edit',
+        'name'  => 'admin::app.acl.edit',
+        'route' => ['admin.marketing.campaigns.edit', 'admin.marketing.campaigns.update'],
+        'sort'  => 2,
+    ], [
+        'key'   => 'marketing.campaigns.delete',
+        'name'  => 'admin::app.acl.delete',
+        'route' => ['admin.marketing.campaigns.destroy'],
+        'sort'  => 3,
+    ], [
+        'key'   => 'collaboration',
+        'name'  => 'admin::app.acl.collaboration',
+        'route' => 'admin.collaboration.channels.index',
+        'sort'  => 7,
+    ], [
+        'key'   => 'collaboration.channels',
+        'name'  => 'admin::app.acl.channels',
+        'route' => 'admin.collaboration.channels.index',
+        'sort'  => 1,
+    ], [
+        'key'   => 'collaboration.channels.create',
+        'name'  => 'admin::app.acl.create',
+        'route' => ['admin.collaboration.channels.store'],
+        'sort'  => 1,
+    ], [
+        'key'   => 'collaboration.channels.view',
+        'name'  => 'admin::app.acl.view',
+        'route' => ['admin.collaboration.channels.show'],
+        'sort'  => 2,
+    ], [
+        'key'   => 'collaboration.notifications',
+        'name'  => 'admin::app.acl.notifications',
+        'route' => 'admin.collaboration.notifications.index',
+        'sort'  => 3,
+    ], [
+        'key'   => 'support',
+        'name'  => 'admin::app.acl.support',
+        'route' => 'admin.support.tickets.index',
+        'sort'  => 8,
+    ], [
+        'key'   => 'support.tickets',
+        'name'  => 'admin::app.acl.support-tickets',
+        'route' => 'admin.support.tickets.index',
+        'sort'  => 1,
+    ], [
+        'key'   => 'support.tickets.create',
+        'name'  => 'admin::app.acl.create',
+        'route' => ['admin.support.tickets.create', 'admin.support.tickets.store'],
+        'sort'  => 1,
+    ], [
+        'key'   => 'support.tickets.edit',
+        'name'  => 'admin::app.acl.edit',
+        'route' => ['admin.support.tickets.edit', 'admin.support.tickets.update'],
+        'sort'  => 2,
+    ], [
+        'key'   => 'support.tickets.delete',
+        'name'  => 'admin::app.acl.delete',
+        'route' => ['admin.support.tickets.destroy'],
+        'sort'  => 3,
+    ], [
+        'key'   => 'support.sla',
+        'name'  => 'admin::app.acl.sla-management',
+        'route' => 'admin.support.sla.index',
+        'sort'  => 2,
+    ], [
+        'key'   => 'support.sla.create',
+        'name'  => 'admin::app.acl.create',
+        'route' => ['admin.support.sla.create', 'admin.support.sla.store'],
+        'sort'  => 1,
+    ], [
+        'key'   => 'support.sla.edit',
+        'name'  => 'admin::app.acl.edit',
+        'route' => ['admin.support.sla.edit', 'admin.support.sla.update'],
+        'sort'  => 2,
+    ], [
+        'key'   => 'support.sla.delete',
+        'name'  => 'admin::app.acl.delete',
+        'route' => ['admin.support.sla.destroy'],
+        'sort'  => 3,
+    ], [
+        'key'   => 'support.knowledge-base',
+        'name'  => 'admin::app.acl.knowledge-base',
+        'route' => 'admin.support.knowledge-base.index',
+        'sort'  => 3,
+    ], [
+        'key'   => 'support.knowledge-base.create',
+        'name'  => 'admin::app.acl.create',
+        'route' => ['admin.support.knowledge-base.create', 'admin.support.knowledge-base.store'],
+        'sort'  => 1,
+    ], [
+        'key'   => 'support.knowledge-base.edit',
+        'name'  => 'admin::app.acl.edit',
+        'route' => ['admin.support.knowledge-base.edit', 'admin.support.knowledge-base.update'],
+        'sort'  => 2,
+    ], [
+        'key'   => 'support.knowledge-base.delete',
+        'name'  => 'admin::app.acl.delete',
+        'route' => ['admin.support.knowledge-base.destroy'],
+        'sort'  => 3,
+    ], [
+        'key'   => 'integrations',
+        'name'  => 'admin::app.acl.integrations',
+        'route' => 'admin.integrations.marketplace.index',
+        'sort'  => 9,
+    ], [
+        'key'   => 'integrations.marketplace',
+        'name'  => 'admin::app.acl.integrations-marketplace',
+        'route' => 'admin.integrations.marketplace.index',
+        'sort'  => 1,
+    ], [
+        'key'   => 'integrations.manage',
+        'name'  => 'admin::app.acl.integration-management',
+        'route' => 'admin.integrations.index',
+        'sort'  => 2,
+    ], [
+        'key'   => 'integrations.manage.create',
+        'name'  => 'admin::app.acl.create',
+        'route' => ['admin.integrations.create', 'admin.integrations.store'],
+        'sort'  => 1,
+    ], [
+        'key'   => 'integrations.manage.edit',
+        'name'  => 'admin::app.acl.edit',
+        'route' => ['admin.integrations.edit', 'admin.integrations.update'],
+        'sort'  => 2,
+    ], [
+        'key'   => 'integrations.manage.delete',
+        'name'  => 'admin::app.acl.delete',
+        'route' => ['admin.integrations.destroy'],
+        'sort'  => 3,
+    ], [
         'key'   => 'activities.create',
         'name'  => 'admin::app.acl.create',
         'route' => ['admin.activities.create', 'admin.activities.store'],

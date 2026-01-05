@@ -67,6 +67,11 @@
         >
     @else
         <link
+            type="image/svg+xml"
+            href="{{ vite()->asset('images/favicon.svg') }}"
+            rel="icon"
+        />
+        <link
             type="image/x-icon"
             href="{{ vite()->asset('images/favicon.ico') }}"
             rel="shortcut icon"
@@ -75,7 +80,7 @@
     @endif
 
     @php
-        $brandColor = core()->getConfigData('general.settings.menu_color.brand_color') ?? '#0E90D9';
+        $brandColor = core()->getConfigData('general.settings.menu_color.brand_color') ?? '#533181';
     @endphp
 
     @stack('styles')
@@ -132,6 +137,9 @@
         </div>
 
         {!! view_render_event('admin.layout.content.after') !!}
+
+        <!-- AI Copilot Widget -->
+        <x-admin::copilot.widget />
     </div>
 
     {!! view_render_event('admin.layout.body.after') !!}

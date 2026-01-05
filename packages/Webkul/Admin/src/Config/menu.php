@@ -100,13 +100,105 @@ return [
     ],
 
     /**
+     * Marketing Campaigns.
+     */
+    [
+        'key'        => 'marketing',
+        'name'       => 'admin::app.layouts.marketing-campaigns',
+        'route'      => 'admin.marketing.campaigns.index',
+        'sort'       => 6,
+        'icon-class' => 'icon-mail',
+    ], [
+        'key'        => 'marketing.campaigns',
+        'name'       => 'admin::app.layouts.marketing-campaigns',
+        'route'      => 'admin.marketing.campaigns.index',
+        'sort'       => 1,
+        'icon-class' => '',
+    ],
+
+    /**
+     * Collaboration.
+     */
+    [
+        'key'        => 'collaboration',
+        'name'       => 'admin::app.layouts.collaboration',
+        'route'      => 'admin.collaboration.channels.index',
+        'sort'       => 7,
+        'icon-class' => 'icon-contact',
+    ], [
+        'key'        => 'collaboration.channels',
+        'name'       => 'admin::app.layouts.channels',
+        'route'      => 'admin.collaboration.channels.index',
+        'sort'       => 1,
+        'icon-class' => '',
+    ], [
+        'key'        => 'collaboration.notifications',
+        'name'       => 'admin::app.layouts.notifications',
+        'route'      => 'admin.collaboration.notifications.index',
+        'sort'       => 2,
+        'icon-class' => '',
+    ],
+
+    /**
+     * Support.
+     */
+    [
+        'key'        => 'support',
+        'name'       => 'admin::app.layouts.support',
+        'route'      => 'admin.support.tickets.index',
+        'sort'       => 8,
+        'icon-class' => 'icon-contact',
+    ], [
+        'key'        => 'support.tickets',
+        'name'       => 'admin::app.layouts.support-tickets',
+        'route'      => 'admin.support.tickets.index',
+        'sort'       => 1,
+        'icon-class' => '',
+    ], [
+        'key'        => 'support.sla',
+        'name'       => 'admin::app.layouts.sla-management',
+        'route'      => 'admin.support.sla.index',
+        'sort'       => 2,
+        'icon-class' => '',
+    ], [
+        'key'        => 'support.knowledge-base',
+        'name'       => 'admin::app.layouts.knowledge-base',
+        'route'      => 'admin.support.knowledge-base.index',
+        'sort'       => 3,
+        'icon-class' => '',
+    ],
+
+    /**
+     * Integrations.
+     */
+    [
+        'key'        => 'integrations',
+        'name'       => 'admin::app.layouts.integrations',
+        'route'      => 'admin.integrations.marketplace.index',
+        'sort'       => 9,
+        'icon-class' => 'icon-setting',
+    ], [
+        'key'        => 'integrations.marketplace',
+        'name'       => 'admin::app.layouts.integrations-marketplace',
+        'route'      => 'admin.integrations.marketplace.index',
+        'sort'       => 1,
+        'icon-class' => '',
+    ], [
+        'key'        => 'integrations.manage',
+        'name'       => 'admin::app.layouts.integration-management',
+        'route'      => 'admin.integrations.index',
+        'sort'       => 2,
+        'icon-class' => '',
+    ],
+
+    /**
      * Contacts.
      */
     [
         'key'        => 'contacts',
         'name'       => 'admin::app.layouts.contacts',
         'route'      => 'admin.contacts.persons.index',
-        'sort'       => 6,
+        'sort'       => 10,
         'icon-class' => 'icon-contact',
     ], [
         'key'        => 'contacts.persons',
@@ -129,7 +221,7 @@ return [
         'key'        => 'products',
         'name'       => 'admin::app.layouts.products',
         'route'      => 'admin.products.index',
-        'sort'       => 7,
+        'sort'       => 11,
         'icon-class' => 'icon-product',
     ],
 
@@ -140,7 +232,7 @@ return [
         'key'        => 'settings',
         'name'       => 'admin::app.layouts.settings',
         'route'      => 'admin.settings.index',
-        'sort'       => 8,
+        'sort'       => 12,
         'icon-class' => 'icon-setting',
     ], [
         'key'        => 'settings.user',
@@ -292,7 +384,7 @@ return [
         'key'        => 'configuration',
         'name'       => 'admin::app.layouts.configuration',
         'route'      => 'admin.configuration.index',
-        'sort'       => 9,
+        'sort'       => 13,
         'icon-class' => 'icon-configuration',
     ],
 

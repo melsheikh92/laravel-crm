@@ -34,9 +34,11 @@ class DatabaseManager
                 return false;
             }
 
-            $userCount = DB::table('users')->count();
+            // Check for active users (status = 1) instead of just any users
+            // This allows the installer to show the admin creation step even if a placeholder user exists
+            $activeUserCount = DB::table('users')->where('status', 1)->count();
 
-            if (! $userCount) {
+            if (! $activeUserCount) {
                 return false;
             }
 
@@ -70,7 +72,7 @@ class DatabaseManager
     /**
      * Seed the database.
      *
-     * @return void|string
+     * @return array
      */
     public function seeder($data)
     {
@@ -81,8 +83,16 @@ class DatabaseManager
             ]);
 
             $this->storageLink();
+
+            return [
+                'success' => true,
+                'message' => 'Database seeded successfully.',
+            ];
         } catch (Exception $e) {
-            return $e->getMessage();
+            return [
+                'success' => false,
+                'error' => $e->getMessage(),
+            ];
         }
     }
 

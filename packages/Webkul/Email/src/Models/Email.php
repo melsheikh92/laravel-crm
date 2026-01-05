@@ -30,6 +30,7 @@ class Email extends Model implements EmailContract
         'cc'            => 'array',
         'bcc'           => 'array',
         'reference_ids' => 'array',
+        'ai_generated'  => 'boolean',
     ];
 
     /**
@@ -52,6 +53,7 @@ class Email extends Model implements EmailContract
         'name',
         'user_type',
         'is_read',
+        'ai_generated',
         'folders',
         'from',
         'sender',

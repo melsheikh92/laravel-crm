@@ -54,6 +54,11 @@
         >
     @else
         <link
+            type="image/svg+xml"
+            href="{{ vite()->asset('images/favicon.svg') }}"
+            rel="icon"
+        />
+        <link
             type="image/x-icon"
             href="{{ vite()->asset('images/favicon.ico') }}"
             rel="shortcut icon"

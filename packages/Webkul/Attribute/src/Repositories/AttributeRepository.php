@@ -143,6 +143,29 @@ class AttributeRepository extends Repository
             return $userRepository->where('users.name', 'like', '%'.urldecode($query).'%')->get();
         }
 
+        // Apply permission filtering for PersonRepository
+        if (Str::contains($lookup['repository'], 'PersonRepository')) {
+            $personRepository = app($lookup['repository']);
+            $query = urldecode($query);
+            $labelColumn = $lookup['label_column'] ?? 'name';
+
+            if ($userIds = bouncer()->getAuthorizedUserIds()) {
+                return $personRepository->scopeQuery(function ($queryBuilder) use ($userIds, $query, $labelColumn) {
+                    $queryBuilder->whereIn('user_id', $userIds);
+                    
+                    if (! empty($query)) {
+                        $queryBuilder->where($labelColumn, 'like', '%'.$query.'%');
+                    }
+                    
+                    return $queryBuilder;
+                })->all($columns);
+            }
+
+            return $personRepository->findWhere([
+                [$labelColumn, 'like', '%'.$query.'%'],
+            ], $columns);
+        }
+
         return app($lookup['repository'])->findWhere([
             [$lookup['label_column'] ?? 'name', 'like', '%'.urldecode($query).'%'],
         ], $columns);
