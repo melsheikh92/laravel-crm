@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Services\WhatsAppService;
 use Illuminate\Http\Request;
+use Webkul\Activity\Repositories\ActivityRepository;
 use Webkul\Contact\Repositories\PersonRepository;
 use Webkul\Lead\Repositories\LeadRepository;
 
@@ -25,16 +26,23 @@ class WhatsAppController extends Controller
     protected $leadRepository;
 
     /**
+     * @var ActivityRepository
+     */
+    protected $activityRepository;
+
+    /**
      * Create a new controller instance.
      */
     public function __construct(
         WhatsAppService $whatsAppService,
         PersonRepository $personRepository,
-        LeadRepository $leadRepository
+        LeadRepository $leadRepository,
+        ActivityRepository $activityRepository
     ) {
         $this->whatsAppService = $whatsAppService;
         $this->personRepository = $personRepository;
         $this->leadRepository = $leadRepository;
+        $this->activityRepository = $activityRepository;
     }
 
     /**
@@ -77,7 +85,24 @@ class WhatsAppController extends Controller
         );
 
         if ($result['success']) {
-            // TODO: Log this activity in the CRM
+            // Log this activity in the CRM
+            $activity = $this->activityRepository->create([
+                'type'          => 'whatsapp',
+                'title'         => 'WhatsApp message sent',
+                'comment'       => $request->message,
+                'is_done'       => 1,
+                'user_id'       => $user->id,
+                'schedule_from' => now(),
+                'schedule_to'   => now(),
+                'additional'    => json_encode([
+                    'phone_number' => $phoneNumber,
+                    'direction'    => 'outbound',
+                ]),
+            ]);
+
+            // Associate activity with the person
+            $activity->persons()->attach($personId);
+
             return response()->json([
                 'success' => true,
                 'message' => 'WhatsApp message sent successfully!',
@@ -137,7 +162,25 @@ class WhatsAppController extends Controller
         );
 
         if ($result['success']) {
-            // TODO: Log this activity in the CRM
+            // Log this activity in the CRM
+            $activity = $this->activityRepository->create([
+                'type'          => 'whatsapp',
+                'title'         => 'WhatsApp message sent',
+                'comment'       => $request->message,
+                'is_done'       => 1,
+                'user_id'       => $user->id,
+                'schedule_from' => now(),
+                'schedule_to'   => now(),
+                'additional'    => json_encode([
+                    'phone_number' => $phoneNumber,
+                    'direction'    => 'outbound',
+                ]),
+            ]);
+
+            // Associate activity with the lead and person
+            $activity->leads()->attach($leadId);
+            $activity->persons()->attach($lead->person->id);
+
             return response()->json([
                 'success' => true,
                 'message' => 'WhatsApp message sent successfully!',
