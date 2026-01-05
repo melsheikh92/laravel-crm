@@ -32,12 +32,12 @@
                 <!-- Messages Container - Scrollable -->
                 <div id="messages-container" class="flex-1 overflow-y-auto px-6 py-4" style="min-height: 0;">
                     @if($channel->messages && $channel->messages->count() > 0)
-                        <div class="space-y-6">
+                        <div>
                             @foreach($channel->messages as $message)
                                 @php
                                     $isCurrentUser = $message->user_id === auth()->guard('user')->id();
                                 @endphp
-                                <div class="flex {{ $isCurrentUser ? 'justify-end' : 'justify-start' }}">
+                                <div class="flex {{ $isCurrentUser ? 'justify-end' : 'justify-start' }} mb-6">
                                     <div 
                                         class="max-w-[70%] rounded-lg px-4 py-2 {{ $isCurrentUser ? 'bg-blue-600 text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white' }}"
                                         @if($isCurrentUser) style="background-color: #2563eb !important; color: #ffffff !important;" @endif
