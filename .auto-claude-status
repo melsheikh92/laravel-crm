@@ -3,7 +3,7 @@
   "spec": "001-complete-whatsapp-integration",
   "state": "building",
   "subtasks": {
-    "completed": 22,
+    "completed": 24,
     "total": 26,
     "in_progress": 1,
     "failed": 0
@@ -18,8 +18,8 @@
     "max": 1
   },
   "session": {
-    "number": 22,
+    "number": 24,
     "started_at": "2026-01-05T22:18:44.787569"
   },
-  "last_update": "2026-01-05T23:33:00.881304"
+  "last_update": "2026-01-05T23:41:50.849792"
 }
