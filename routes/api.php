@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\WhatsAppController;
+use App\Http\Controllers\WhatsAppTemplateController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,6 +35,22 @@ Route::middleware('auth:user')->prefix('whatsapp')->group(function () {
     // Send message from lead profile
     Route::post('lead/{leadId}/send', [WhatsAppController::class, 'sendFromLead'])
         ->name('whatsapp.lead.send');
+
+    // WhatsApp Template CRUD routes
+    Route::get('templates', [WhatsAppTemplateController::class, 'index'])
+        ->name('whatsapp.templates.index');
+    Route::get('templates/create', [WhatsAppTemplateController::class, 'create'])
+        ->name('whatsapp.templates.create');
+    Route::post('templates', [WhatsAppTemplateController::class, 'store'])
+        ->name('whatsapp.templates.store');
+    Route::get('templates/{id}', [WhatsAppTemplateController::class, 'show'])
+        ->name('whatsapp.templates.show');
+    Route::get('templates/{id}/edit', [WhatsAppTemplateController::class, 'edit'])
+        ->name('whatsapp.templates.edit');
+    Route::put('templates/{id}', [WhatsAppTemplateController::class, 'update'])
+        ->name('whatsapp.templates.update');
+    Route::delete('templates/{id}', [WhatsAppTemplateController::class, 'destroy'])
+        ->name('whatsapp.templates.destroy');
 });
 
 // Webhook routes (public - called by Meta)
