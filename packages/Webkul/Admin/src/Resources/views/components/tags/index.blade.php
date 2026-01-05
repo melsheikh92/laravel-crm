@@ -116,11 +116,12 @@
                                     >
                                         <!-- Name -->
                                         <span
-                                            class="break-all rounded-md bg-rose-100 px-3 py-1.5 text-xs font-medium"
+                                            class="max-w-[200px] truncate rounded-md bg-rose-100 px-3 py-1.5 text-xs font-medium"
                                             :style="{
                                                 'background-color': tag.color,
                                                 'color': backgroundColors.find(color => color.background === tag.color)?.text
                                             }"
+                                            v-tooltip="tag.name"
                                         >
                                             @{{ tag.name }}
                                         </span>
