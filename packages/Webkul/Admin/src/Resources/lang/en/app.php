@@ -108,6 +108,12 @@ return [
             'title'             => 'My Account',
             'update-success'    => 'Account updated successfully',
             'upload-image-info' => 'Upload a Profile Image (110px X 110px) in PNG or JPG Format',
+            'whatsapp-configuration' => 'WhatsApp Configuration',
+            'whatsapp-phone-number-id' => 'Phone Number ID',
+            'whatsapp-access-token' => 'Access Token',
+            'whatsapp-phone-number-id-placeholder' => 'Meta API Phone Number ID',
+            'whatsapp-access-token-placeholder' => 'Temporary or Permanent Access Token',
+            'whatsapp-configuration-info' => 'Enter your Meta Cloud API credentials to enable WhatsApp messaging from your profile.',
         ],
     ],
 
@@ -164,6 +170,26 @@ return [
                         'no-results'  => 'No result found...',
                     ],
                 ],
+
+                'whatsapp' => [
+                    'btn'                     => 'WhatsApp',
+                    'title'                   => 'Send WhatsApp Message to :name',
+                    'templates'               => 'WhatsApp Templates (Optional)',
+                    'select-template'         => '-- Select a template --',
+                    'no-templates'            => 'No templates available',
+                    'message'                 => 'Message',
+                    'message-placeholder'     => 'Type your message here...',
+                    'business-api-mode'       => 'Business API Mode',
+                    'business-api-description' => 'Message will be sent via your WhatsApp Business API',
+                    'personal-mode'           => 'Personal WhatsApp Mode',
+                    'personal-description'    => 'Your WhatsApp app will open with the message pre-filled',
+                    'send-btn'                => 'Send via API',
+                    'open-btn'                => 'Open in WhatsApp',
+                    'cancel'                  => 'Cancel',
+                    'no-contact-number'       => 'No contact number found for this person.',
+                    'invalid-number'          => 'Invalid contact number.',
+                    'opening-whatsapp'        => 'Opening WhatsApp...',
+                ],
             ],
 
             'index' => [
@@ -192,6 +218,17 @@ return [
                 'to'           => 'To',
                 'unlink'       => 'Unlink',
                 'view'         => 'View',
+                'whatsapps'            => 'WhatsApp',
+                'phone-number'         => 'Phone Number',
+                'direction'            => 'Direction',
+                'outbound'             => 'Outbound',
+                'inbound'              => 'Inbound',
+                'whatsapp-conversation' => 'WhatsApp Conversation',
+                'message'              => 'message',
+                'messages'             => 'messages',
+                'click-to-expand'      => 'Click to expand',
+                'click-to-collapse'    => 'Click to collapse',
+                'latest'               => 'Latest',
 
                 'empty-placeholders' => [
                     'all' => [
@@ -237,6 +274,11 @@ return [
                     'system' => [
                         'title'       => 'No Changelogs Found',
                         'description' => 'No changelogs found for this.',
+                    ],
+
+                    'whatsapp' => [
+                        'title'       => 'No WhatsApp Messages Found',
+                        'description' => 'No WhatsApp messages found for this. WhatsApp messages will appear here when you send or receive them.',
                     ],
                 ],
             ],
@@ -1124,6 +1166,79 @@ return [
             ],
         ],
 
+        'whatsapp-template' => [
+            'index' => [
+                'create-btn'     => 'Create WhatsApp Template',
+                'title'          => 'WhatsApp Templates',
+                'create-success' => 'WhatsApp Template created successfully.',
+                'update-success' => 'WhatsApp Template updated successfully.',
+                'delete-success' => 'WhatsApp Template deleted successfully.',
+                'delete-failed'  => 'WhatsApp Template cannot be deleted.',
+
+                'datagrid'   => [
+                    'delete'       => 'Delete',
+                    'edit'         => 'Edit',
+                    'id'           => 'ID',
+                    'name'         => 'Name',
+                    'language'     => 'Language',
+                    'status'       => 'Status',
+                    'category'     => 'Category',
+                ],
+            ],
+
+            'create'     => [
+                'title'                      => 'Create WhatsApp Template',
+                'save-btn'                   => 'Save WhatsApp Template',
+                'template-content'           => 'Template Content',
+                'header'                     => 'Header',
+                'header-placeholder'         => 'Optional header text',
+                'body'                       => 'Body',
+                'body-placeholder'           => 'Enter template message body. Use {{1}}, {{2}} for variables',
+                'footer'                     => 'Footer',
+                'footer-placeholder'         => 'Optional footer text',
+                'general'                    => 'General',
+                'name'                       => 'Name',
+                'name-placeholder'           => 'Template name (lowercase, underscore)',
+                'language'                   => 'Language',
+                'category'                   => 'Category',
+                'category-marketing'         => 'Marketing',
+                'category-utility'           => 'Utility',
+                'category-authentication'    => 'Authentication',
+                'status'                     => 'Status',
+                'status-approved'            => 'Approved',
+                'status-pending'             => 'Pending',
+                'status-rejected'            => 'Rejected',
+                'meta-template-id'           => 'Meta Template ID',
+                'meta-template-id-placeholder' => 'WhatsApp Business API Template ID',
+            ],
+
+            'edit' => [
+                'title'                      => 'Edit WhatsApp Template',
+                'save-btn'                   => 'Save WhatsApp Template',
+                'template-content'           => 'Template Content',
+                'header'                     => 'Header',
+                'header-placeholder'         => 'Optional header text',
+                'body'                       => 'Body',
+                'body-placeholder'           => 'Enter template message body. Use {{1}}, {{2}} for variables',
+                'footer'                     => 'Footer',
+                'footer-placeholder'         => 'Optional footer text',
+                'general'                    => 'General',
+                'name'                       => 'Name',
+                'name-placeholder'           => 'Template name (lowercase, underscore)',
+                'language'                   => 'Language',
+                'category'                   => 'Category',
+                'category-marketing'         => 'Marketing',
+                'category-utility'           => 'Utility',
+                'category-authentication'    => 'Authentication',
+                'status'                     => 'Status',
+                'status-approved'            => 'Approved',
+                'status-pending'             => 'Pending',
+                'status-rejected'            => 'Rejected',
+                'meta-template-id'           => 'Meta Template ID',
+                'meta-template-id-placeholder' => 'WhatsApp Business API Template ID',
+            ],
+        ],
+
         'marketing' => [
             'campaigns' => [
                 'index' => [
@@ -1829,6 +1944,7 @@ return [
                 'call'          => 'Call',
                 'meeting'       => 'Meeting',
                 'lunch'         => 'Lunch',
+                'whatsapp'      => 'WhatsApp',
             ],
         ],
 
@@ -1840,6 +1956,7 @@ return [
             'call'            => 'Call',
             'meeting'         => 'Meeting',
             'lunch'           => 'Lunch',
+            'whatsapp'        => 'WhatsApp',
             'schedule_to'     => 'Schedule To',
             'schedule_from'   => 'Schedule From',
             'location'        => 'Location',
@@ -1980,6 +2097,12 @@ return [
             'update-emails-title'  => 'Update Contact Emails',
             'work'                 => 'Work',
         ],
+
+        'select-type'     => 'Select Type',
+        'select-call'     => 'Call',
+        'select-meeting'  => 'Meeting',
+        'select-lunch'    => 'Lunch',
+        'select-whatsapp' => 'WhatsApp',
     ],
 
     'leads' => [

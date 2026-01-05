@@ -78,7 +78,14 @@ class PersonController extends Controller
     {
         $person = $this->personRepository->findOrFail($id);
 
-        return view('admin::contacts.persons.view', compact('person'));
+        // Fetch WhatsApp templates for the current user
+        $whatsappTemplates = app(\App\Repositories\WhatsAppTemplateRepository::class)
+            ->where('user_id', auth()->guard('user')->id())
+            ->where('status', 'APPROVED')
+            ->orderBy('name', 'asc')
+            ->get();
+
+        return view('admin::contacts.persons.view', compact('person', 'whatsappTemplates'));
     }
 
     /**

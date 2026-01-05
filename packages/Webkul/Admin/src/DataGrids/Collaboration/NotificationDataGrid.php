@@ -69,6 +69,21 @@ class NotificationDataGrid extends DataGrid
             'sortable'   => true,
             'searchable' => true,
             'filterable' => true,
+            'closure'    => function ($row) {
+                $typeIcons = [
+                    'whatsapp' => 'icon-message text-emerald-600',
+                    'message'  => 'icon-mail text-blue-600',
+                    'email'    => 'icon-mail text-green-600',
+                    'call'     => 'icon-call text-cyan-600',
+                    'meeting'  => 'icon-activity text-blue-600',
+                    'note'     => 'icon-note text-orange-600',
+                ];
+
+                $iconClass = $typeIcons[$row->type] ?? 'icon-bell text-gray-600';
+                $typeLabel = ucfirst($row->type);
+
+                return '<div class="flex items-center gap-2"><span class="' . $iconClass . ' text-2xl"></span>' . $typeLabel . '</div>';
+            },
         ]);
 
         $this->addColumn([

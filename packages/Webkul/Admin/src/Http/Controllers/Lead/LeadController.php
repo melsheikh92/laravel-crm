@@ -229,7 +229,14 @@ class LeadController extends Controller
             return redirect()->route('admin.leads.index');
         }
 
-        return view('admin::leads.view', compact('lead'));
+        // Fetch WhatsApp templates for the current user
+        $whatsappTemplates = app(\App\Repositories\WhatsAppTemplateRepository::class)
+            ->where('user_id', auth()->guard('user')->id())
+            ->where('status', 'APPROVED')
+            ->orderBy('name', 'asc')
+            ->get();
+
+        return view('admin::leads.view', compact('lead', 'whatsappTemplates'));
     }
 
     /**

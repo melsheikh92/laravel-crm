@@ -87,47 +87,50 @@
 
                             <x-admin::form.control-group.error control-name="email" />
                         </x-admin::form.control-group>
-                        <!-- WhatsApp Configuration -->
-                        <div class="box-shadow rounded bg-white p-4 dark:bg-gray-900 mt-4">
-                            <p class="mb-4 text-base font-semibold text-gray-800 dark:text-white">
-                                WhatsApp Configuration
-                            </p>
-
-                            <!-- Phone Number ID -->
-                            <x-admin::form.control-group>
-                                <x-admin::form.control-group.label>
-                                    Phone Number ID
-                                </x-admin::form.control-group.label>
-
-                                <x-admin::form.control-group.control type="text" name="whatsapp_phone_number_id"
-                                    :value="old('whatsapp_phone_number_id') ?: $user->whatsapp_phone_number_id"
-                                    label="Phone Number ID" placeholder="Pixels API Phone Number ID" />
-                            </x-admin::form.control-group>
-
-                            <!-- Access Token -->
-                            <x-admin::form.control-group class="!mb-0">
-                                <x-admin::form.control-group.label>
-                                    Access Token
-                                </x-admin::form.control-group.label>
-
-                                <x-admin::form.control-group.control type="password" name="whatsapp_access_token"
-                                    :value="old('whatsapp_access_token') ?: $user->whatsapp_access_token"
-                                    label="Access Token" placeholder="Temporary or Permanent Access Token" />
-
-                                <p class="mt-2 text-xs text-gray-600 dark:text-gray-300">
-                                    Enter your Meta Cloud API credentials to enable WhatsApp messaging from your
-                                    profile.
-                                </p>
-                            </x-admin::form.control-group>
-                        </div>
                     </div>
 
-                    {!! view_render_event('admin.user.account.left.after', ['user' => $user]) !!}
+                    <!-- WhatsApp Configuration -->
+                    <div class="box-shadow rounded bg-white p-4 dark:bg-gray-900">
+                        <p class="mb-4 text-base font-semibold text-gray-800 dark:text-white">
+                            @lang('admin::app.account.edit.whatsapp-configuration')
+                        </p>
 
-                    {!! view_render_event('admin.user.account.right.before', ['user' => $user]) !!}
+                        <!-- Phone Number ID -->
+                        <x-admin::form.control-group>
+                            <x-admin::form.control-group.label>
+                                @lang('admin::app.account.edit.whatsapp-phone-number-id')
+                            </x-admin::form.control-group.label>
 
-                    <!-- Right sub-component -->
-                    <div class="flex w-[360px] max-w-full flex-col gap-2 max-md:w-full">
+                            <x-admin::form.control-group.control type="text" name="whatsapp_phone_number_id"
+                                :value="old('whatsapp_phone_number_id') ?: $user->whatsapp_phone_number_id"
+                                :label="trans('admin::app.account.edit.whatsapp-phone-number-id')"
+                                :placeholder="trans('admin::app.account.edit.whatsapp-phone-number-id-placeholder')" />
+                        </x-admin::form.control-group>
+
+                        <!-- Access Token -->
+                        <x-admin::form.control-group class="!mb-0">
+                            <x-admin::form.control-group.label>
+                                @lang('admin::app.account.edit.whatsapp-access-token')
+                            </x-admin::form.control-group.label>
+
+                            <x-admin::form.control-group.control type="password" name="whatsapp_access_token"
+                                :value="old('whatsapp_access_token') ?: $user->whatsapp_access_token"
+                                :label="trans('admin::app.account.edit.whatsapp-access-token')"
+                                :placeholder="trans('admin::app.account.edit.whatsapp-access-token-placeholder')" />
+
+                            <p class="mt-2 text-xs text-gray-600 dark:text-gray-300">
+                                @lang('admin::app.account.edit.whatsapp-configuration-info')
+                            </p>
+                        </x-admin::form.control-group>
+                    </div>
+                </div>
+
+                {!! view_render_event('admin.user.account.left.after', ['user' => $user]) !!}
+
+                {!! view_render_event('admin.user.account.right.before', ['user' => $user]) !!}
+
+                <!-- Right sub-component -->
+                <div class="flex w-[360px] max-w-full flex-col gap-2 max-md:w-full">
                         <x-admin::accordion>
                             <x-slot:header>
                                 <p class="p-2.5 text-base font-semibold text-gray-800 dark:text-white">
@@ -191,10 +194,10 @@
                                     {!! view_render_event('admin.user.confirm-password.after', ['user' => $user]) !!}
                                     </x-slot>
                         </x-admin::accordion>
-                    </div>
-
-                    {!! view_render_event('admin.user.account.right.after', ['user' => $user]) !!}
                 </div>
+
+                {!! view_render_event('admin.user.account.right.after', ['user' => $user]) !!}
+            </div>
         </x-admin::form>
 
         {!! view_render_event('admin.user.account.form.after') !!}

@@ -4,9 +4,22 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Webkul\Collaboration\Services\NotificationService;
 
 class WhatsAppService
 {
+    /**
+     * @var NotificationService
+     */
+    protected $notificationService;
+
+    /**
+     * Create a new service instance.
+     */
+    public function __construct(NotificationService $notificationService)
+    {
+        $this->notificationService = $notificationService;
+    }
     /**
      * Send a WhatsApp message using the Meta Cloud API
      *
@@ -65,6 +78,116 @@ class WhatsAppService
     }
 
     /**
+     * Send a WhatsApp template message using the Meta Cloud API
+     *
+     * @param string $to The recipient's phone number (with country code, no + sign)
+     * @param string $templateName The name of the template to send
+     * @param string $languageCode The language code of the template (e.g., 'en_US', 'en')
+     * @param array $parameters Template parameters organized by component type
+     *   Example: [
+     *     'header' => [['type' => 'text', 'text' => 'John']],
+     *     'body' => [['type' => 'text', 'text' => 'Doe'], ['type' => 'text', 'text' => '123']]
+     *   ]
+     * @param string $phoneNumberId The WhatsApp Phone Number ID from Meta
+     * @param string $accessToken The access token for authentication
+     * @return array Response with success status and message
+     */
+    public function sendTemplateMessage(
+        string $to,
+        string $templateName,
+        string $languageCode,
+        array $parameters,
+        string $phoneNumberId,
+        string $accessToken
+    ): array {
+        try {
+            // Clean the phone number (remove any non-digit characters)
+            $to = preg_replace('/\D/', '', $to);
+
+            // Meta Cloud API endpoint
+            $url = "https://graph.facebook.com/v18.0/{$phoneNumberId}/messages";
+
+            // Build components array for template parameters
+            $components = [];
+
+            // Add header parameters if provided
+            if (!empty($parameters['header'])) {
+                $components[] = [
+                    'type' => 'header',
+                    'parameters' => $parameters['header'],
+                ];
+            }
+
+            // Add body parameters if provided
+            if (!empty($parameters['body'])) {
+                $components[] = [
+                    'type' => 'body',
+                    'parameters' => $parameters['body'],
+                ];
+            }
+
+            // Add button parameters if provided
+            if (!empty($parameters['buttons'])) {
+                foreach ($parameters['buttons'] as $index => $buttonParams) {
+                    $components[] = [
+                        'type' => 'button',
+                        'sub_type' => $buttonParams['sub_type'] ?? 'quick_reply',
+                        'index' => (string) $index,
+                        'parameters' => $buttonParams['parameters'] ?? [],
+                    ];
+                }
+            }
+
+            $payload = [
+                'messaging_product' => 'whatsapp',
+                'to' => $to,
+                'type' => 'template',
+                'template' => [
+                    'name' => $templateName,
+                    'language' => [
+                        'code' => $languageCode,
+                    ],
+                ],
+            ];
+
+            // Only add components if we have any
+            if (!empty($components)) {
+                $payload['template']['components'] = $components;
+            }
+
+            $response = Http::withToken($accessToken)
+                ->post($url, $payload);
+
+            if ($response->successful()) {
+                return [
+                    'success' => true,
+                    'message' => 'Template message sent successfully',
+                    'data' => $response->json(),
+                ];
+            }
+
+            Log::error('WhatsApp Template API Error', [
+                'status' => $response->status(),
+                'body' => $response->body(),
+            ]);
+
+            return [
+                'success' => false,
+                'message' => 'Failed to send template message: ' . $response->body(),
+            ];
+        } catch (\Exception $e) {
+            Log::error('WhatsApp Template Service Exception', [
+                'error' => $e->getMessage(),
+            ]);
+
+            return [
+                'success' => false,
+                'message' => 'Error: ' . $e->getMessage(),
+            ];
+        }
+    }
+
+    /**
      * Verify if the user has WhatsApp credentials configured
      *
      * @param \Webkul\User\Models\User $user
@@ -73,5 +196,36 @@ class WhatsAppService
     public function hasCredentials($user): bool
     {
         return !empty($user->whatsapp_phone_number_id) && !empty($user->whatsapp_access_token);
+    }
+
+    /**
+     * Create a notification for an incoming WhatsApp message
+     *
+     * @param \Webkul\User\Models\User $user The user who will receive the notification
+     * @param \Webkul\Contact\Contracts\Person $person The person who sent the message
+     * @param \Webkul\Activity\Contracts\Activity $activity The activity record for this message
+     * @param string $messageText The message text content
+     * @param string $phoneNumber The sender's phone number
+     * @return \Webkul\Collaboration\Contracts\Notification
+     */
+    public function createIncomingMessageNotification($user, $person, $activity, string $messageText, string $phoneNumber)
+    {
+        // Truncate message for notification preview (max 100 characters)
+        $messagePreview = strlen($messageText) > 100
+            ? substr($messageText, 0, 100) . '...'
+            : $messageText;
+
+        return $this->notificationService->create([
+            'user_id' => $user->id,
+            'type' => 'whatsapp',
+            'title' => 'New WhatsApp message from ' . $person->name,
+            'message' => $messagePreview,
+            'data' => [
+                'person_id' => $person->id,
+                'activity_id' => $activity->id,
+                'phone_number' => $phoneNumber,
+                'message_length' => strlen($messageText),
+            ],
+        ]);
     }
 }

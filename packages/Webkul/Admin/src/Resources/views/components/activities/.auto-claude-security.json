@@ -128,81 +128,31 @@
     "zsh"
   ],
   "stack_commands": [
-    "artisan",
     "composer",
-    "dive",
-    "docker",
-    "docker-buildx",
-    "docker-compose",
-    "dockerfile",
-    "mysql",
-    "mysqladmin",
-    "mysqlcheck",
-    "mysqldump",
-    "mysqlimport",
-    "mysqlshow",
-    "node",
-    "npm",
-    "npx",
-    "php",
-    "phpunit",
-    "redis-benchmark",
-    "redis-cli",
-    "redis-server",
-    "sail",
-    "ts-node",
-    "tsc",
-    "tsx",
-    "vite"
+    "php"
   ],
-  "script_commands": [
-    "./docker-entrypoint.sh",
-    "./docker-start.sh",
-    "bun",
-    "npm",
-    "pnpm",
-    "yarn"
-  ],
+  "script_commands": [],
   "custom_commands": [],
   "detected_stack": {
     "languages": [
-      "javascript",
-      "typescript",
       "php"
     ],
-    "package_managers": [
-      "composer"
-    ],
-    "frameworks": [
-      "vite",
-      "laravel",
-      "phpunit"
-    ],
-    "databases": [
-      "redis",
-      "mysql"
-    ],
-    "infrastructure": [
-      "docker"
-    ],
+    "package_managers": [],
+    "frameworks": [],
+    "databases": [],
+    "infrastructure": [],
     "cloud_providers": [],
     "code_quality_tools": [],
     "version_managers": []
   },
   "custom_scripts": {
-    "npm_scripts": [
-      "dev",
-      "build"
-    ],
+    "npm_scripts": [],
     "make_targets": [],
     "poetry_scripts": [],
     "cargo_aliases": [],
-    "shell_scripts": [
-      "docker-entrypoint.sh",
-      "docker-start.sh"
-    ]
+    "shell_scripts": []
   },
-  "project_dir": "/Users/mahmoudelsheikh/Downloads/Workspace/laravel-crm/.auto-claude/worktrees/tasks/001-complete-whatsapp-integration",
-  "created_at": "2026-01-05T18:10:43.632979",
-  "project_hash": "ffb84215da9dc836afb7419c24defc35"
+  "project_dir": "/Users/mahmoudelsheikh/Downloads/Workspace/laravel-crm/.auto-claude/worktrees/tasks/001-complete-whatsapp-integration/packages/Webkul/Admin/src/Resources/views/components/activities",
+  "created_at": "2026-01-05T23:31:47.698707",
+  "project_hash": "d51c92fabf24be11bbd88e04ff14f7ad"
 }

@@ -52,3 +52,9 @@ Route::controller(AccountController::class)->prefix('account')->group(function (
 
     Route::put('update', 'update')->name('admin.user.account.update');
 });
+
+/**
+ * WhatsApp routes.
+ */
+Route::get('whatsapp/data', [\App\Http\Controllers\WhatsAppController::class, 'getData'])
+    ->name('admin.whatsapp.data');

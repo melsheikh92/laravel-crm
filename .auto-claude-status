@@ -1,0 +1,25 @@
+{
+  "active": true,
+  "spec": "001-complete-whatsapp-integration",
+  "state": "building",
+  "subtasks": {
+    "completed": 25,
+    "total": 26,
+    "in_progress": 1,
+    "failed": 0
+  },
+  "phase": {
+    "current": "Testing and Documentation",
+    "id": null,
+    "total": 4
+  },
+  "workers": {
+    "active": 0,
+    "max": 1
+  },
+  "session": {
+    "number": 25,
+    "started_at": "2026-01-05T22:18:44.787569"
+  },
+  "last_update": "2026-01-05T23:46:55.799820"
+}
