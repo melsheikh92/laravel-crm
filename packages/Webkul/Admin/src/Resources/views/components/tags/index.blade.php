@@ -24,6 +24,7 @@
                 }"
                 v-for="(tag, index) in tags"
                 v-safe-html="tag.name"
+                v-tooltip="tag.name"
             >
             </span>
 
