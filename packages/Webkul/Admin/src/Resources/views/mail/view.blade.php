@@ -741,7 +741,7 @@
 
                 <template v-if="email?.lead_id">
                     <div class="flex">
-                        <div class="lead-item flex flex-col gap-5 rounded-md border border-gray-100 bg-gray-50 p-2 dark:border-gray-400 dark:bg-gray-400">
+                        <div class="lead-item flex flex-col gap-5 rounded-md border border-gray-100 bg-gray-50 p-2 dark:border-gray-600 dark:bg-gray-800">
                             <!-- Header -->
                             <div
                                 class="flex items-start justify-between"
@@ -810,28 +810,25 @@
                                 <!-- Tags -->
                                 <template v-for="tag in email.lead.tags">
                                     <div
-                                        class="rounded-xl bg-slate-200 px-3 py-1 text-xs font-medium dark:bg-gray-900"
-                                        :style="{
-                                            backgroundColor: tag.color,
-                                            color: tagTextColor[tag.color]
-                                        }"
+                                        class="rounded-xl bg-slate-200 px-3 py-1 text-xs font-medium"
+                                        :style="getTagStyle(tag)"
                                     >
                                         @{{ tag?.name }}
                                     </div>
                                 </template>
 
                                 <!-- Lead Value -->
-                                <div class="rounded-xl bg-slate-200 px-3 py-1 text-xs font-medium dark:bg-gray-900">
+                                <div class="rounded-xl bg-slate-200 px-3 py-1 text-xs font-medium dark:bg-slate-700">
                                     @{{ $admin.formatPrice(email.lead.lead_value) }}
                                 </div>
 
                                 <!-- Source Name -->
-                                <div class="rounded-xl bg-slate-200 px-3 py-1 text-xs font-medium dark:bg-gray-900">
+                                <div class="rounded-xl bg-slate-200 px-3 py-1 text-xs font-medium dark:bg-slate-700">
                                     @{{ email.lead.source?.name }}
                                 </div>
 
                                 <!-- Lead Type Name -->
-                                <div class="rounded-xl bg-slate-200 px-3 py-1 text-xs font-medium dark:bg-gray-900">
+                                <div class="rounded-xl bg-slate-200 px-3 py-1 text-xs font-medium dark:bg-slate-700">
                                     @{{ email.lead.type?.name }}
                                 </div>
                             </div>
@@ -2055,7 +2052,22 @@
                             '#ECFCCB': '#65A30D',
                             '#DCFCE7': '#16A34A',
                         },
+
+                        darkTagColors: {
+                            '#FEE2E2': { background: '#7F1D1D', text: '#FCA5A5' },
+                            '#FFEDD5': { background: '#7C2D12', text: '#FDBA74' },
+                            '#FEF3C7': { background: '#78350F', text: '#FCD34D' },
+                            '#FEF9C3': { background: '#713F12', text: '#FDE047' },
+                            '#ECFCCB': { background: '#365314', text: '#BEF264' },
+                            '#DCFCE7': { background: '#14532D', text: '#86EFAC' },
+                        },
                     };
+                },
+
+                computed: {
+                    isDarkMode() {
+                        return document.documentElement.classList.contains('dark');
+                    }
                 },
 
                 created() {
@@ -2069,6 +2081,20 @@
                 },
 
                 methods: {
+                    getTagStyle(tag) {
+                        if (this.isDarkMode && this.darkTagColors[tag.color]) {
+                            return {
+                                'background-color': this.darkTagColors[tag.color].background,
+                                'color': this.darkTagColors[tag.color].text
+                            };
+                        }
+
+                        return {
+                            'background-color': tag.color,
+                            'color': this.tagTextColor[tag.color] || '#000000'
+                        };
+                    },
+
                     openDrawer() {
                         this.$refs.emailLinkDrawer.open();
                     },

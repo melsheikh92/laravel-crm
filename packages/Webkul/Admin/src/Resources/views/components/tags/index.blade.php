@@ -18,10 +18,7 @@
             <!-- Tags -->
             <span
                 class="flex max-w-[200px] items-center gap-1 truncate rounded-md bg-rose-100 px-3 py-1.5 text-xs font-medium"
-                :style="{
-                    'background-color': tag.color,
-                    'color': backgroundColors.find(color => color.background === tag.color)?.text
-                }"
+                :style="getTagStyle(tag)"
                 v-for="(tag, index) in tags"
                 v-safe-html="tag.name"
                 v-tooltip="tag.name"
@@ -117,10 +114,7 @@
                                         <!-- Name -->
                                         <span
                                             class="max-w-[200px] truncate rounded-md bg-rose-100 px-3 py-1.5 text-xs font-medium"
-                                            :style="{
-                                                'background-color': tag.color,
-                                                'color': backgroundColors.find(color => color.background === tag.color)?.text
-                                            }"
+                                            :style="getTagStyle(tag)"
                                             v-tooltip="tag.name"
                                         >
                                             @{{ tag.name }}
@@ -250,6 +244,34 @@
                             background: '#DCFCE7',
                         },
                     ],
+
+                    darkBackgroundColors: [
+                        {
+                            label: "@lang('admin::app.components.tags.index.aquarelle-red')",
+                            text: '#FCA5A5',
+                            background: '#7F1D1D',
+                        }, {
+                            label: "@lang('admin::app.components.tags.index.crushed-cashew')",
+                            text: '#FDBA74',
+                            background: '#7C2D12',
+                        }, {
+                            label: "@lang('admin::app.components.tags.index.beeswax')",
+                            text: '#FCD34D',
+                            background: '#78350F',
+                        }, {
+                            label: "@lang('admin::app.components.tags.index.lemon-chiffon')",
+                            text: '#FDE047',
+                            background: '#713F12',
+                        }, {
+                            label: "@lang('admin::app.components.tags.index.snow-flurry')",
+                            text: '#BEF264',
+                            background: '#365314',
+                        }, {
+                            label: "@lang('admin::app.components.tags.index.honeydew')",
+                            text: '#86EFAC',
+                            background: '#14532D',
+                        },
+                    ],
                 }
             },
 
@@ -259,11 +281,44 @@
                 },
             },
 
+            computed: {
+                isDarkMode() {
+                    return document.documentElement.classList.contains('dark');
+                },
+
+                currentColors() {
+                    return this.isDarkMode ? this.darkBackgroundColors : this.backgroundColors;
+                }
+            },
+
             mounted() {
                 this.tags = this.addedTags;
             },
 
             methods: {
+                getTagStyle(tag) {
+                    const colors = this.isDarkMode ? this.darkBackgroundColors : this.backgroundColors;
+                    const colorMatch = colors.find(color => {
+                        // Match against the light mode color stored in DB
+                        const lightColor = this.backgroundColors.find(c => c.background === tag.color);
+                        return lightColor && color.label === lightColor.label;
+                    });
+
+                    if (colorMatch) {
+                        return {
+                            'background-color': colorMatch.background,
+                            'color': colorMatch.text
+                        };
+                    }
+
+                    // Fallback to stored color if no match found
+                    const fallbackColor = this.backgroundColors.find(color => color.background === tag.color);
+                    return {
+                        'background-color': tag.color,
+                        'color': fallbackColor?.text || '#000000'
+                    };
+                },
+
                 openModal(type) {
                     this.$refs.mailActivityModal.open();
                 },
