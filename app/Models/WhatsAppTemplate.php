@@ -2,10 +2,11 @@
 
 namespace App\Models;
 
+use App\Contracts\WhatsAppTemplate as WhatsAppTemplateContract;
 use Illuminate\Database\Eloquent\Model;
 use Webkul\User\Models\UserProxy;
 
-class WhatsAppTemplate extends Model
+class WhatsAppTemplate extends Model implements WhatsAppTemplateContract
 {
     /**
      * Define table name of property
