@@ -4,9 +4,22 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Webkul\Collaboration\Services\NotificationService;
 
 class WhatsAppService
 {
+    /**
+     * @var NotificationService
+     */
+    protected $notificationService;
+
+    /**
+     * Create a new service instance.
+     */
+    public function __construct(NotificationService $notificationService)
+    {
+        $this->notificationService = $notificationService;
+    }
     /**
      * Send a WhatsApp message using the Meta Cloud API
      *
@@ -183,5 +196,36 @@ class WhatsAppService
     public function hasCredentials($user): bool
     {
         return !empty($user->whatsapp_phone_number_id) && !empty($user->whatsapp_access_token);
+    }
+
+    /**
+     * Create a notification for an incoming WhatsApp message
+     *
+     * @param \Webkul\User\Models\User $user The user who will receive the notification
+     * @param \Webkul\Contact\Contracts\Person $person The person who sent the message
+     * @param \Webkul\Activity\Contracts\Activity $activity The activity record for this message
+     * @param string $messageText The message text content
+     * @param string $phoneNumber The sender's phone number
+     * @return \Webkul\Collaboration\Contracts\Notification
+     */
+    public function createIncomingMessageNotification($user, $person, $activity, string $messageText, string $phoneNumber)
+    {
+        // Truncate message for notification preview (max 100 characters)
+        $messagePreview = strlen($messageText) > 100
+            ? substr($messageText, 0, 100) . '...'
+            : $messageText;
+
+        return $this->notificationService->create([
+            'user_id' => $user->id,
+            'type' => 'whatsapp',
+            'title' => 'New WhatsApp message from ' . $person->name,
+            'message' => $messagePreview,
+            'data' => [
+                'person_id' => $person->id,
+                'activity_id' => $activity->id,
+                'phone_number' => $phoneNumber,
+                'message_length' => strlen($messageText),
+            ],
+        ]);
     }
 }
