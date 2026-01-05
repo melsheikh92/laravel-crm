@@ -164,6 +164,26 @@ return [
                         'no-results'  => 'No result found...',
                     ],
                 ],
+
+                'whatsapp' => [
+                    'btn'                     => 'WhatsApp',
+                    'title'                   => 'Send WhatsApp Message to :name',
+                    'templates'               => 'WhatsApp Templates (Optional)',
+                    'select-template'         => '-- Select a template --',
+                    'no-templates'            => 'No templates available',
+                    'message'                 => 'Message',
+                    'message-placeholder'     => 'Type your message here...',
+                    'business-api-mode'       => 'Business API Mode',
+                    'business-api-description' => 'Message will be sent via your WhatsApp Business API',
+                    'personal-mode'           => 'Personal WhatsApp Mode',
+                    'personal-description'    => 'Your WhatsApp app will open with the message pre-filled',
+                    'send-btn'                => 'Send via API',
+                    'open-btn'                => 'Open in WhatsApp',
+                    'cancel'                  => 'Cancel',
+                    'no-contact-number'       => 'No contact number found for this person.',
+                    'invalid-number'          => 'Invalid contact number.',
+                    'opening-whatsapp'        => 'Opening WhatsApp...',
+                ],
             ],
 
             'index' => [

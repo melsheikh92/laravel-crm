@@ -28,6 +28,10 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 // Authenticated routes for sending WhatsApp messages
 Route::middleware('auth:user')->prefix('whatsapp')->group(function () {
+    // Get WhatsApp data (templates and hasBusinessAPI)
+    Route::get('data', [WhatsAppController::class, 'getData'])
+        ->name('whatsapp.data');
+
     // Send message from person profile
     Route::post('person/{personId}/send', [WhatsAppController::class, 'sendFromPerson'])
         ->name('whatsapp.person.send');

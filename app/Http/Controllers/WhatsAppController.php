@@ -31,18 +31,47 @@ class WhatsAppController extends Controller
     protected $activityRepository;
 
     /**
+     * @var \App\Repositories\WhatsAppTemplateRepository
+     */
+    protected $whatsAppTemplateRepository;
+
+    /**
      * Create a new controller instance.
      */
     public function __construct(
         WhatsAppService $whatsAppService,
         PersonRepository $personRepository,
         LeadRepository $leadRepository,
-        ActivityRepository $activityRepository
+        ActivityRepository $activityRepository,
+        \App\Repositories\WhatsAppTemplateRepository $whatsAppTemplateRepository
     ) {
         $this->whatsAppService = $whatsAppService;
         $this->personRepository = $personRepository;
         $this->leadRepository = $leadRepository;
         $this->activityRepository = $activityRepository;
+        $this->whatsAppTemplateRepository = $whatsAppTemplateRepository;
+    }
+
+    /**
+     * Get WhatsApp data for Vue component
+     * Returns templates and hasBusinessAPI status
+     */
+    public function getData()
+    {
+        $user = auth()->guard('user')->user();
+
+        $templates = $this->whatsAppTemplateRepository
+            ->where('user_id', $user->id)
+            ->where('status', 'approved')
+            ->orderBy('name', 'asc')
+            ->get(['id', 'name', 'body']);
+
+        $hasBusinessAPI = !empty($user->whatsapp_phone_number_id) && !empty($user->whatsapp_access_token);
+
+        return response()->json([
+            'templates' => $templates,
+            'hasBusinessAPI' => $hasBusinessAPI,
+        ]);
     }
 
     /**
@@ -106,6 +135,7 @@ class WhatsAppController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'WhatsApp message sent successfully!',
+                'data' => $activity->load('persons'),
             ]);
         }
 
@@ -184,6 +214,7 @@ class WhatsAppController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'WhatsApp message sent successfully!',
+                'data' => $activity->load('persons', 'leads'),
             ]);
         }
 
