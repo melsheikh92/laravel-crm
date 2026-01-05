@@ -17,7 +17,7 @@
         <div class="flex flex-wrap items-center gap-1">
             <!-- Tags -->
             <span
-                class="flex items-center gap-1 break-all rounded-md bg-rose-100 px-3 py-1.5 text-xs font-medium"
+                class="flex max-w-[200px] items-center gap-1 truncate rounded-md bg-rose-100 px-3 py-1.5 text-xs font-medium"
                 :style="{
                     'background-color': tag.color,
                     'color': backgroundColors.find(color => color.background === tag.color)?.text
