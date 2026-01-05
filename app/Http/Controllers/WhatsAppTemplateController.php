@@ -8,6 +8,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Event;
 use Illuminate\View\View;
+use Webkul\Admin\DataGrids\Settings\WhatsAppTemplateDataGrid;
 
 class WhatsAppTemplateController extends Controller
 {
@@ -26,16 +27,10 @@ class WhatsAppTemplateController extends Controller
     public function index(): View|JsonResponse
     {
         if (request()->ajax()) {
-            $templates = $this->whatsAppTemplateRepository->all();
-
-            return response()->json([
-                'data' => $templates,
-            ]);
+            return app(WhatsAppTemplateDataGrid::class)->toJson();
         }
 
-        $templates = $this->whatsAppTemplateRepository->all();
-
-        return view('whatsapp.templates.index', compact('templates'));
+        return view('whatsapp.templates.index');
     }
 
     /**
