@@ -741,7 +741,7 @@
 
                 <template v-if="email?.lead_id">
                     <div class="flex">
-                        <div class="lead-item flex flex-col gap-5 rounded-md border border-gray-100 bg-gray-50 p-2 dark:border-gray-400 dark:bg-gray-400">
+                        <div class="lead-item flex flex-col gap-5 rounded-md border border-gray-100 bg-gray-50 p-2 dark:border-gray-600 dark:bg-gray-800">
                             <!-- Header -->
                             <div
                                 class="flex items-start justify-between"
@@ -810,28 +810,25 @@
                                 <!-- Tags -->
                                 <template v-for="tag in email.lead.tags">
                                     <div
-                                        class="rounded-xl bg-slate-200 px-3 py-1 text-xs font-medium dark:bg-gray-900"
-                                        :style="{
-                                            backgroundColor: tag.color,
-                                            color: tagTextColor[tag.color]
-                                        }"
+                                        class="rounded-xl bg-slate-200 px-3 py-1 text-xs font-medium"
+                                        :style="getTagStyle(tag)"
                                     >
                                         @{{ tag?.name }}
                                     </div>
                                 </template>
 
                                 <!-- Lead Value -->
-                                <div class="rounded-xl bg-slate-200 px-3 py-1 text-xs font-medium dark:bg-gray-900">
+                                <div class="rounded-xl bg-slate-200 px-3 py-1 text-xs font-medium dark:bg-slate-700">
                                     @{{ $admin.formatPrice(email.lead.lead_value) }}
                                 </div>
 
                                 <!-- Source Name -->
-                                <div class="rounded-xl bg-slate-200 px-3 py-1 text-xs font-medium dark:bg-gray-900">
+                                <div class="rounded-xl bg-slate-200 px-3 py-1 text-xs font-medium dark:bg-slate-700">
                                     @{{ email.lead.source?.name }}
                                 </div>
 
                                 <!-- Lead Type Name -->
-                                <div class="rounded-xl bg-slate-200 px-3 py-1 text-xs font-medium dark:bg-gray-900">
+                                <div class="rounded-xl bg-slate-200 px-3 py-1 text-xs font-medium dark:bg-slate-700">
                                     @{{ email.lead.type?.name }}
                                 </div>
                             </div>
@@ -1281,6 +1278,10 @@
 
                 methods: {
                     emailAction(action) {
+                        if (!action.email?.id) {
+                            return;
+                        }
+
                         this.action[action.email.id] = action;
 
                         if (! this.action.email) {
@@ -1475,22 +1476,14 @@
                         }
 
                         if (this.getActionType == 'reply-all') {
-                            console.log(this.action.email);
-
-                            console.log([
-                                this.action.email.from,
-                                ...(this.action.email?.cc || []),
-                                ...(this.action.email?.bcc || []),
-                            ]);
-
                             return [
-                                this.action.email.from,
+                                this.action.email?.from,
                                 ...(this.action.email?.cc || []),
                                 ...(this.action.email?.bcc || []),
-                            ];
+                            ].filter(Boolean);
                         }
 
-                        return [this.action.email.from];
+                        return this.action.email?.from ? [this.action.email.from] : [];
                     },
 
                     cc() {
@@ -1498,7 +1491,7 @@
                             return [];
                         }
 
-                        return this.action.email.cc;
+                        return this.action.email?.cc || [];
                     },
 
                     bcc() {
@@ -1506,12 +1499,12 @@
                             return [];
                         }
 
-                        return this.action.email.bcc;
+                        return this.action.email?.bcc || [];
                     },
 
                     reply() {
                         if (this.getActionType == 'forward') {
-                            return this.action.email.reply;
+                            return this.action.email?.reply || '';
                         }
 
                         // Return AI-generated reply if available
@@ -1523,7 +1516,7 @@
                     },
 
                     getActionType() {
-                        return this.action[this.email.id].type;
+                        return this.action[this.email.id]?.type || '';
                     },
                 },
 
@@ -2055,7 +2048,22 @@
                             '#ECFCCB': '#65A30D',
                             '#DCFCE7': '#16A34A',
                         },
+
+                        darkTagColors: {
+                            '#FEE2E2': { background: '#7F1D1D', text: '#FCA5A5' },
+                            '#FFEDD5': { background: '#7C2D12', text: '#FDBA74' },
+                            '#FEF3C7': { background: '#78350F', text: '#FCD34D' },
+                            '#FEF9C3': { background: '#713F12', text: '#FDE047' },
+                            '#ECFCCB': { background: '#365314', text: '#BEF264' },
+                            '#DCFCE7': { background: '#14532D', text: '#86EFAC' },
+                        },
                     };
+                },
+
+                computed: {
+                    isDarkMode() {
+                        return document.documentElement.classList.contains('dark');
+                    }
                 },
 
                 created() {
@@ -2069,6 +2077,20 @@
                 },
 
                 methods: {
+                    getTagStyle(tag) {
+                        if (this.isDarkMode && this.darkTagColors[tag.color]) {
+                            return {
+                                'background-color': this.darkTagColors[tag.color].background,
+                                'color': this.darkTagColors[tag.color].text
+                            };
+                        }
+
+                        return {
+                            'background-color': tag.color,
+                            'color': this.tagTextColor[tag.color] || '#000000'
+                        };
+                    },
+
                     openDrawer() {
                         this.$refs.emailLinkDrawer.open();
                     },
@@ -2085,7 +2107,9 @@
                             .then (response => {
                                 this.$emitter.emit('add-flash', { type: 'success', message: response.data.message });
                             })
-                            .catch (error => {});
+                            .catch (error => {
+                                console.error('Error linking contact:', error);
+                            });
                     },
 
                     unlinkContact() {
@@ -2102,7 +2126,9 @@
 
                                         this.$emitter.emit('add-flash', { type: 'success', message: response.data.message });
                                     })
-                                    .catch (error => {})
+                                    .catch (error => {
+                                        console.error('Error unlinking contact:', error);
+                                    })
                                     .finally(() => this.unlinking.contact = false);
                             },
                         });
@@ -2120,7 +2146,9 @@
                             .then (response => {
                                 this.$emitter.emit('add-flash', { type: 'success', message: response.data.message });
                             })
-                            .catch (error => {});
+                            .catch (error => {
+                                console.error('Error linking lead:', error);
+                            });
                     },
 
                     unlinkLead() {
@@ -2137,7 +2165,9 @@
 
                                         this.$emitter.emit('add-flash', { type: 'success', message: response.data.message });
                                     })
-                                    .catch (error => {})
+                                    .catch (error => {
+                                        console.error('Error unlinking lead:', error);
+                                    })
                                     .finally(() => this.unlinking.lead = false);
                             },
                         });

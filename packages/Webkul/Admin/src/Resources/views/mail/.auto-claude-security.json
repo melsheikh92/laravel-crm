@@ -128,81 +128,31 @@
     "zsh"
   ],
   "stack_commands": [
-    "artisan",
     "composer",
-    "dive",
-    "docker",
-    "docker-buildx",
-    "docker-compose",
-    "dockerfile",
-    "mysql",
-    "mysqladmin",
-    "mysqlcheck",
-    "mysqldump",
-    "mysqlimport",
-    "mysqlshow",
-    "node",
-    "npm",
-    "npx",
-    "php",
-    "phpunit",
-    "redis-benchmark",
-    "redis-cli",
-    "redis-server",
-    "sail",
-    "ts-node",
-    "tsc",
-    "tsx",
-    "vite"
+    "php"
   ],
-  "script_commands": [
-    "./docker-entrypoint.sh",
-    "./docker-start.sh",
-    "bun",
-    "npm",
-    "pnpm",
-    "yarn"
-  ],
+  "script_commands": [],
   "custom_commands": [],
   "detected_stack": {
     "languages": [
-      "javascript",
-      "typescript",
       "php"
     ],
-    "package_managers": [
-      "composer"
-    ],
-    "frameworks": [
-      "vite",
-      "laravel",
-      "phpunit"
-    ],
-    "databases": [
-      "mysql",
-      "redis"
-    ],
-    "infrastructure": [
-      "docker"
-    ],
+    "package_managers": [],
+    "frameworks": [],
+    "databases": [],
+    "infrastructure": [],
     "cloud_providers": [],
     "code_quality_tools": [],
     "version_managers": []
   },
   "custom_scripts": {
-    "npm_scripts": [
-      "dev",
-      "build"
-    ],
+    "npm_scripts": [],
     "make_targets": [],
     "poetry_scripts": [],
     "cargo_aliases": [],
-    "shell_scripts": [
-      "docker-entrypoint.sh",
-      "docker-start.sh"
-    ]
+    "shell_scripts": []
   },
-  "project_dir": "/Users/mahmoudelsheikh/Downloads/Workspace/laravel-crm/.auto-claude/worktrees/tasks/003-fix-known-ui-bugs",
-  "created_at": "2026-01-06T01:29:21.008705",
-  "project_hash": "ab38798625c562930e7d7f50d850cbe7"
+  "project_dir": "/Users/mahmoudelsheikh/Downloads/Workspace/laravel-crm/.auto-claude/worktrees/tasks/003-fix-known-ui-bugs/packages/Webkul/Admin/src/Resources/views/mail",
+  "created_at": "2026-01-06T08:45:59.923202",
+  "project_hash": "9712a68618532009dcae498a4bab93d9"
 }

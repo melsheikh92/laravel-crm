@@ -16,16 +16,15 @@
             :class="{'opacity-50 pointer-events-none': isUpdating}"
         >
             <!-- Stages Item -->
-            <template v-for="stage in stages">
+            <template v-for="stage in stages.filter(stage => !['won', 'lost'].includes(stage.code))" :key="stage.id">
                 {!! view_render_event('admin.leads.view.stages.items.before', ['lead' => $lead]) !!}
 
                 <div
                     class="stage relative flex h-7 cursor-pointer items-center justify-center bg-white pl-7 pr-4 dark:bg-gray-900 ltr:first:rounded-l-lg rtl:first:rounded-r-lg"
                     :class="{
-                        '!bg-green-500 text-white dark:text-gray-900 ltr:after:bg-green-500 rtl:before:bg-green-500': currentStage.sort_order >= stage.sort_order,
-                        '!bg-red-500 text-white dark:text-gray-900 ltr:after:bg-red-500 rtl:before:bg-red-500': currentStage.code == 'lost',
+                        '!bg-green-500 text-white ltr:after:bg-green-500 rtl:before:bg-green-500': currentStage.sort_order >= stage.sort_order,
+                        '!bg-red-500 text-white ltr:after:bg-red-500 rtl:before:bg-red-500': currentStage.code == 'lost',
                     }"
-                    v-if="! ['won', 'lost'].includes(stage.code)"
                     @click="update(stage)"
                 >
                     <span class="z-20 whitespace-nowrap text-sm font-medium dark:text-white">
@@ -46,8 +45,8 @@
                     <div
                         class="relative flex h-7 min-w-24 cursor-pointer items-center justify-center rounded-r-lg bg-white pl-7 pr-4 dark:bg-gray-900"
                         :class="{
-                            '!bg-green-500 text-white dark:text-gray-900 after:bg-green-500': ['won', 'lost'].includes(currentStage.code) && currentStage.code == 'won',
-                            '!bg-red-500 text-white dark:text-gray-900 after:bg-red-500': ['won', 'lost'].includes(currentStage.code) && currentStage.code == 'lost',
+                            '!bg-green-500 text-white after:bg-green-500': ['won', 'lost'].includes(currentStage.code) && currentStage.code == 'won',
+                            '!bg-red-500 text-white after:bg-red-500': ['won', 'lost'].includes(currentStage.code) && currentStage.code == 'lost',
                         }"
                         @click="stageToggler = ! stageToggler"
                     >
@@ -56,7 +55,7 @@
                         </span>
 
                         <span
-                            class="text-2xl dark:text-gray-900"
+                            class="text-2xl dark:text-white"
                             :class="{'icon-up-arrow': stageToggler, 'icon-down-arrow': ! stageToggler}"
                         ></span>
                     </div>
@@ -69,6 +68,7 @@
 
                     <x-admin::dropdown.menu.item
                         v-for="stage in stages.filter(stage => ['won', 'lost'].includes(stage.code))"
+                        :key="stage.id"
                         @click="openModal(stage)"
                     >
                         @{{ stage.name }}
