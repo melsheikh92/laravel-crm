@@ -16,7 +16,7 @@
             :class="{'opacity-50 pointer-events-none': isUpdating}"
         >
             <!-- Stages Item -->
-            <template v-for="stage in stages" :key="stage.id">
+            <template v-for="stage in stages.filter(stage => !['won', 'lost'].includes(stage.code))" :key="stage.id">
                 {!! view_render_event('admin.leads.view.stages.items.before', ['lead' => $lead]) !!}
 
                 <div
@@ -25,7 +25,6 @@
                         '!bg-green-500 text-white ltr:after:bg-green-500 rtl:before:bg-green-500': currentStage.sort_order >= stage.sort_order,
                         '!bg-red-500 text-white ltr:after:bg-red-500 rtl:before:bg-red-500': currentStage.code == 'lost',
                     }"
-                    v-if="! ['won', 'lost'].includes(stage.code)"
                     @click="update(stage)"
                 >
                     <span class="z-20 whitespace-nowrap text-sm font-medium dark:text-white">
