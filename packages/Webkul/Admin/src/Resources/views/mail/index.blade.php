@@ -682,16 +682,23 @@
         
                         this.$axios.get(row.url)
                             .then(response => {
+                                if (!response.data?.data) {
+                                    console.error('Invalid draft data received');
+                                    return;
+                                }
+
                                 this.draft = response.data.data;
-        
+
                                 this.$refs.toggleComposeModal.toggle();
-        
-                                this.showCC = this.draft.cc.length > 0;
-        
-                                this.showBCC = this.draft.bcc.length > 0;
-        
+
+                                this.showCC = Array.isArray(this.draft.cc) && this.draft.cc.length > 0;
+
+                                this.showBCC = Array.isArray(this.draft.bcc) && this.draft.bcc.length > 0;
+
                             })
-                            .catch(error => {});
+                            .catch(error => {
+                                console.error('Error loading draft:', error);
+                            });
                     },
         
                     resetForm() {

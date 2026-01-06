@@ -1278,6 +1278,10 @@
 
                 methods: {
                     emailAction(action) {
+                        if (!action.email?.id) {
+                            return;
+                        }
+
                         this.action[action.email.id] = action;
 
                         if (! this.action.email) {
@@ -1475,19 +1479,19 @@
                             console.log(this.action.email);
 
                             console.log([
-                                this.action.email.from,
+                                this.action.email?.from,
                                 ...(this.action.email?.cc || []),
                                 ...(this.action.email?.bcc || []),
-                            ]);
+                            ].filter(Boolean));
 
                             return [
-                                this.action.email.from,
+                                this.action.email?.from,
                                 ...(this.action.email?.cc || []),
                                 ...(this.action.email?.bcc || []),
-                            ];
+                            ].filter(Boolean);
                         }
 
-                        return [this.action.email.from];
+                        return this.action.email?.from ? [this.action.email.from] : [];
                     },
 
                     cc() {
@@ -1495,7 +1499,7 @@
                             return [];
                         }
 
-                        return this.action.email.cc;
+                        return this.action.email?.cc || [];
                     },
 
                     bcc() {
@@ -1503,12 +1507,12 @@
                             return [];
                         }
 
-                        return this.action.email.bcc;
+                        return this.action.email?.bcc || [];
                     },
 
                     reply() {
                         if (this.getActionType == 'forward') {
-                            return this.action.email.reply;
+                            return this.action.email?.reply || '';
                         }
 
                         // Return AI-generated reply if available
@@ -1520,7 +1524,7 @@
                     },
 
                     getActionType() {
-                        return this.action[this.email.id].type;
+                        return this.action[this.email.id]?.type || '';
                     },
                 },
 
@@ -2111,7 +2115,9 @@
                             .then (response => {
                                 this.$emitter.emit('add-flash', { type: 'success', message: response.data.message });
                             })
-                            .catch (error => {});
+                            .catch (error => {
+                                console.error('Error linking contact:', error);
+                            });
                     },
 
                     unlinkContact() {
@@ -2128,7 +2134,9 @@
 
                                         this.$emitter.emit('add-flash', { type: 'success', message: response.data.message });
                                     })
-                                    .catch (error => {})
+                                    .catch (error => {
+                                        console.error('Error unlinking contact:', error);
+                                    })
                                     .finally(() => this.unlinking.contact = false);
                             },
                         });
@@ -2146,7 +2154,9 @@
                             .then (response => {
                                 this.$emitter.emit('add-flash', { type: 'success', message: response.data.message });
                             })
-                            .catch (error => {});
+                            .catch (error => {
+                                console.error('Error linking lead:', error);
+                            });
                     },
 
                     unlinkLead() {
@@ -2163,7 +2173,9 @@
 
                                         this.$emitter.emit('add-flash', { type: 'success', message: response.data.message });
                                     })
-                                    .catch (error => {})
+                                    .catch (error => {
+                                        console.error('Error unlinking lead:', error);
+                                    })
                                     .finally(() => this.unlinking.lead = false);
                             },
                         });
