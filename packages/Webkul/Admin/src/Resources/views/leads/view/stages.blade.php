@@ -16,7 +16,7 @@
             :class="{'opacity-50 pointer-events-none': isUpdating}"
         >
             <!-- Stages Item -->
-            <template v-for="stage in stages">
+            <template v-for="stage in stages" :key="stage.id">
                 {!! view_render_event('admin.leads.view.stages.items.before', ['lead' => $lead]) !!}
 
                 <div
@@ -69,6 +69,7 @@
 
                     <x-admin::dropdown.menu.item
                         v-for="stage in stages.filter(stage => ['won', 'lost'].includes(stage.code))"
+                        :key="stage.id"
                         @click="openModal(stage)"
                     >
                         @{{ stage.name }}
