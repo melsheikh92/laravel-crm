@@ -372,8 +372,8 @@
                                 ::name="`${name}[${index}][key]`"
                                 v-model="field.key"
                                 rules="required"
-                                :label="trans('Key')"
-                                :placeholder="trans('Key')"
+                                :label="trans('admin::app.settings.webhooks.create.key')"
+                                :placeholder="trans('admin::app.settings.webhooks.create.key')"
                             />
                             <x-admin::form.control-group.error ::name="`${name}[${index}][key]`" />
                         </div>
@@ -385,8 +385,8 @@
                                 ::name="`${name}[${index}][value]`"
                                 v-model="field.value"
                                 rules="required"
-                                :label="trans('Value')"
-                                :placeholder="trans('Value')"
+                                :label="trans('admin::app.settings.webhooks.create.value')"
+                                :placeholder="trans('admin::app.settings.webhooks.create.value')"
                             />
                             <x-admin::form.control-group.error ::name="`${name}[${index}][value]`" />
                         </div>

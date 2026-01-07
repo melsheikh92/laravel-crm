@@ -522,6 +522,16 @@ return [
         'route' => 'admin.settings.email_templates.delete',
         'sort'  => 3,
     ], [
+        'key'   => 'settings.automation.mail_configuration',
+        'name'  => 'admin::app.acl.mail-configuration',
+        'route' => 'admin.settings.mail_configuration.index',
+        'sort'  => 8,
+    ], [
+        'key'   => 'settings.automation.mail_configuration.edit',
+        'name'  => 'admin::app.acl.edit',
+        'route' => ['admin.settings.mail_configuration.store', 'admin.settings.mail_configuration.test_smtp', 'admin.settings.mail_configuration.test_imap'],
+        'sort'  => 1,
+    ], [
         'key'   => 'settings.automation.workflows',
         'name'  => 'admin::app.acl.workflows',
         'route' => 'admin.settings.workflows.index',

@@ -310,5 +310,60 @@ return [
                 'default' => config('imap.accounts.default.password'),
             ],
         ],
+    ], [
+        'key'  => 'email.smtp',
+        'name' => 'admin::app.configuration.index.email.smtp.title',
+        'info' => 'admin::app.configuration.index.email.smtp.info',
+        'icon' => 'icon-setting',
+        'sort' => 2,
+    ], [
+        'key'    => 'email.smtp.account',
+        'name'   => 'admin::app.configuration.index.email.smtp.account.title',
+        'info'   => 'admin::app.configuration.index.email.smtp.account.title-info',
+        'sort'   => 1,
+        'fields' => [
+            [
+                'name'    => 'host',
+                'title'   => 'admin::app.configuration.index.email.smtp.account.host',
+                'type'    => 'text',
+                'default' => config('mail.mailers.smtp.host'),
+            ],
+            [
+                'name'    => 'port',
+                'title'   => 'admin::app.configuration.index.email.smtp.account.port',
+                'type'    => 'text',
+                'default' => config('mail.mailers.smtp.port'),
+            ],
+            [
+                'name'    => 'encryption',
+                'title'   => 'admin::app.configuration.index.email.smtp.account.encryption',
+                'type'    => 'text',
+                'default' => config('mail.mailers.smtp.encryption'),
+            ],
+            [
+                'name'    => 'username',
+                'title'   => 'admin::app.configuration.index.email.smtp.account.username',
+                'type'    => 'text',
+                'default' => config('mail.mailers.smtp.username'),
+            ],
+            [
+                'name'    => 'password',
+                'title'   => 'admin::app.configuration.index.email.smtp.account.password',
+                'type'    => 'password',
+                'default' => config('mail.mailers.smtp.password'),
+            ],
+            [
+                'name'    => 'from_address',
+                'title'   => 'admin::app.configuration.index.email.smtp.account.from-address',
+                'type'    => 'text',
+                'default' => config('mail.from.address'),
+            ],
+            [
+                'name'    => 'from_name',
+                'title'   => 'admin::app.configuration.index.email.smtp.account.from-name',
+                'type'    => 'text',
+                'default' => config('mail.from.name'),
+            ],
+        ],
     ],
 ];

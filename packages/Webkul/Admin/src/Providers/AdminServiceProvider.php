@@ -68,6 +68,8 @@ class AdminServiceProvider extends ServiceProvider
         $this->registerFacades();
 
         $this->registerConfig();
+
+        $this->app->register(MailConfigServiceProvider::class);
     }
 
     /**

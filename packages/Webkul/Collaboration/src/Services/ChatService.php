@@ -13,7 +13,8 @@ class ChatService
         protected ChatChannelRepository $channelRepository,
         protected ChatMessageRepository $messageRepository,
         protected ChatChannelMemberRepository $memberRepository
-    ) {}
+    ) {
+    }
 
     public function createChannel(array $data): \Webkul\Collaboration\Contracts\ChatChannel
     {
@@ -56,6 +57,29 @@ class ChatService
             ->limit($limit)
             ->get()
             ->reverse();
+    }
+
+    public function updateChannel(int $id, array $data): \Webkul\Collaboration\Contracts\ChatChannel
+    {
+        $channel = $this->channelRepository->findOrFail($id);
+
+        $this->channelRepository->update($data, $id);
+
+        return $channel->fresh();
+    }
+
+    public function deleteChannel(int $id): bool
+    {
+        $channel = $this->channelRepository->findOrFail($id);
+
+        // Delete all channel members
+        $this->memberRepository->where('channel_id', $id)->delete();
+
+        // Delete all messages (soft delete)
+        $this->messageRepository->where('channel_id', $id)->update(['is_deleted' => true]);
+
+        // Delete the channel
+        return $this->channelRepository->delete($id);
     }
 }
 

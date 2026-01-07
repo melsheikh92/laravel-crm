@@ -68,7 +68,7 @@
 
                     <x-admin::dropdown.menu.item
                         v-for="stage in stages.filter(stage => ['won', 'lost'].includes(stage.code))"
-                        :key="stage.id"
+                        ::key="stage.id"
                         @click="openModal(stage)"
                     >
                         @{{ stage.name }}

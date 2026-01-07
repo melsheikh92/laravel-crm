@@ -13,7 +13,8 @@ class ChannelController extends Controller
     public function __construct(
         protected ChatChannelRepository $channelRepository,
         protected ChatService $chatService
-    ) {}
+    ) {
+    }
 
     public function index()
     {
@@ -58,8 +59,8 @@ class ChannelController extends Controller
                 'creator',
                 'messages' => function ($query) {
                     $query->where('is_deleted', false)
-                          ->with('user')
-                          ->orderBy('created_at', 'asc');
+                        ->with('user')
+                        ->orderBy('created_at', 'asc');
                 }
             ])
             ->findOrFail($id);
@@ -73,6 +74,51 @@ class ChannelController extends Controller
         return view('admin::collaboration.channels.show', [
             'channel' => $channel,
         ]);
+    }
+
+    public function edit(int $id): View
+    {
+        $channel = $this->channelRepository->findOrFail($id);
+
+        return view('admin::collaboration.channels.edit', [
+            'channel' => $channel,
+        ]);
+    }
+
+    public function update(int $id)
+    {
+        $this->validate(request(), [
+            'name' => 'required|string|max:255',
+            'type' => 'required|in:direct,group',
+            'description' => 'nullable|string',
+        ]);
+
+        $channel = $this->chatService->updateChannel($id, request()->all());
+
+        if (request()->ajax()) {
+            return response()->json([
+                'data' => $channel->load(['members', 'creator']),
+            ]);
+        }
+
+        session()->flash('success', trans('admin::app.collaboration.channels.edit.success') ?: 'Channel updated successfully.');
+
+        return redirect()->route('admin.collaboration.channels.index');
+    }
+
+    public function destroy(int $id): JsonResponse
+    {
+        try {
+            $this->chatService->deleteChannel($id);
+
+            return response()->json([
+                'message' => trans('admin::app.collaboration.channels.delete.success') ?: 'Channel deleted successfully.',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => trans('admin::app.collaboration.channels.delete.error') ?: 'Error deleting channel.',
+            ], 500);
+        }
     }
 }
 

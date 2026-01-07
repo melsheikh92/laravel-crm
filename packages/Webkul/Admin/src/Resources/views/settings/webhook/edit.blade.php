@@ -301,9 +301,9 @@
                                     id="name"
                                     name="name"
                                     rules="required"
-                                    :value="old('admin::app.settings.webhooks.edit.name') ?? $webhook->name"
-                                    :label="trans('Admin::app.settings.webhooks.edit.name')"
-                                    :placeholder="trans('Admin::app.settings.webhooks.edit.name')"
+                                    :value="old('name') ?? $webhook->name"
+                                    :label="trans('admin::app.settings.webhooks.edit.name')"
+                                    :placeholder="trans('admin::app.settings.webhooks.edit.name')"
                                 />
 
                                 <x-admin::form.control-group.error control-name="name" />
@@ -382,8 +382,8 @@
                                 ::name="`${name}[${index}][key]`"
                                 v-model="field.key"
                                 rules="required"
-                                :label="trans('Key')"
-                                :placeholder="trans('Key')"
+                                :label="trans('admin::app.settings.webhooks.edit.key')"
+                                :placeholder="trans('admin::app.settings.webhooks.edit.key')"
                             />
                             <x-admin::form.control-group.error ::name="`${name}[${index}][key]`" />
                         </div>
@@ -395,8 +395,8 @@
                                 ::name="`${name}[${index}][value]`"
                                 v-model="field.value"
                                 rules="required"
-                                :label="trans('Value')"
-                                :placeholder="trans('Value')"
+                                :label="trans('admin::app.settings.webhooks.edit.value')"
+                                :placeholder="trans('admin::app.settings.webhooks.edit.value')"
                             />
                             <x-admin::form.control-group.error ::name="`${name}[${index}][value]`" />
                         </div>

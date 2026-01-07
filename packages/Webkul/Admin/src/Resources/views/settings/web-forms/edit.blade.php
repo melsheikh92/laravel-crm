@@ -127,7 +127,7 @@
                                     :value="old('submit_success_content') ?? $webForm->submit_success_content"
                                     class="rounded-l-none"
                                     rules="required"
-                                    label="Submit Success Content"
+                                    :label="trans('admin::app.settings.webforms.edit.submit-success-action')"
                                     ::placeholder="placeholder"
                                 />
                             </div>
@@ -621,7 +621,7 @@
                         type="color"
                         class="!h-10 !w-12 rounded-l-none p-1 dark:border-gray-800 dark:bg-gray-900"
                         name="color"
-                        :label="trans('Submit Success Action')"
+                        :label="trans('admin::app.settings.webforms.edit.submit-success-action')"
                         ::value="color"
                         @input="color = $event.target.value"
                     />
@@ -681,7 +681,7 @@
                      * @return {String}
                      */
                     placeholder() {
-                        return this.submitSuccessAction.value === 'message' ? '@lang('Enter message to display')' : '@lang('Enter url to redirect')';
+                        return this.submitSuccessAction.value === 'message' ? '@lang('admin::app.settings.webforms.edit.enter-message')' : '@lang('admin::app.settings.webforms.edit.enter-url')';
                     },
 
                     /**
@@ -717,7 +717,7 @@
 
                         btnElement.textContent = "@lang('admin::app.settings.webforms.edit.copied')!";
 
-                        setTimeout(() => btnElement.textContent = "Copy", 1000);
+                        setTimeout(() => btnElement.textContent = "@lang('admin::app.settings.webforms.edit.copy')", 1000);
                     },
 
                     /**

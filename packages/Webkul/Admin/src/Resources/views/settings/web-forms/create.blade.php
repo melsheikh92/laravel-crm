@@ -530,7 +530,7 @@
                         type="color"
                         class="!h-10 !w-12 rounded-l-none p-1 dark:border-gray-800 dark:bg-gray-900"
                         name="color"
-                        :label="trans('Submit Success Action')"
+                        :label="trans('admin::app.settings.webforms.create.submit-success-action')"
                         ::value="color"
                         @input="color = $event.target.value"
                     />
@@ -590,7 +590,7 @@
                      * @return {String}
                      */
                     placeholder() {
-                        return this.submitSuccessAction.value === 'message' ? '@lang('Enter message to display')' : '@lang('Enter url to redirect')';
+                        return this.submitSuccessAction.value === 'message' ? '@lang('admin::app.settings.webforms.create.enter-message')' : '@lang('admin::app.settings.webforms.create.enter-url')';
                     },
 
                     /**

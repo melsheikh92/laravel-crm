@@ -152,7 +152,7 @@
                                     <!-- Stage Title and Action -->
                                     <div class="flex items-center justify-between">
                                         <span class="py-1 font-medium dark:text-gray-300">
-                                            @{{ element.name ? element.name : 'New Added' }} 
+                                            @{{ element.name ? element.name : '@lang('admin::app.settings.pipelines.edit.new-added')' }} 
                                         </span>
 
                                         <i

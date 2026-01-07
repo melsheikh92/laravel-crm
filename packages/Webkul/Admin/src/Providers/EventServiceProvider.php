@@ -27,5 +27,9 @@ class EventServiceProvider extends ServiceProvider
         'activity.update.after' => [
             'Webkul\Admin\Listeners\Activity@afterUpdateOrCreate',
         ],
+
+        'settings.mail_configuration.save.after' => [
+            'Webkul\Admin\Listeners\MailConfiguration@afterSave',
+        ],
     ];
 }

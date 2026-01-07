@@ -4,6 +4,7 @@ namespace Webkul\Core\Repositories;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -18,6 +19,52 @@ class CoreConfigRepository extends Repository
     public function model(): string
     {
         return CoreConfig::class;
+    }
+
+    /**
+     * Check if a field should be encrypted.
+     */
+    protected function shouldEncrypt(string $fieldName): bool
+    {
+        $field = core()->getConfigField($fieldName);
+
+        if (! $field) {
+            return false;
+        }
+
+        return isset($field['type']) && $field['type'] === 'password';
+    }
+
+    /**
+     * Encrypt value if needed.
+     */
+    protected function encryptValue(string $fieldName, mixed $value): mixed
+    {
+        if (empty($value) || ! is_string($value)) {
+            return $value;
+        }
+
+        if ($this->shouldEncrypt($fieldName)) {
+            return Crypt::encryptString($value);
+        }
+
+        return $value;
+    }
+
+    /**
+     * Decrypt value if encrypted.
+     */
+    protected function decryptValue(mixed $value, bool $isEncrypted): mixed
+    {
+        if (! $isEncrypted || empty($value) || ! is_string($value)) {
+            return $value;
+        }
+
+        try {
+            return Crypt::decryptString($value);
+        } catch (\Exception $e) {
+            return $value;
+        }
     }
 
     /**
@@ -144,10 +191,24 @@ class CoreConfigRepository extends Repository
                                     Storage::delete($coreConfig['value']);
                                 }
 
-                                parent::update(['code' => $fieldNameWithKey, 'value' => $val], $coreConfig->id);
+                                $encryptedVal = $this->encryptValue($fieldNameWithKey, $val);
+                                $isEncrypted = $this->shouldEncrypt($fieldNameWithKey);
+
+                                parent::update([
+                                    'code'      => $fieldNameWithKey,
+                                    'value'     => $encryptedVal,
+                                    'encrypted' => $isEncrypted,
+                                ], $coreConfig->id);
                             }
                         } else {
-                            parent::create(['code' => $fieldNameWithKey, 'value' => $val]);
+                            $encryptedVal = $this->encryptValue($fieldNameWithKey, $val);
+                            $isEncrypted = $this->shouldEncrypt($fieldNameWithKey);
+
+                            parent::create([
+                                'code'      => $fieldNameWithKey,
+                                'value'     => $encryptedVal,
+                                'encrypted' => $isEncrypted,
+                            ]);
                         }
                     }
                 } else {
@@ -166,6 +227,12 @@ class CoreConfigRepository extends Repository
         if (! empty($preparedData)) {
             foreach ($preparedData as $dataItem) {
                 $coreConfigValues = $this->model->where('code', $dataItem['code'])->get();
+
+                $encryptedValue = $this->encryptValue($dataItem['code'], $dataItem['value']);
+                $isEncrypted = $this->shouldEncrypt($dataItem['code']);
+
+                $dataItem['value'] = $encryptedValue;
+                $dataItem['encrypted'] = $isEncrypted;
 
                 if ($coreConfigValues->isNotEmpty()) {
                     foreach ($coreConfigValues as $coreConfig) {

@@ -583,6 +583,182 @@
             align-items: center;
         }
 
+        /* INTERACTIVE FEATURES SHOWCASE */
+        .interactive-features {
+            display: grid;
+            grid-template-columns: 450px 1fr;
+            gap: 60px;
+            align-items: start;
+            margin-top: 60px;
+        }
+
+        .features-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            position: sticky;
+            top: 120px;
+        }
+
+        .feature-menu-item {
+            background: white;
+            padding: 24px;
+            border-radius: 16px;
+            border: 2px solid transparent;
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 16px;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-menu-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: hsl(var(--primary));
+            transform: scaleY(0);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .feature-menu-item:hover {
+            transform: translateX(8px);
+            box-shadow: var(--shadow-md);
+            border-color: hsl(var(--primary-light));
+        }
+
+        .feature-menu-item.active {
+            background: linear-gradient(135deg, hsl(var(--primary-light)) 0%, white 100%);
+            border-color: hsl(var(--primary));
+            box-shadow: var(--shadow-purple);
+            transform: translateX(12px);
+        }
+
+        .feature-menu-item.active::before {
+            transform: scaleY(1);
+        }
+
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            background: hsl(var(--primary-light));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: hsl(var(--primary));
+            font-size: 1.3rem;
+            transition: all 0.3s ease;
+        }
+
+        .feature-menu-item.active .feature-icon {
+            background: hsl(var(--primary));
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .feature-info h4 {
+            font-size: 1.1rem;
+            margin-bottom: 4px;
+            color: hsl(var(--primary-dark));
+            font-weight: 700;
+        }
+
+        .feature-info p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        .feature-menu-item .arrow {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            opacity: 0;
+        }
+
+        .feature-menu-item:hover .arrow,
+        .feature-menu-item.active .arrow {
+            opacity: 1;
+            color: hsl(var(--primary));
+        }
+
+        .feature-menu-item.active .arrow {
+            transform: translateX(4px);
+        }
+
+        .features-showcase {
+            position: relative;
+            min-height: 600px;
+            background: white;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .showcase-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transform: scale(0.95);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+        }
+
+        .showcase-image.active {
+            opacity: 1;
+            transform: scale(1);
+            pointer-events: auto;
+        }
+
+        .showcase-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: top;
+            display: block;
+        }
+
+        .image-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, transparent 100%);
+            padding: 60px 40px 40px;
+            color: white;
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.4s ease 0.2s;
+        }
+
+        .showcase-image.active .image-caption {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .image-caption h5 {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+            color: white;
+        }
+
+        .image-caption p {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin: 0;
+        }
+
         /* MOBILE */
         @media (max-width: 768px) {
             .hero h1 {
@@ -611,8 +787,33 @@
             .btn {
                 width: 100%;
             }
+
+            .interactive-features {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .features-menu {
+                position: static;
+                order: 2;
+            }
+
+            .features-showcase {
+                order: 1;
+                min-height: 400px;
+            }
+
+            .feature-menu-item {
+                padding: 20px;
+            }
+
+            .feature-menu-item:hover,
+            .feature-menu-item.active {
+                transform: translateX(0);
+            }
         }
     </style>
+
 </head>
 
 <body>
@@ -695,7 +896,7 @@
             </div>
         </div>
 
-        <!-- Features Grid -->
+        <!-- Interactive Features Showcase -->
         <section id="features" class="section bg-subtle">
             <div class="container">
                 <div class="section-header">
@@ -704,24 +905,123 @@
                         center for your entire business.</p>
                 </div>
 
-                <div class="features-grid">
-                    <div class="feature-card">
-                        <div class="icon-box"><i class="fa-solid fa-bolt"></i></div>
-                        <h3>Smart Automation</h3>
-                        <p>Put your busywork on autopilot. Automatically assign leads, schedule follow-up emails, and
-                            update deal stages without lifting a finger.</p>
+                <div class="interactive-features">
+                    <div class="features-menu">
+                        <div class="feature-menu-item active" data-feature="leads">
+                            <div class="feature-icon">
+                                <i class="fa-solid fa-users"></i>
+                            </div>
+                            <div class="feature-info">
+                                <h4>Lead Management</h4>
+                                <p>Capture, track, and nurture leads from first contact to closed deal</p>
+                            </div>
+                            <i class="fa-solid fa-chevron-right arrow"></i>
+                        </div>
+
+                        <div class="feature-menu-item" data-feature="automation">
+                            <div class="feature-icon">
+                                <i class="fa-solid fa-bolt"></i>
+                            </div>
+                            <div class="feature-info">
+                                <h4>Smart Automation</h4>
+                                <p>Automate repetitive tasks and focus on what matters most</p>
+                            </div>
+                            <i class="fa-solid fa-chevron-right arrow"></i>
+                        </div>
+
+                        <div class="feature-menu-item" data-feature="pipeline">
+                            <div class="feature-icon">
+                                <i class="fa-solid fa-chart-line"></i>
+                            </div>
+                            <div class="feature-info">
+                                <h4>Visual Pipeline</h4>
+                                <p>Drag-and-drop deals through your sales stages effortlessly</p>
+                            </div>
+                            <i class="fa-solid fa-chevron-right arrow"></i>
+                        </div>
+
+                        <div class="feature-menu-item" data-feature="analytics">
+                            <div class="feature-icon">
+                                <i class="fa-solid fa-chart-pie"></i>
+                            </div>
+                            <div class="feature-info">
+                                <h4>Analytics & Insights</h4>
+                                <p>Make data-driven decisions with real-time reporting</p>
+                            </div>
+                            <i class="fa-solid fa-chevron-right arrow"></i>
+                        </div>
+
+                        <div class="feature-menu-item" data-feature="collaboration">
+                            <div class="feature-icon">
+                                <i class="fa-solid fa-comments"></i>
+                            </div>
+                            <div class="feature-info">
+                                <h4>Team Collaboration</h4>
+                                <p>Work together seamlessly with built-in chat and channels</p>
+                            </div>
+                            <i class="fa-solid fa-chevron-right arrow"></i>
+                        </div>
+
+                        <div class="feature-menu-item" data-feature="ai">
+                            <div class="feature-icon">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                            </div>
+                            <div class="feature-info">
+                                <h4>AI Assistant</h4>
+                                <p>Let AI help you write emails, score leads, and predict outcomes</p>
+                            </div>
+                            <i class="fa-solid fa-chevron-right arrow"></i>
+                        </div>
                     </div>
-                    <div class="feature-card">
-                        <div class="icon-box"><i class="fa-solid fa-bullseye"></i></div>
-                        <h3>Lead Scoring</h3>
-                        <p>Know exactly who to call next. Our AI analyzes interactions to score leads based on their
-                            likelihood to convert.</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="icon-box"><i class="fa-solid fa-chart-pie"></i></div>
-                        <h3>Visual Pipeline</h3>
-                        <p>Visualize your sales process with a drag-and-drop Kanban board. Spot bottlenecks instantly
-                            and keep deals moving forward.</p>
+
+                    <div class="features-showcase">
+                        <div class="showcase-image active" data-feature="leads">
+                            <img src="{{ asset('leads_dashboard.png') }}" alt="Lead Management Dashboard">
+                            <div class="image-caption">
+                                <h5>Powerful Lead Management</h5>
+                                <p>Track every interaction and never miss a follow-up</p>
+                            </div>
+                        </div>
+
+                        <div class="showcase-image" data-feature="automation">
+                            <img src="{{ asset('automation_workflows.png') }}" alt="Automation Workflows">
+                            <div class="image-caption">
+                                <h5>Intelligent Automation</h5>
+                                <p>Set it and forget it - let automation handle the routine</p>
+                            </div>
+                        </div>
+
+                        <div class="showcase-image" data-feature="pipeline">
+                            <img src="{{ asset('sales_pipeline.png') }}" alt="Sales Pipeline">
+                            <div class="image-caption">
+                                <h5>Visual Sales Pipeline</h5>
+                                <p>See your entire sales process at a glance</p>
+                            </div>
+                        </div>
+
+                        <div class="showcase-image" data-feature="analytics">
+                            <img src="{{ asset('analytics_dashboard.png') }}" alt="Analytics Dashboard">
+                            <div class="image-caption">
+                                <h5>Actionable Analytics</h5>
+                                <p>Turn data into revenue with powerful insights</p>
+                            </div>
+                        </div>
+
+                        <div class="showcase-image" data-feature="collaboration">
+                            <img src="{{ asset('collaboration_channels.png') }}" alt="Team Collaboration">
+                            <div class="image-caption">
+                                <h5>Seamless Collaboration</h5>
+                                <p>Keep your team aligned and productive</p>
+                            </div>
+                        </div>
+
+                        <div class="showcase-image" data-feature="ai">
+                            <img src="{{ asset('ai_assistant.png') }}" alt="AI Assistant">
+                            <div class="image-caption">
+                                <h5>AI-Powered Intelligence</h5>
+                                <p>Work smarter with AI that learns from your data</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -864,6 +1164,109 @@
             </div>
         </div>
     </footer>
+
+    <script>
+        // Interactive Features Showcase
+        document.addEventListener('DOMContentLoaded', function () {
+            const menuItems = document.querySelectorAll('.feature-menu-item');
+            const showcaseImages = document.querySelectorAll('.showcase-image');
+            let autoRotateInterval = null;
+            let restartTimeout = null;
+            let currentIndex = 0;
+
+            function switchFeature(featureName) {
+                // Remove active class from all menu items and images
+                menuItems.forEach(item => item.classList.remove('active'));
+                showcaseImages.forEach(img => img.classList.remove('active'));
+
+                // Add active class to selected items
+                const selectedMenuItem = document.querySelector(`.feature-menu-item[data-feature="${featureName}"]`);
+                const selectedImage = document.querySelector(`.showcase-image[data-feature="${featureName}"]`);
+
+                if (selectedMenuItem && selectedImage) {
+                    selectedMenuItem.classList.add('active');
+                    selectedImage.classList.add('active');
+                }
+            }
+
+            function startAutoRotate() {
+                // Clear any existing interval first
+                stopAutoRotate();
+
+                autoRotateInterval = setInterval(() => {
+                    currentIndex = (currentIndex + 1) % menuItems.length;
+                    const nextFeature = menuItems[currentIndex].getAttribute('data-feature');
+                    switchFeature(nextFeature);
+                }, 5000); // Change every 5 seconds
+            }
+
+            function stopAutoRotate() {
+                if (autoRotateInterval) {
+                    clearInterval(autoRotateInterval);
+                    autoRotateInterval = null;
+                }
+                // Also clear any pending restart timeout
+                if (restartTimeout) {
+                    clearTimeout(restartTimeout);
+                    restartTimeout = null;
+                }
+            }
+
+            // Add click event listeners to menu items
+            menuItems.forEach((item, index) => {
+                item.addEventListener('click', function () {
+                    // Stop auto-rotation and clear any pending restarts
+                    stopAutoRotate();
+
+                    // Update current index to clicked item
+                    currentIndex = index;
+                    const featureName = this.getAttribute('data-feature');
+                    switchFeature(featureName);
+
+                    // Restart auto-rotate after 5 seconds, continuing from current index
+                    restartTimeout = setTimeout(() => {
+                        startAutoRotate();
+                    }, 5000);
+                });
+
+                // Add hover effect
+                item.addEventListener('mouseenter', function () {
+                    stopAutoRotate();
+                });
+
+                item.addEventListener('mouseleave', function () {
+                    // Only restart if not already scheduled
+                    if (!restartTimeout && !autoRotateInterval) {
+                        restartTimeout = setTimeout(() => {
+                            startAutoRotate();
+                        }, 3000);
+                    }
+                });
+            });
+
+            // Start auto-rotation on page load
+            startAutoRotate();
+
+            // Pause auto-rotation when user scrolls away from features section
+            const featuresSection = document.getElementById('features');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (!entry.isIntersecting) {
+                        stopAutoRotate();
+                    } else {
+                        // Only start if not already running
+                        if (!autoRotateInterval) {
+                            startAutoRotate();
+                        }
+                    }
+                });
+            }, { threshold: 0.5 });
+
+            if (featuresSection) {
+                observer.observe(featuresSection);
+            }
+        });
+    </script>
 
 </body>
 

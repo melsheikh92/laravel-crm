@@ -6,6 +6,7 @@ use Webkul\Admin\Http\Controllers\Settings\DataTransfer\ImportController;
 use Webkul\Admin\Http\Controllers\Settings\EmailTemplateController;
 use Webkul\Admin\Http\Controllers\Settings\GroupController;
 use Webkul\Admin\Http\Controllers\Settings\LocationController;
+use Webkul\Admin\Http\Controllers\Settings\MailConfigurationController;
 use Webkul\Admin\Http\Controllers\Settings\Marketing\CampaignsController;
 use Webkul\Admin\Http\Controllers\Settings\Marketing\EventController;
 use Webkul\Admin\Http\Controllers\Settings\PipelineController;
@@ -298,7 +299,24 @@ Route::prefix('settings')->group(function () {
 
         Route::put('edit/{id}', 'update')->name('admin.settings.email_templates.update');
 
+        Route::post('preview', 'preview')->name('admin.settings.email_templates.preview');
+
+        Route::post('send-test', 'sendTest')->name('admin.settings.email_templates.send_test');
+
         Route::delete('{id}', 'destroy')->name('admin.settings.email_templates.delete');
+    });
+
+    /**
+     * Mail Configuration Routes.
+     */
+    Route::controller(MailConfigurationController::class)->prefix('mail-configuration')->group(function () {
+        Route::get('', 'index')->name('admin.settings.mail_configuration.index');
+
+        Route::post('store', 'store')->name('admin.settings.mail_configuration.store');
+
+        Route::post('test-smtp', 'testSmtp')->name('admin.settings.mail_configuration.test_smtp');
+
+        Route::post('test-imap', 'testImap')->name('admin.settings.mail_configuration.test_imap');
     });
 
     /**

@@ -11,7 +11,11 @@ Route::prefix('collaboration')->group(function () {
         Route::get('/create', 'create')->name('admin.collaboration.channels.create');
         Route::post('/', 'store')->name('admin.collaboration.channels.store');
         Route::get('/{id}', 'show')->name('admin.collaboration.channels.show');
+        Route::get('/{id}/edit', 'edit')->name('admin.collaboration.channels.edit');
+        Route::put('/{id}', 'update')->name('admin.collaboration.channels.update');
+        Route::delete('/{id}', 'destroy')->name('admin.collaboration.channels.destroy');
     });
+
 
     Route::controller(ChatController::class)->prefix('chat')->group(function () {
         Route::post('/message', 'sendMessage')->name('admin.collaboration.chat.send');

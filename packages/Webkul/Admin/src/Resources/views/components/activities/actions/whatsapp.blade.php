@@ -148,7 +148,7 @@
 
                                 <x-admin::button
                                     class="primary-button"
-                                    :title="hasBusinessAPI ? trans('admin::app.components.activities.actions.whatsapp.send-btn') : trans('admin::app.components.activities.actions.whatsapp.open-btn')"
+                                    ::title="hasBusinessAPI ? '{{ trans('admin::app.components.activities.actions.whatsapp.send-btn') }}' : '{{ trans('admin::app.components.activities.actions.whatsapp.open-btn') }}'"
                                     ::loading="isStoring"
                                     ::disabled="isStoring"
                                 />

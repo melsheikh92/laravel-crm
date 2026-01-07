@@ -1,25 +1,25 @@
 {
   "active": true,
-  "spec": "003-fix-known-ui-bugs",
+  "spec": "002-admin-mail-settings-configuration",
   "state": "building",
   "subtasks": {
-    "completed": 16,
-    "total": 20,
+    "completed": 0,
+    "total": 26,
     "in_progress": 1,
     "failed": 0
   },
   "phase": {
-    "current": "",
-    "id": 0,
-    "total": 0
+    "current": "Documentation & Security",
+    "id": null,
+    "total": 3
   },
   "workers": {
     "active": 0,
     "max": 1
   },
   "session": {
-    "number": 42,
-    "started_at": "2026-01-06T01:28:58.674647"
+    "number": 46,
+    "started_at": "2026-01-06T01:25:02.851892"
   },
-  "last_update": "2026-01-06T09:07:14.327284"
+  "last_update": "2026-01-06T09:25:50.560388"
 }

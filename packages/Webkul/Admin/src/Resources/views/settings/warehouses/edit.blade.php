@@ -82,7 +82,7 @@
                         <x-slot:header>
                             <div class="flex items-center justify-between">
                                 <p class="p-2.5 text-base font-semibold text-gray-800 dark:text-white">
-                                    @lang('admin::app.settings.roles.create.general')
+                                    @lang('admin::app.settings.warehouses.edit.general')
                                 </p>
                             </div>
                         </x-slot>

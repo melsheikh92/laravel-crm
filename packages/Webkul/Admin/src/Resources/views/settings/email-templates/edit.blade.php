@@ -38,7 +38,7 @@
                             type="submit"
                             class="primary-button"
                         >
-                            @lang('Save Email Template')
+                            @lang('admin::app.settings.email-templates.edit.save-btn')
                         </button>
 
                         {!! view_render_event('admin.settings.email_template.edit.save_button.before') !!}
@@ -65,6 +65,28 @@
                             <p class="text-base font-semibold text-gray-800 dark:text-white">
                                 @lang('admin::app.settings.email-template.edit.email-template')
                             </p>
+
+                            <div class="flex items-center gap-x-2.5">
+                                <button
+                                    type="button"
+                                    class="secondary-button"
+                                    @click="previewTemplate"
+                                    :disabled="previewing"
+                                >
+                                    <span v-if="previewing">@lang('admin::app.settings.email-template.edit.previewing')</span>
+                                    <span v-else>@lang('admin::app.settings.email-template.edit.preview')</span>
+                                </button>
+
+                                <button
+                                    type="button"
+                                    class="secondary-button"
+                                    @click="sendTestEmail"
+                                    :disabled="sendingTest"
+                                >
+                                    <span v-if="sendingTest">@lang('admin::app.settings.email-template.edit.sending')</span>
+                                    <span v-else>@lang('admin::app.settings.email-template.edit.send-test')</span>
+                                </button>
+                            </div>
                         </div>
 
                         {!! view_render_event('admin.settings.email_template.edit.subject.before') !!}
@@ -141,6 +163,39 @@
                         </x-admin::form.control-group>
 
                         {!! view_render_event('admin.settings.email_template.edit.content.after') !!}
+
+                        <!-- Preview Section -->
+                        <div v-if="showPreview" class="mt-4 box-shadow rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
+                            <div class="mb-4 flex items-center justify-between gap-4">
+                                <p class="text-base font-semibold text-gray-800 dark:text-white">
+                                    @lang('admin::app.settings.email-template.edit.preview-title')
+                                </p>
+
+                                <button
+                                    type="button"
+                                    class="text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-white"
+                                    @click="closePreview"
+                                >
+                                    <span class="icon-cross text-2xl"></span>
+                                </button>
+                            </div>
+
+                            <div class="space-y-4">
+                                <div>
+                                    <p class="mb-2 text-sm font-semibold text-gray-800 dark:text-white">
+                                        @lang('admin::app.settings.email-template.edit.subject'):
+                                    </p>
+                                    <p class="text-sm text-gray-600 dark:text-gray-300" v-html="previewData.subject"></p>
+                                </div>
+
+                                <div>
+                                    <p class="mb-2 text-sm font-semibold text-gray-800 dark:text-white">
+                                        @lang('admin::app.settings.email-template.edit.content'):
+                                    </p>
+                                    <div class="rounded border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800" v-html="previewData.content"></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -195,6 +250,17 @@
                         cursorPosition: 0,
 
                         placeholders: @json($placeholders),
+
+                        previewing: false,
+
+                        sendingTest: false,
+
+                        showPreview: false,
+
+                        previewData: {
+                            subject: '',
+                            content: '',
+                        },
                     };
                 },
 
@@ -211,7 +277,7 @@
 
                     /**
                      * Insert the selected placeholder into the subject.
-                     * 
+                     *
                      * @returns {void}
                      */
                     insertPlaceholder() {
@@ -230,6 +296,90 @@
                         }
 
                         this.selectedPlaceholder = '';
+                    },
+
+                    /**
+                     * Preview the email template with sample data.
+                     *
+                     * @returns {void}
+                     */
+                    previewTemplate() {
+                        const content = tinymce.get('content')?.getContent() || '';
+
+                        if (!this.subject || !content) {
+                            this.$emitter.emit('add-flash', { type: 'warning', message: "@lang('admin::app.settings.email-template.edit.fill-required-fields')" });
+                            return;
+                        }
+
+                        this.previewing = true;
+
+                        this.$axios.post("{{ route('admin.settings.email_templates.preview') }}", {
+                            subject: this.subject,
+                            content: content,
+                        })
+                            .then(response => {
+                                this.previewData = response.data.data;
+                                this.showPreview = true;
+                            })
+                            .catch(error => {
+                                this.$emitter.emit('add-flash', { type: 'error', message: error.response?.data?.message || "@lang('admin::app.settings.email-template.edit.preview-failed')" });
+                            })
+                            .finally(() => {
+                                this.previewing = false;
+                            });
+                    },
+
+                    /**
+                     * Send a test email.
+                     *
+                     * @returns {void}
+                     */
+                    sendTestEmail() {
+                        const content = tinymce.get('content')?.getContent() || '';
+
+                        if (!this.subject || !content) {
+                            this.$emitter.emit('add-flash', { type: 'warning', message: "@lang('admin::app.settings.email-template.edit.fill-required-fields')" });
+                            return;
+                        }
+
+                        const email = prompt("@lang('admin::app.settings.email-template.edit.enter-test-email')");
+
+                        if (!email) {
+                            return;
+                        }
+
+                        // Simple email validation
+                        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                        if (!emailRegex.test(email)) {
+                            this.$emitter.emit('add-flash', { type: 'warning', message: "@lang('admin::app.settings.email-template.edit.invalid-email')" });
+                            return;
+                        }
+
+                        this.sendingTest = true;
+
+                        this.$axios.post("{{ route('admin.settings.email_templates.send_test') }}", {
+                            email: email,
+                            subject: this.subject,
+                            content: content,
+                        })
+                            .then(response => {
+                                this.$emitter.emit('add-flash', { type: 'success', message: response.data.message });
+                            })
+                            .catch(error => {
+                                this.$emitter.emit('add-flash', { type: 'error', message: error.response?.data?.message || "@lang('admin::app.settings.email-template.edit.send-test-failed')" });
+                            })
+                            .finally(() => {
+                                this.sendingTest = false;
+                            });
+                    },
+
+                    /**
+                     * Close the preview section.
+                     *
+                     * @returns {void}
+                     */
+                    closePreview() {
+                        this.showPreview = false;
                     },
                 },
             });

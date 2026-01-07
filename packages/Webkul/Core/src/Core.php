@@ -25,7 +25,8 @@ class Core
         protected CountryRepository $countryRepository,
         protected CoreConfigRepository $coreConfigRepository,
         protected CountryStateRepository $countryStateRepository
-    ) {}
+    ) {
+    }
 
     /**
      * Get the version number of the Krayin.
@@ -135,7 +136,7 @@ class Core
 
         $collection = $this->countryStateRepository->findByField([
             'country_code' => $countryCode,
-            'code'         => $stateCode,
+            'code' => $stateCode,
         ]);
 
         if (count($collection)) {
@@ -183,7 +184,7 @@ class Core
     {
         $ts = strtotime($date);
 
-        if (! $day) {
+        if (!$day) {
             $start = (date('D', $ts) == 'Sun') ? $ts : strtotime('last sunday', $ts);
 
             return date('Y-m-d', $start);
@@ -202,7 +203,7 @@ class Core
      */
     public function currencySymbol($code)
     {
-        $formatter = new \NumberFormatter(app()->getLocale().'@currency='.$code, \NumberFormatter::CURRENCY);
+        $formatter = new \NumberFormatter(app()->getLocale() . '@currency=' . $code, \NumberFormatter::CURRENCY);
 
         return $formatter->getSymbol(\NumberFormatter::CURRENCY_SYMBOL);
     }
@@ -230,7 +231,7 @@ class Core
      */
     public function getConfigField(string $fieldName): ?array
     {
-        return system_config()->getConfigField($fieldName);
+        return app('system_config')->getConfigField($fieldName);
     }
 
     /**
@@ -238,6 +239,6 @@ class Core
      */
     public function getConfigData(string $field): mixed
     {
-        return system_config()->getConfigData($field);
+        return app('system_config')->getConfigData($field);
     }
 }
