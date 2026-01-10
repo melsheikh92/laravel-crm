@@ -2,6 +2,7 @@
 
 namespace Webkul\Territory\Providers;
 
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 
 class TerritoryServiceProvider extends ServiceProvider
@@ -17,6 +18,30 @@ class TerritoryServiceProvider extends ServiceProvider
         // Register module service provider
         // TODO: Uncomment when models are created in phase 2
         // $this->app->register(ModuleServiceProvider::class);
+
+        // Register event listeners
+        $this->registerEventListeners();
+    }
+
+    /**
+     * Register event listeners.
+     */
+    protected function registerEventListeners(): void
+    {
+        // Listen to Lead created event and auto-assign territory
+        Event::listen('lead.create.after', function ($lead) {
+            app(\Webkul\Territory\Listeners\AssignTerritoryToLead::class)->handle($lead);
+        });
+
+        // Listen to Organization created event and auto-assign territory
+        Event::listen('contacts.organization.create.after', function ($organization) {
+            app(\Webkul\Territory\Listeners\AssignTerritoryToOrganization::class)->handle($organization);
+        });
+
+        // Listen to Person created event and auto-assign territory
+        Event::listen('contacts.person.create.after', function ($person) {
+            app(\Webkul\Territory\Listeners\AssignTerritoryToPerson::class)->handle($person);
+        });
     }
 
     /**

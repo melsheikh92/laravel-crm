@@ -3,23 +3,23 @@
   "spec": "006-territory-management",
   "state": "building",
   "subtasks": {
-    "completed": 32,
+    "completed": 37,
     "total": 56,
     "in_progress": 1,
     "failed": 0
   },
   "phase": {
-    "current": "Admin Views",
-    "id": 6,
-    "total": 7
+    "current": "Auto-Assignment Logic and Event Listeners",
+    "id": 7,
+    "total": 5
   },
   "workers": {
     "active": 0,
     "max": 1
   },
   "session": {
-    "number": 34,
+    "number": 39,
     "started_at": "2026-01-10T21:31:57.400812"
   },
-  "last_update": "2026-01-10T23:21:39.467768"
+  "last_update": "2026-01-10T23:35:35.198139"
 }
