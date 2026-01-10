@@ -8,7 +8,7 @@ use Webkul\Territory\Models\TerritoryRule;
 use Webkul\Territory\Repositories\TerritoryRepository;
 use Webkul\Territory\Repositories\TerritoryRuleRepository;
 use Webkul\Territory\Services\TerritoryRuleEvaluator;
-use Webkul\User\Models\User;
+use App\Models\User;
 
 uses(TestCase::class, RefreshDatabase::class);
 

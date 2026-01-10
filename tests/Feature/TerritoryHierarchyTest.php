@@ -3,7 +3,7 @@
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Webkul\Territory\Models\Territory;
 use Webkul\Territory\Repositories\TerritoryRepository;
-use Webkul\User\Models\User;
+use App\Models\User;
 
 uses(RefreshDatabase::class);
 

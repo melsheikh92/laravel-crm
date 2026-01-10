@@ -8,7 +8,7 @@ use Webkul\Territory\Models\Territory;
 use Webkul\Territory\Models\TerritoryAssignment;
 use Webkul\Territory\Models\TerritoryRule;
 use Webkul\Territory\Services\TerritoryAssignmentService;
-use Webkul\User\Models\User;
+use App\Models\User;
 
 uses(TestCase::class, RefreshDatabase::class);
 

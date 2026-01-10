@@ -3,7 +3,7 @@
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Webkul\Territory\Models\Territory;
-use Webkul\User\Models\User;
+use App\Models\User;
 
 uses(RefreshDatabase::class);
 

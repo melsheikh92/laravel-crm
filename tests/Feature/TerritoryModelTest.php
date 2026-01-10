@@ -4,7 +4,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Webkul\Territory\Models\Territory;
 use Webkul\Territory\Models\TerritoryAssignment;
 use Webkul\Territory\Models\TerritoryRule;
-use Webkul\User\Models\User;
+use App\Models\User;
 
 uses(RefreshDatabase::class);
 
