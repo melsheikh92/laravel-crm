@@ -41,84 +41,84 @@ class CampaignDataGrid extends DataGrid
     public function prepareColumns(): void
     {
         $this->addColumn([
-            'index'      => 'id',
-            'label'      => $this->getTranslation('id', 'ID'),
-            'type'       => 'integer',
-            'sortable'   => true,
+            'index' => 'id',
+            'label' => $this->getTranslation('id', 'ID'),
+            'type' => 'integer',
+            'sortable' => true,
             'filterable' => true,
         ]);
 
         $this->addColumn([
-            'index'      => 'name',
-            'label'      => $this->getTranslation('name', 'Name'),
-            'type'       => 'string',
-            'sortable'   => true,
+            'index' => 'name',
+            'label' => $this->getTranslation('name', 'Name'),
+            'type' => 'string',
+            'sortable' => true,
             'searchable' => true,
             'filterable' => true,
         ]);
 
         $this->addColumn([
-            'index'      => 'subject',
-            'label'      => $this->getTranslation('subject', 'Subject'),
-            'type'       => 'string',
-            'sortable'   => true,
+            'index' => 'subject',
+            'label' => $this->getTranslation('subject', 'Subject'),
+            'type' => 'string',
+            'sortable' => true,
             'searchable' => true,
             'filterable' => true,
         ]);
 
         $this->addColumn([
-            'index'      => 'status',
-            'label'      => $this->getTranslation('status', 'Status'),
-            'type'       => 'string',
-            'sortable'   => true,
+            'index' => 'status',
+            'label' => $this->getTranslation('status', 'Status'),
+            'type' => 'string',
+            'sortable' => true,
             'filterable' => true,
-            'closure'    => function ($row) {
+            'closure' => function ($row) {
                 $status = $row->status ?? '';
                 if (empty($status)) {
                     return '--';
                 }
-                
+
                 $translationKey = 'admin::app.marketing.campaigns.status.' . $status;
                 $translation = trans($translationKey);
-                
+
                 // If translation returns the key itself (meaning translation not found), capitalize the status
                 if ($translation === $translationKey) {
                     return ucfirst($status);
                 }
-                
+
                 return $translation;
             },
         ]);
 
         $this->addColumn([
-            'index'      => 'sent_count',
-            'label'      => $this->getTranslation('sent', 'Sent'),
-            'type'       => 'integer',
-            'sortable'   => true,
+            'index' => 'sent_count',
+            'label' => $this->getTranslation('sent', 'Sent'),
+            'type' => 'integer',
+            'sortable' => true,
             'filterable' => true,
         ]);
 
         $this->addColumn([
-            'index'      => 'failed_count',
-            'label'      => $this->getTranslation('failed', 'Failed'),
-            'type'       => 'integer',
-            'sortable'   => true,
+            'index' => 'failed_count',
+            'label' => $this->getTranslation('failed', 'Failed'),
+            'type' => 'integer',
+            'sortable' => true,
             'filterable' => true,
         ]);
 
         $this->addColumn([
-            'index'      => 'user_name',
-            'label'      => $this->getTranslation('created_by', 'Created By'),
-            'type'       => 'string',
-            'sortable'   => true,
+            'index' => 'user_name',
+            'label' => $this->getTranslation('created_by', 'Created By'),
+            'type' => 'string',
+            'sortable' => true,
             'filterable' => true,
         ]);
 
         $this->addColumn([
-            'index'      => 'created_at',
-            'label'      => $this->getTranslation('created_at', 'Created At'),
-            'type'       => 'datetime',
-            'sortable'   => true,
+            'index' => 'created_at',
+            'label' => $this->getTranslation('created_at', 'Created At'),
+            'type' => 'datetime',
+            'sortable' => true,
             'filterable' => true,
         ]);
     }
@@ -130,7 +130,7 @@ class CampaignDataGrid extends DataGrid
     {
         $translationKey = 'admin::app.marketing.campaigns.index.datagrid.' . $key;
         $translation = trans($translationKey);
-        
+
         // If translation returns the key itself, use fallback
         return $translation !== $translationKey ? $translation : $fallback;
     }
@@ -141,17 +141,24 @@ class CampaignDataGrid extends DataGrid
     public function prepareActions(): void
     {
         $this->addAction([
-            'icon'   => 'icon-edit',
-            'title'  => $this->getTranslation('edit', 'Edit'),
+            'icon' => 'icon-eye',
+            'title' => $this->getTranslation('view', 'View'),
             'method' => 'GET',
-            'url'    => fn ($row) => route('admin.marketing.campaigns.edit', $row->id),
+            'url' => fn($row) => route('admin.marketing.campaigns.show', $row->id),
         ]);
 
         $this->addAction([
-            'icon'   => 'icon-delete',
-            'title'  => $this->getTranslation('delete', 'Delete'),
+            'icon' => 'icon-edit',
+            'title' => $this->getTranslation('edit', 'Edit'),
+            'method' => 'GET',
+            'url' => fn($row) => route('admin.marketing.campaigns.edit', $row->id),
+        ]);
+
+        $this->addAction([
+            'icon' => 'icon-delete',
+            'title' => $this->getTranslation('delete', 'Delete'),
             'method' => 'DELETE',
-            'url'    => fn ($row) => route('admin.marketing.campaigns.destroy', $row->id),
+            'url' => fn($row) => route('admin.marketing.campaigns.destroy', $row->id),
         ]);
     }
 }

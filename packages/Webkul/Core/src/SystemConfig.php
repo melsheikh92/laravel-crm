@@ -20,7 +20,9 @@ class SystemConfig
      *
      * @return void
      */
-    public function __construct(protected CoreConfigRepository $coreConfigRepository) {}
+    public function __construct(protected CoreConfigRepository $coreConfigRepository)
+    {
+    }
 
     /**
      * Add Item.
@@ -35,7 +37,7 @@ class SystemConfig
      */
     public function getItems(): Collection
     {
-        if (! $this->items) {
+        if (!$this->items) {
             $this->prepareConfigurationItems();
         }
 
@@ -80,7 +82,7 @@ class SystemConfig
                 key: $configItem['key'],
                 name: trans($configItem['name']),
                 route: $configItem['route'] ?? null,
-                info: trans($configItem['info']) ?? null,
+                info: isset($configItem['info']) ? trans($configItem['info']) : null,
                 sort: $configItem['sort'],
             ));
         }
@@ -93,7 +95,7 @@ class SystemConfig
     {
         return collect($configItem)
             ->sortBy('sort')
-            ->filter(fn ($value) => is_array($value) && isset($value['name']))
+            ->filter(fn($value) => is_array($value) && isset($value['name']))
             ->map(function ($subConfigItem) {
                 $configItemChildren = $this->processSubConfigItems($subConfigItem);
 
@@ -103,7 +105,7 @@ class SystemConfig
                     icon: $subConfigItem['icon'] ?? null,
                     key: $subConfigItem['key'],
                     name: trans($subConfigItem['name']),
-                    info: trans($subConfigItem['info']) ?? null,
+                    info: isset($subConfigItem['info']) ? trans($subConfigItem['info']) : null,
                     route: $subConfigItem['route'] ?? null,
                     sort: $subConfigItem['sort'] ?? null,
                 );
@@ -115,13 +117,13 @@ class SystemConfig
      */
     public function getActiveConfigurationItem(): ?Item
     {
-        if (! $slug = request()->route('slug')) {
+        if (!$slug = request()->route('slug')) {
             return null;
         }
 
         $activeItem = $this->getItems()->where('key', $slug)->first() ?? null;
 
-        if (! $activeItem) {
+        if (!$activeItem) {
             return null;
         }
 
@@ -138,12 +140,12 @@ class SystemConfig
     public function getConfigField(string $fieldName): ?array
     {
         foreach ($this->retrieveCoreConfig() as $coreData) {
-            if (! isset($coreData['fields'])) {
+            if (!isset($coreData['fields'])) {
                 continue;
             }
 
             foreach ($coreData['fields'] as $field) {
-                $name = $coreData['key'].'.'.$field['name'];
+                $name = $coreData['key'] . '.' . $field['name'];
 
                 if ($name == $fieldName) {
                     return $field;
@@ -179,7 +181,7 @@ class SystemConfig
             'code' => $field,
         ]);
 
-        if (! $coreConfigValue) {
+        if (!$coreConfigValue) {
             return $this->getDefaultConfig($field);
         }
 

@@ -16,7 +16,8 @@ class MarketingServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        $this->loadMigrationsFrom(__DIR__.'/../Database/Migrations');
+        $this->loadMigrationsFrom(__DIR__ . '/../Database/Migrations');
+        $this->loadRoutesFrom(__DIR__ . '/../Routes/web.php');
 
         $this->callAfterResolving(Schedule::class, function (Schedule $schedule) {
             $schedule->command('campaign:process')->daily();

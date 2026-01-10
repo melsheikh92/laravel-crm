@@ -17,7 +17,8 @@ class CampaignController extends Controller
         protected EmailCampaignRepository $campaignRepository,
         protected CampaignService $campaignService,
         protected RecipientService $recipientService
-    ) {}
+    ) {
+    }
 
     /**
      * Display a listing of campaigns.
@@ -71,8 +72,17 @@ class CampaignController extends Controller
             ], 422);
         }
 
+        $data = request()->all();
+
+        // Handle person_ids from multi-select
+        if (isset($data['person_ids']) && is_array($data['person_ids'])) {
+            $data['recipients'] = array_map(function ($id) {
+                return ['person_id' => $id];
+            }, $data['person_ids']);
+        }
+
         try {
-            $campaign = $this->campaignService->create(request()->all());
+            $campaign = $this->campaignService->create($data);
 
             return response()->json([
                 'data' => $campaign,
@@ -104,7 +114,9 @@ class CampaignController extends Controller
             ]);
         }
 
-        return view('admin::marketing.campaigns.view', compact('campaign'));
+        $statistics = $this->campaignService->getStatistics($id);
+
+        return view('admin::marketing.campaigns.view', compact('campaign', 'statistics'));
     }
 
     /**
@@ -112,7 +124,7 @@ class CampaignController extends Controller
      */
     public function edit(int $id): View|JsonResponse
     {
-        $campaign = $this->campaignRepository->with(['recipients', 'template'])->findOrFail($id);
+        $campaign = $this->campaignRepository->with(['recipients.person', 'template'])->findOrFail($id);
 
         if (request()->ajax()) {
             return response()->json([
@@ -155,8 +167,17 @@ class CampaignController extends Controller
             ], 422);
         }
 
+        $data = request()->all();
+
+        // Handle person_ids from multi-select
+        if (isset($data['person_ids']) && is_array($data['person_ids'])) {
+            $data['recipients'] = array_map(function ($id) {
+                return ['person_id' => $id];
+            }, $data['person_ids']);
+        }
+
         try {
-            $campaign = $this->campaignService->update(request()->all(), $id);
+            $campaign = $this->campaignService->update($data, $id);
 
             return response()->json([
                 'data' => $campaign,

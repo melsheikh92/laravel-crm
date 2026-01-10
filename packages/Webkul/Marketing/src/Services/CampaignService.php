@@ -16,7 +16,8 @@ class CampaignService
         protected EmailCampaignRepository $campaignRepository,
         protected CampaignRecipientRepository $recipientRepository,
         protected EmailTemplateRepository $templateRepository
-    ) {}
+    ) {
+    }
 
     /**
      * Create a new campaign.
@@ -184,19 +185,35 @@ class CampaignService
     public function getStatistics(int $campaignId): array
     {
         $campaign = $this->campaignRepository->findOrFail($campaignId);
+        $total = $this->recipientRepository->findWhere(['campaign_id' => $campaignId])->count();
 
-        $recipients = $this->recipientRepository->findWhere(['campaign_id' => $campaignId]);
-
-        return [
-            'total_recipients' => $recipients->count(),
-            'sent' => $recipients->where('status', 'sent')->count(),
-            'failed' => $recipients->where('status', 'failed')->count(),
-            'pending' => $recipients->where('status', 'pending')->count(),
-            'bounced' => $recipients->where('status', 'bounced')->count(),
-            'unsubscribed' => $recipients->where('status', 'unsubscribed')->count(),
-            'opened' => $recipients->whereNotNull('opened_at')->count(),
-            'clicked' => $recipients->whereNotNull('clicked_at')->count(),
+        $stats = [
+            'total_recipients' => $total,
+            'sent' => $this->recipientRepository->findWhere([['campaign_id', '=', $campaignId], ['sent_at', '<>', null]])->count(),
+            'failed' => $this->recipientRepository->findWhere(['campaign_id' => $campaignId, 'status' => 'failed'])->count(),
+            'bounced' => $this->recipientRepository->findWhere(['campaign_id' => $campaignId, 'status' => 'bounced'])->count(),
+            'unsubscribed' => $this->recipientRepository->findWhere(['campaign_id' => $campaignId, 'status' => 'unsubscribed'])->count(),
+            'opened' => $this->recipientRepository->findWhere([['campaign_id', '=', $campaignId], ['opened_at', '<>', null]])->count(),
+            'clicked' => $this->recipientRepository->findWhere([['campaign_id', '=', $campaignId], ['clicked_at', '<>', null]])->count(),
         ];
+
+        // Calculate rates
+        $sentCount = $stats['sent'];
+        $stats['open_rate'] = $sentCount > 0 ? round(($stats['opened'] / $sentCount) * 100, 1) : 0;
+        $stats['click_rate'] = $sentCount > 0 ? round(($stats['clicked'] / $sentCount) * 100, 1) : 0;
+
+        // Timeline data (last 24 hours of activity or since start)
+        $timeline = DB::table('email_campaign_recipients')
+            ->select(DB::raw('DATE_FORMAT(opened_at, "%Y-%m-%d %H:00:00") as hour'), DB::raw('count(*) as count'))
+            ->where('campaign_id', $campaignId)
+            ->whereNotNull('opened_at')
+            ->groupBy('hour')
+            ->orderBy('hour')
+            ->get();
+
+        $stats['timeline'] = $timeline;
+
+        return $stats;
     }
 }
 

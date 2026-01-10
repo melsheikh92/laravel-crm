@@ -28,7 +28,8 @@ class SendCampaignEmailJob implements ShouldQueue
      */
     public function __construct(
         public int $recipientId
-    ) {}
+    ) {
+    }
 
     /**
      * Execute the job.
@@ -84,6 +85,9 @@ class SendCampaignEmailJob implements ShouldQueue
             $senderName = $campaign->sender_name ?? config('mail.from.name');
             $replyTo = $campaign->reply_to ?? $senderEmail;
 
+            // Process content for tracking (Pixel + Links)
+            $content = $this->processContentForTracking($content, $recipient->id);
+
             Mail::to($recipient->email)->send(new CampaignMail([
                 'subject' => $subject,
                 'content' => $content,
@@ -116,6 +120,47 @@ class SendCampaignEmailJob implements ShouldQueue
 
             throw $e;
         }
+    }
+
+    /**
+     * Inject tracking pixel and wrap links
+     */
+    protected function processContentForTracking(string $content, int $recipientId): string
+    {
+        // 1. Inject Tracking Pixel
+        $trackingUrl = route('marketing.track.open', $recipientId);
+        $pixel = '<img src="' . $trackingUrl . '" width="1" height="1" style="display:none;" alt="" />';
+
+        if (strpos($content, '</body>') !== false) {
+            $content = str_replace('</body>', $pixel . '</body>', $content);
+        } else {
+            $content .= $pixel;
+        }
+
+        // 2. Wrap Links
+        $content = preg_replace_callback('/<a\s+(?:[^>]*\s+)?href=["\']([^"\']*)["\']([^>]*)>/i', function ($matches) use ($recipientId) {
+            $originalUrl = $matches[1];
+            $otherAttributes = $matches[2];
+
+            // Skip anchor links, mailto:, javascript:, or existing tracking links
+            if (
+                strpos($originalUrl, '#') === 0 ||
+                strpos($originalUrl, 'mailto:') === 0 ||
+                strpos($originalUrl, 'tel:') === 0 ||
+                strpos($originalUrl, 'javascript:') === 0
+            ) {
+                return $matches[0];
+            }
+
+            $trackingLink = route('marketing.track.click', [
+                'id' => $recipientId,
+                'url' => $originalUrl
+            ]);
+
+            return '<a href="' . $trackingLink . '" ' . $otherAttributes . '>';
+        }, $content);
+
+        return $content;
     }
 }
 

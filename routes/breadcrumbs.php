@@ -558,3 +558,27 @@ Breadcrumbs::for('support.categories.edit', function (BreadcrumbTrail $trail, $c
     $trail->parent('support.categories.index');
     $trail->push(trans('admin::app.support.categories.edit.title'), route('admin.support.categories.edit', $category->id));
 });
+
+// Marketing > Campaigns
+Breadcrumbs::for('marketing.campaigns.index', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push(trans('admin::app.marketing.campaigns.index.title'), route('admin.marketing.campaigns.index'));
+});
+
+// Marketing > Campaigns > Create
+Breadcrumbs::for('marketing.campaigns.create', function (BreadcrumbTrail $trail) {
+    $trail->parent('marketing.campaigns.index');
+    $trail->push(trans('admin::app.marketing.campaigns.create.title'), route('admin.marketing.campaigns.create'));
+});
+
+// Marketing > Campaigns > Edit
+Breadcrumbs::for('marketing.campaigns.edit', function (BreadcrumbTrail $trail, $campaign) {
+    $trail->parent('marketing.campaigns.index');
+    $trail->push(trans('admin::app.marketing.campaigns.edit.title'), route('admin.marketing.campaigns.edit', $campaign->id));
+});
+
+// Marketing > Campaigns > View
+Breadcrumbs::for('marketing.campaigns.view', function (BreadcrumbTrail $trail, $campaign) {
+    $trail->parent('marketing.campaigns.index');
+    $trail->push($campaign->name, route('admin.marketing.campaigns.view', $campaign->id));
+});
