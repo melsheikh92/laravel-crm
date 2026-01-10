@@ -3,23 +3,23 @@
   "spec": "006-territory-management",
   "state": "building",
   "subtasks": {
-    "completed": 16,
+    "completed": 21,
     "total": 56,
     "in_progress": 1,
     "failed": 0
   },
   "phase": {
-    "current": "Repository and Service Layer",
-    "id": 3,
-    "total": 6
+    "current": "Admin Controllers and Routes",
+    "id": 4,
+    "total": 5
   },
   "workers": {
     "active": 0,
     "max": 1
   },
   "session": {
-    "number": 18,
+    "number": 23,
     "started_at": "2026-01-10T21:31:57.400812"
   },
-  "last_update": "2026-01-10T22:33:00.236376"
+  "last_update": "2026-01-10T22:52:17.869986"
 }
