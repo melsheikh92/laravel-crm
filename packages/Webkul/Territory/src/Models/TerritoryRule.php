@@ -132,6 +132,11 @@ class TerritoryRule extends Model implements TerritoryRuleContract
      */
     protected function compareValues(mixed $fieldValue, string $operator, mixed $ruleValue): bool
     {
+        // Handle array rule values for string operators by using the first element
+        if (is_array($ruleValue) && in_array($operator, ['=', '==', '!=', 'contains', 'not_contains', 'starts_with', 'ends_with'])) {
+            $ruleValue = $ruleValue[0] ?? null;
+        }
+
         return match ($operator) {
             '=' => $fieldValue == $ruleValue,
             '==' => $fieldValue == $ruleValue,

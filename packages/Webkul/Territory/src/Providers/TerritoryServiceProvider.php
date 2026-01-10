@@ -16,8 +16,7 @@ class TerritoryServiceProvider extends ServiceProvider
         $this->loadMigrationsFrom(__DIR__ . '/../Database/Migrations');
 
         // Register module service provider
-        // TODO: Uncomment when models are created in phase 2
-        // $this->app->register(ModuleServiceProvider::class);
+        $this->app->register(ModuleServiceProvider::class);
 
         // Register event listeners
         $this->registerEventListeners();

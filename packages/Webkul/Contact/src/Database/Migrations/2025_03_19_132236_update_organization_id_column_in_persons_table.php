@@ -11,6 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Skip this migration in SQLite as it doesn't support dropping foreign keys
+        if (config('database.default') === 'sqlite') {
+            return;
+        }
+
         Schema::table('persons', function (Blueprint $table) {
             $table->dropForeign(['organization_id']);
 
@@ -23,6 +28,11 @@ return new class extends Migration
      */
     public function down(): void
     {
+        // Skip this migration in SQLite as it doesn't support dropping foreign keys
+        if (config('database.default') === 'sqlite') {
+            return;
+        }
+
         Schema::table('persons', function (Blueprint $table) {
             $table->dropForeign(['organization_id']);
 
