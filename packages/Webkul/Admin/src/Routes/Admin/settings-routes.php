@@ -427,6 +427,10 @@ Route::prefix('settings')->group(function () {
         Route::get('territory/{id}', 'territory')->name('admin.settings.territories.map.territory');
 
         Route::get('with-assignments', 'withAssignments')->name('admin.settings.territories.map.with_assignments');
+
+        Route::get('coverage', 'coverage')->name('admin.settings.territories.map.coverage');
+
+        Route::get('coverage-data', 'coverageData')->name('admin.settings.territories.map.coverage_data');
     });
 
     /**

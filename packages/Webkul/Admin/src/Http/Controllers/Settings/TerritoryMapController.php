@@ -118,6 +118,80 @@ class TerritoryMapController extends Controller
     }
 
     /**
+     * Display the coverage analytics view.
+     */
+    public function coverage(): View
+    {
+        return view('admin::settings.territories.coverage');
+    }
+
+    /**
+     * Get coverage analytics data for territories.
+     */
+    public function coverageData(): JsonResponse
+    {
+        $territories = $this->territoryRepository
+            ->with(['assignments' => function ($query) {
+                $query->with('assignable');
+            }, 'owner'])
+            ->scopeQuery(function ($query) {
+                return $query->whereNotNull('boundaries')
+                    ->where('boundaries', '!=', '[]');
+            })
+            ->all();
+
+        $coverageData = $territories->map(function ($territory) {
+            $assignments = $territory->assignments;
+            $assignmentCount = $assignments->count();
+            $leadCount = $assignments->where('assignable_type', 'Webkul\Lead\Models\Lead')->count();
+            $orgCount = $assignments->where('assignable_type', 'Webkul\Contact\Models\Organization')->count();
+            $personCount = $assignments->where('assignable_type', 'Webkul\Contact\Models\Person')->count();
+
+            // Calculate coverage metrics
+            $totalEntities = $leadCount + $orgCount + $personCount;
+            $coverage = $totalEntities > 0 ? 100 : 0;
+
+            // Calculate density score (entities per territory)
+            $densityScore = $totalEntities;
+
+            $feature = $this->territoryToFeature($territory);
+
+            // Add comprehensive coverage statistics
+            $feature['properties']['assignment_count'] = $assignmentCount;
+            $feature['properties']['lead_count'] = $leadCount;
+            $feature['properties']['organization_count'] = $orgCount;
+            $feature['properties']['person_count'] = $personCount;
+            $feature['properties']['total_entities'] = $totalEntities;
+            $feature['properties']['coverage_percentage'] = $coverage;
+            $feature['properties']['density_score'] = $densityScore;
+
+            return $feature;
+        })->values()->all();
+
+        // Calculate overall statistics
+        $stats = [
+            'total_territories' => $territories->count(),
+            'territories_with_coverage' => collect($coverageData)->filter(function ($f) {
+                return $f['properties']['total_entities'] > 0;
+            })->count(),
+            'territories_without_coverage' => collect($coverageData)->filter(function ($f) {
+                return $f['properties']['total_entities'] === 0;
+            })->count(),
+            'average_density' => collect($coverageData)->avg('properties.density_score'),
+            'total_entities' => collect($coverageData)->sum('properties.total_entities'),
+            'total_leads' => collect($coverageData)->sum('properties.lead_count'),
+            'total_organizations' => collect($coverageData)->sum('properties.organization_count'),
+            'total_persons' => collect($coverageData)->sum('properties.person_count'),
+        ];
+
+        return response()->json([
+            'type'       => 'FeatureCollection',
+            'features'   => $coverageData,
+            'statistics' => $stats,
+        ]);
+    }
+
+    /**
      * Convert a Territory model to a GeoJSON Feature.
      *
      * @param  \Webkul\Territory\Contracts\Territory  $territory
