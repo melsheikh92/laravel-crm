@@ -42,6 +42,11 @@ class TerritoryServiceProvider extends ServiceProvider
         Event::listen('contacts.person.create.after', function ($person) {
             app(\Webkul\Territory\Listeners\AssignTerritoryToPerson::class)->handle($person);
         });
+
+        // Listen to Territory update event and handle ownership transfer
+        Event::listen('settings.territory.update.after', function ($territory) {
+            app(\Webkul\Territory\Listeners\HandleTerritoryOwnershipChange::class)->handle($territory);
+        });
     }
 
     /**
@@ -73,6 +78,10 @@ class TerritoryServiceProvider extends ServiceProvider
 
         $this->app->singleton(
             \Webkul\Territory\Services\TerritoryAnalyticsService::class
+        );
+
+        $this->app->singleton(
+            \Webkul\Territory\Services\TerritoryReassignmentHandler::class
         );
     }
 }
