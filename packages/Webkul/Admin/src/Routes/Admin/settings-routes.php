@@ -420,6 +420,8 @@ Route::prefix('settings')->group(function () {
      * Territory Map Routes.
      */
     Route::controller(TerritoryMapController::class)->prefix('territories/map')->group(function () {
+        Route::get('', 'index')->name('admin.settings.territories.map.index');
+
         Route::get('geojson', 'geojson')->name('admin.settings.territories.map.geojson');
 
         Route::get('territory/{id}', 'territory')->name('admin.settings.territories.map.territory');

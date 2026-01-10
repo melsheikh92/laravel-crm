@@ -2,6 +2,7 @@
 
 namespace Webkul\Admin\Http\Controllers\Settings;
 
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Webkul\Admin\Http\Controllers\Controller;
 use Webkul\Territory\Repositories\TerritoryRepository;
@@ -16,6 +17,16 @@ class TerritoryMapController extends Controller
     public function __construct(
         protected TerritoryRepository $territoryRepository
     ) {}
+
+    /**
+     * Display the territory map view.
+     */
+    public function index(): View
+    {
+        $territories = $this->territoryRepository->all();
+
+        return view('admin::settings.territories.map', compact('territories'));
+    }
 
     /**
      * Get all territories as GeoJSON FeatureCollection.
