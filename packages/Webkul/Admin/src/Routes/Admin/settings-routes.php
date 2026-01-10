@@ -25,6 +25,7 @@ use Webkul\Admin\Http\Controllers\Settings\WorkflowController;
 use Webkul\Admin\Http\Controllers\Settings\TerritoryAnalyticsController;
 use Webkul\Admin\Http\Controllers\Settings\TerritoryAssignmentController;
 use Webkul\Admin\Http\Controllers\Settings\TerritoryController;
+use Webkul\Admin\Http\Controllers\Settings\TerritoryMapController;
 use Webkul\Admin\Http\Controllers\Settings\TerritoryRuleController;
 
 /**
@@ -413,6 +414,17 @@ Route::prefix('settings')->group(function () {
         Route::get('rankings', 'rankings')->name('admin.settings.territories.analytics.rankings');
 
         Route::get('by-type', 'byType')->name('admin.settings.territories.analytics.by_type');
+    });
+
+    /**
+     * Territory Map Routes.
+     */
+    Route::controller(TerritoryMapController::class)->prefix('territories/map')->group(function () {
+        Route::get('geojson', 'geojson')->name('admin.settings.territories.map.geojson');
+
+        Route::get('territory/{id}', 'territory')->name('admin.settings.territories.map.territory');
+
+        Route::get('with-assignments', 'withAssignments')->name('admin.settings.territories.map.with_assignments');
     });
 
     /**

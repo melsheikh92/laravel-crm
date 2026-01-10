@@ -1734,6 +1734,10 @@ return [
                 'invalid-metric' => 'Invalid metric. Must be revenue, conversion_rate, or lead_count.',
                 'invalid-type' => 'Invalid type. Must be geographic or account-based.',
             ],
+
+            'map' => [
+                'no-boundaries' => 'This territory has no geographic boundaries defined.',
+            ],
         ],
 
         'territory-assignments' => [
