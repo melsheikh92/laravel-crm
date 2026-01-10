@@ -22,6 +22,10 @@ use Webkul\Admin\Http\Controllers\Settings\Warehouse\WarehouseController;
 use Webkul\Admin\Http\Controllers\Settings\WebFormController;
 use Webkul\Admin\Http\Controllers\Settings\WebhookController;
 use Webkul\Admin\Http\Controllers\Settings\WorkflowController;
+use Webkul\Admin\Http\Controllers\Settings\TerritoryAnalyticsController;
+use Webkul\Admin\Http\Controllers\Settings\TerritoryAssignmentController;
+use Webkul\Admin\Http\Controllers\Settings\TerritoryController;
+use Webkul\Admin\Http\Controllers\Settings\TerritoryRuleController;
 
 /**
  * Settings group routes.
@@ -317,6 +321,98 @@ Route::prefix('settings')->group(function () {
         Route::post('test-smtp', 'testSmtp')->name('admin.settings.mail_configuration.test_smtp');
 
         Route::post('test-imap', 'testImap')->name('admin.settings.mail_configuration.test_imap');
+    });
+
+    /**
+     * Territories Routes.
+     */
+    Route::controller(TerritoryController::class)->prefix('territories')->group(function () {
+        Route::get('', 'index')->name('admin.settings.territories.index');
+
+        Route::get('create', 'create')->name('admin.settings.territories.create');
+
+        Route::post('create', 'store')->name('admin.settings.territories.store');
+
+        Route::get('edit/{id}', 'edit')->name('admin.settings.territories.edit');
+
+        Route::put('edit/{id}', 'update')->name('admin.settings.territories.update');
+
+        Route::delete('{id}', 'destroy')->name('admin.settings.territories.delete');
+
+        Route::get('hierarchy', 'hierarchy')->name('admin.settings.territories.hierarchy');
+    });
+
+    /**
+     * Territory Rules Routes.
+     */
+    Route::controller(TerritoryRuleController::class)->prefix('territories/{territoryId}/rules')->group(function () {
+        Route::get('', 'index')->name('admin.settings.territories.rules.index');
+
+        Route::get('create', 'create')->name('admin.settings.territories.rules.create');
+
+        Route::post('create', 'store')->name('admin.settings.territories.rules.store');
+
+        Route::get('edit/{id}', 'edit')->name('admin.settings.territories.rules.edit');
+
+        Route::put('edit/{id}', 'update')->name('admin.settings.territories.rules.update');
+
+        Route::delete('{id}', 'destroy')->name('admin.settings.territories.rules.delete');
+
+        Route::post('{id}/toggle-status', 'toggleStatus')->name('admin.settings.territories.rules.toggle_status');
+
+        Route::put('{id}/update-priority', 'updatePriority')->name('admin.settings.territories.rules.update_priority');
+
+        Route::post('bulk-update-priorities', 'bulkUpdatePriorities')->name('admin.settings.territories.rules.bulk_update_priorities');
+    });
+
+    /**
+     * Territory Assignments Routes.
+     */
+    Route::controller(TerritoryAssignmentController::class)->prefix('territories/assignments')->group(function () {
+        Route::get('', 'index')->name('admin.settings.territories.assignments.index');
+
+        Route::get('create', 'create')->name('admin.settings.territories.assignments.create');
+
+        Route::post('create', 'store')->name('admin.settings.territories.assignments.store');
+
+        Route::delete('{id}', 'destroy')->name('admin.settings.territories.assignments.delete');
+
+        Route::get('reassign', 'reassign')->name('admin.settings.territories.assignments.reassign');
+
+        Route::post('reassign', 'storeReassignment')->name('admin.settings.territories.assignments.store_reassignment');
+
+        Route::post('bulk-reassign', 'bulkReassign')->name('admin.settings.territories.assignments.bulk_reassign');
+
+        Route::get('history', 'history')->name('admin.settings.territories.assignments.history');
+    });
+
+    /**
+     * Territory Analytics Routes.
+     */
+    Route::controller(TerritoryAnalyticsController::class)->prefix('territories/analytics')->group(function () {
+        Route::get('', 'index')->name('admin.settings.territories.analytics.index');
+
+        Route::get('overview', 'overview')->name('admin.settings.territories.analytics.overview');
+
+        Route::get('all-territories', 'allTerritories')->name('admin.settings.territories.analytics.all_territories');
+
+        Route::get('territory/{id}', 'territory')->name('admin.settings.territories.analytics.territory');
+
+        Route::post('territory/{id}/date-range', 'dateRange')->name('admin.settings.territories.analytics.date_range');
+
+        Route::get('top/revenue', 'topByRevenue')->name('admin.settings.territories.analytics.top_by_revenue');
+
+        Route::get('top/conversion-rate', 'topByConversionRate')->name('admin.settings.territories.analytics.top_by_conversion_rate');
+
+        Route::get('top/lead-count', 'topByLeadCount')->name('admin.settings.territories.analytics.top_by_lead_count');
+
+        Route::post('compare', 'compare')->name('admin.settings.territories.analytics.compare');
+
+        Route::get('territory/{id}/trend', 'trend')->name('admin.settings.territories.analytics.trend');
+
+        Route::get('rankings', 'rankings')->name('admin.settings.territories.analytics.rankings');
+
+        Route::get('by-type', 'byType')->name('admin.settings.territories.analytics.by_type');
     });
 
     /**
