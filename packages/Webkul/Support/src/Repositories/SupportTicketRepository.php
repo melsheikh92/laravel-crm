@@ -134,7 +134,7 @@ class SupportTicketRepository extends Repository
         ]);
 
         // Update first response time if this is the first response
-        if (!$ticket->first_response_at && !$data['is_from_customer']) {
+        if (!$ticket->first_response_at && !($data['is_from_customer'] ?? false)) {
             $ticket->update(['first_response_at' => now()]);
         }
 

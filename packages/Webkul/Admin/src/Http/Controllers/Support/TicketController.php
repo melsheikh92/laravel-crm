@@ -165,7 +165,10 @@ class TicketController extends Controller
     /**
      * Add message to ticket
      */
-    public function addMessage(int $id): JsonResponse
+    /**
+     * Add message to ticket
+     */
+    public function addMessage(int $id): RedirectResponse
     {
         $this->validate(request(), [
             'message' => 'required|string',
@@ -173,12 +176,11 @@ class TicketController extends Controller
 
         $data = request()->all();
 
-        $message = $this->ticketService->addMessage($id, $data);
+        $this->ticketService->addMessage($id, $data);
 
-        return response()->json([
-            'message' => trans('admin::app.support.tickets.message-added'),
-            'data' => $message->load('user', 'attachments'),
-        ]);
+        session()->flash('success', trans('admin::app.support.tickets.message-added'));
+
+        return redirect()->back();
     }
 
     /**

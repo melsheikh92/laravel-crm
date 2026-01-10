@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Webkul\Contact\Models\Person;
+use Webkul\Tag\Models\Tag;
 
 class SupportTicket extends Model
 {
@@ -193,7 +194,7 @@ class SupportTicket extends Model
         return $this->sla_breached;
     }
 
-    public function getStatusColorAttribute(): string
+    public function getStatusColor(): string
     {
         return match ($this->status) {
             'open' => 'blue',
@@ -206,7 +207,7 @@ class SupportTicket extends Model
         };
     }
 
-    public function getPriorityColorAttribute(): string
+    public function getPriorityColor(): string
     {
         return match ($this->priority) {
             'urgent' => 'red',
