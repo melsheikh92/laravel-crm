@@ -16,13 +16,18 @@ return new class extends Migration
             $table->string('unique_id')->nullable()->unique();
         });
 
+        // Skip unique_id update for SQLite as it doesn't support JSON_UNQUOTE and CONCAT
+        if (DB::connection()->getDriverName() === 'sqlite') {
+            return;
+        }
+
         $tableName = DB::getTablePrefix().'persons';
 
         DB::statement("
             UPDATE {$tableName}
             SET unique_id = CONCAT(
-                user_id, '|', 
-                organization_id, '|', 
+                user_id, '|',
+                organization_id, '|',
                 JSON_UNQUOTE(JSON_EXTRACT(emails, '$[0].value')), '|',
                 JSON_UNQUOTE(JSON_EXTRACT(contact_numbers, '$[0].value'))
             )
