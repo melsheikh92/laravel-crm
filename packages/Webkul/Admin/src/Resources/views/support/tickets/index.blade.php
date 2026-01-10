@@ -1,35 +1,54 @@
-@php
-    $_title = trans('admin::app.support.tickets.index.title') !== 'admin::app.support.tickets.index.title' 
-        ? trans('admin::app.support.tickets.index.title') 
-        : 'Support Tickets';
-@endphp
-
 <x-admin::layouts>
     <x-slot:title>
-        {{ $_title }}
-    </x-slot:title>
+        @lang('admin::app.support.tickets.index.title')
+        </x-slot>
 
-    <div class="flex gap-4 justify-between items-center max-sm:flex-wrap mb-6">
-        <div class="flex gap-2.5 items-center">
-            <p class="text-2xl dark:text-white">{{ $_title }}</p>
-        </div>
-    </div>
+        <!-- Header -->
+        <div
+            class="flex items-center justify-between rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm dark:border-gray-800 dark:bg-gray-900 dark:text-gray-300">
+            <div class="flex flex-col gap-2">
+                <x-admin::breadcrumbs name="support.tickets" />
 
-    <div class="flex items-center justify-center min-h-[400px]">
-        <div class="text-center max-w-md">
-            <svg class="mx-auto h-24 w-24 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-            </svg>
-            <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-                Feature Under Development
-            </h3>
-            <p class="text-gray-600 dark:text-gray-400 mb-4">
-                The Support Tickets feature is currently being developed and will be available soon.
-            </p>
-            <p class="text-sm text-gray-500 dark:text-gray-500">
-                This feature will include ticket management, SLA tracking, and customer support workflows.
-            </p>
+                <div class="text-xl font-bold dark:text-white">
+                    @lang('admin::app.support.tickets.index.title')
+                </div>
+            </div>
+
+            <div class="flex items-center gap-x-2.5">
+                <!-- Export -->
+                <x-admin::datagrid.export :src="route('admin.support.tickets.index')" />
+
+                <!-- Create Ticket Button -->
+                <a href="{{ route('admin.support.tickets.create') }}" class="primary-button">
+                    @lang('admin::app.support.tickets.index.create-btn')
+                </a>
+            </div>
         </div>
-    </div>
+
+        <!-- Statistics Cards -->
+        @if(isset($statistics))
+            <div class="mt-4 flex gap-4">
+                <div class="flex-1 rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
+                    <div class="text-sm text-gray-600 dark:text-gray-400">Total Tickets</div>
+                    <div class="text-2xl font-bold dark:text-white">{{ $statistics['total'] ?? 0 }}</div>
+                </div>
+                <div class="flex-1 rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
+                    <div class="text-sm text-gray-600 dark:text-gray-400">Open</div>
+                    <div class="text-2xl font-bold text-blue-600">{{ $statistics['open'] ?? 0 }}</div>
+                </div>
+                <div class="flex-1 rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
+                    <div class="text-sm text-gray-600 dark:text-gray-400">In Progress</div>
+                    <div class="text-2xl font-bold text-yellow-600">{{ $statistics['in_progress'] ?? 0 }}</div>
+                </div>
+                <div class="flex-1 rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
+                    <div class="text-sm text-gray-600 dark:text-gray-400">SLA Breached</div>
+                    <div class="text-2xl font-bold text-red-600">{{ $statistics['breached'] ?? 0 }}</div>
+                </div>
+            </div>
+        @endif
+
+        <!-- DataGrid -->
+        <div class="mt-4">
+            <x-admin::datagrid :src="route('admin.support.tickets.index')" />
+        </div>
 </x-admin::layouts>
-

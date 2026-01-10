@@ -1,0 +1,3 @@
+#!/bin/bash
+# Wrapper script to run artisan commands inside Docker container
+docker exec -it provensuccess_app php artisan "$@"

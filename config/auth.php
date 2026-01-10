@@ -14,7 +14,7 @@ return [
     */
 
     'defaults' => [
-        'guard'     => 'user',
+        'guard' => 'user',
         'passwords' => 'users',
     ],
 
@@ -37,8 +37,13 @@ return [
 
     'guards' => [
         'user' => [
-            'driver'   => 'session',
+            'driver' => 'session',
             'provider' => 'users',
+        ],
+
+        'portal' => [
+            'driver' => 'session',
+            'provider' => 'portal_users',
         ],
     ],
 
@@ -57,12 +62,18 @@ return [
     |
     | Supported: "database", "eloquent"
     |
+    |
     */
 
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model'  => Webkul\User\Models\User::class,
+            'model' => Webkul\User\Models\User::class,
+        ],
+
+        'portal_users' => [
+            'driver' => 'eloquent',
+            'model' => Webkul\Portal\Models\PortalAccess::class,
         ],
     ],
 
@@ -84,8 +95,8 @@ return [
     'passwords' => [
         'users' => [
             'provider' => 'users',
-            'table'    => 'user_password_resets',
-            'expire'   => 60,
+            'table' => 'user_password_resets',
+            'expire' => 60,
         ],
     ],
 

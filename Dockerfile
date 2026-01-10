@@ -56,6 +56,5 @@ EXPOSE 8000
 # Use entrypoint script
 ENTRYPOINT ["docker-entrypoint.sh"]
 
-# Start Laravel development server
-CMD ["su", "-s", "/bin/bash", "-c", "php artisan serve --host=0.0.0.0 --port=8000", "www-data"]
-
+# The entrypoint script will start the server
+CMD []

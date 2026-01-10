@@ -28,7 +28,7 @@ class CoreConfigRepository extends Repository
     {
         $field = core()->getConfigField($fieldName);
 
-        if (! $field) {
+        if (!$field) {
             return false;
         }
 
@@ -40,7 +40,7 @@ class CoreConfigRepository extends Repository
      */
     protected function encryptValue(string $fieldName, mixed $value): mixed
     {
-        if (empty($value) || ! is_string($value)) {
+        if (empty($value) || !is_string($value)) {
             return $value;
         }
 
@@ -56,7 +56,7 @@ class CoreConfigRepository extends Repository
      */
     protected function decryptValue(mixed $value, bool $isEncrypted): mixed
     {
-        if (! $isEncrypted || empty($value) || ! is_string($value)) {
+        if (!$isEncrypted || empty($value) || !is_string($value)) {
             return $value;
         }
 
@@ -74,14 +74,14 @@ class CoreConfigRepository extends Repository
     {
         if (
             method_exists($configuration, 'getTitle')
-            && ! is_null($configuration->getTitle())
+            && !is_null($configuration->getTitle())
         ) {
             return trans($configuration->getTitle());
         }
 
         if (
             method_exists($configuration, 'getName')
-            && ! is_null($configuration->getName())
+            && !is_null($configuration->getName())
         ) {
             return trans($configuration->getName());
         }
@@ -102,10 +102,12 @@ class CoreConfigRepository extends Repository
                 ? $configuration->getChildren()
                 : $configuration->getFields();
 
-            $tempPath = array_merge($path, [[
-                'key'   => $configuration->getKey() ?? null,
-                'title' => $this->getTranslatedTitle($configuration),
-            ]]);
+            $tempPath = array_merge($path, [
+                [
+                    'key' => $configuration->getKey() ?? null,
+                    'title' => $this->getTranslatedTitle($configuration),
+                ]
+            ]);
 
             $results = array_merge($results, $this->search($children, $searchTerm, $tempPath));
         }
@@ -131,7 +133,7 @@ class CoreConfigRepository extends Repository
 
                 $results[] = [
                     'title' => implode(' > ', [...Arr::pluck($path, 'title'), $title]),
-                    'url'   => route('admin.configuration.index', Str::replace('.', '/', $queryParam)),
+                    'url' => route('admin.configuration.index', Str::replace('.', '/', $queryParam)),
                 ];
             }
 
@@ -151,6 +153,10 @@ class CoreConfigRepository extends Repository
         $preparedData = [];
 
         foreach ($data as $method => $fieldData) {
+            if (!is_array($fieldData)) {
+                continue;
+            }
+
             $recursiveData = $this->recursiveArray($fieldData, $method);
 
             foreach ($recursiveData as $fieldName => $value) {
@@ -162,7 +168,7 @@ class CoreConfigRepository extends Repository
 
                     if ($coreConfigValues->isNotEmpty()) {
                         foreach ($coreConfigValues as $coreConfig) {
-                            if (! empty($coreConfig['value'])) {
+                            if (!empty($coreConfig['value'])) {
                                 Storage::delete($coreConfig['value']);
                             }
 
@@ -177,7 +183,7 @@ class CoreConfigRepository extends Repository
             foreach ($recursiveData as $fieldName => $value) {
                 if (is_array($value)) {
                     foreach ($value as $key => $val) {
-                        $fieldNameWithKey = $fieldName.'.'.$key;
+                        $fieldNameWithKey = $fieldName . '.' . $key;
 
                         $coreConfigValues = $this->model->where('code', $fieldNameWithKey)->get();
 
@@ -195,8 +201,8 @@ class CoreConfigRepository extends Repository
                                 $isEncrypted = $this->shouldEncrypt($fieldNameWithKey);
 
                                 parent::update([
-                                    'code'      => $fieldNameWithKey,
-                                    'value'     => $encryptedVal,
+                                    'code' => $fieldNameWithKey,
+                                    'value' => $encryptedVal,
                                     'encrypted' => $isEncrypted,
                                 ], $coreConfig->id);
                             }
@@ -205,8 +211,8 @@ class CoreConfigRepository extends Repository
                             $isEncrypted = $this->shouldEncrypt($fieldNameWithKey);
 
                             parent::create([
-                                'code'      => $fieldNameWithKey,
-                                'value'     => $encryptedVal,
+                                'code' => $fieldNameWithKey,
+                                'value' => $encryptedVal,
                                 'encrypted' => $isEncrypted,
                             ]);
                         }
@@ -217,14 +223,14 @@ class CoreConfigRepository extends Repository
                     }
 
                     $preparedData[] = [
-                        'code'  => $fieldName,
+                        'code' => $fieldName,
                         'value' => $value,
                     ];
                 }
             }
         }
 
-        if (! empty($preparedData)) {
+        if (!empty($preparedData)) {
             foreach ($preparedData as $dataItem) {
                 $coreConfigValues = $this->model->where('code', $dataItem['code'])->get();
 
@@ -257,7 +263,7 @@ class CoreConfigRepository extends Repository
         static $recursiveArrayData = [];
 
         foreach ($formData as $form => $formValue) {
-            $value = $method.'.'.$form;
+            $value = $method . '.' . $form;
 
             if (is_array($formValue)) {
                 $dim = $this->countDim($formValue);
@@ -277,7 +283,7 @@ class CoreConfigRepository extends Repository
                 $recursiveArrayData[$key] = $value;
             } else {
                 foreach ($value as $key1 => $val) {
-                    $recursiveArrayData[$key.'.'.$key1] = $val;
+                    $recursiveArrayData[$key . '.' . $key1] = $val;
                 }
             }
         }

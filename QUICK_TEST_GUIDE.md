@@ -8,7 +8,9 @@
 
 1. **Login to Admin Panel**
    - Go to `http://localhost:8000/admin/login`
-   - Login with your credentials
+   - Login with your credentials:
+     - **Email:** `admin1@example.com`
+     - **Password:** `admin123`
 
 2. **Navigate to Emails**
    - Click on **Mail** in the sidebar

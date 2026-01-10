@@ -108,13 +108,13 @@ return [
      */
 
     'available_locales' => [
-        'ar'    => 'Arabic',
-        'en'    => 'English',
-        'es'    => 'Español',
-        'fa'    => 'Persian',
+        'ar' => 'Arabic',
+        'en' => 'English',
+        'es' => 'Español',
+        'fa' => 'Persian',
         'pt_BR' => 'Portuguese',
-        'tr'    => 'Türkçe',
-        'vi'    => 'Vietnamese',
+        'tr' => 'Türkçe',
+        'vi' => 'Vietnamese',
     ],
 
     /*
@@ -221,6 +221,7 @@ return [
         Webkul\WebForm\Providers\WebFormServiceProvider::class,
         Webkul\AI\Providers\AIServiceProvider::class,
         Webkul\Collaboration\Providers\CollaborationServiceProvider::class,
+        Webkul\Portal\Providers\PortalServiceProvider::class,
     ])->toArray(),
 
     /*

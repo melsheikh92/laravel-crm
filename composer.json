@@ -83,7 +83,8 @@
             "Webkul\\Automation\\": "packages/Webkul/Automation/src",
             "Webkul\\Collaboration\\": "packages/Webkul/Collaboration/src",
             "Webkul\\Support\\": "packages/Webkul/Support/src",
-            "Webkul\\Integration\\": "packages/Webkul/Integration/src"
+            "Webkul\\Integration\\": "packages/Webkul/Integration/src",
+            "Webkul\\Portal\\": "packages/Webkul/Portal/src"
         }
     },
     "autoload-dev": {

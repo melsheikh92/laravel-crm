@@ -29,7 +29,7 @@ Breadcrumbs::for('leads.edit', function (BreadcrumbTrail $trail, $lead) {
 // Dashboard > Leads > Title
 Breadcrumbs::for('leads.view', function (BreadcrumbTrail $trail, $lead) {
     $trail->parent('leads');
-    $trail->push('#'.$lead->id, route('admin.leads.view', $lead->id));
+    $trail->push('#' . $lead->id, route('admin.leads.view', $lead->id));
 });
 
 // Dashboard > Quotes
@@ -59,7 +59,7 @@ Breadcrumbs::for('mail', function (BreadcrumbTrail $trail) {
 // Mail > [Compose | Inbox | Outbox | Draft | Sent | Trash]
 Breadcrumbs::for('mail.route', function (BreadcrumbTrail $trail, $route) {
     $trail->parent('mail');
-    $trail->push(trans('admin::app.mail.index.'.$route), route('admin.mail.index', ['route' => $route]));
+    $trail->push(trans('admin::app.mail.index.' . $route), route('admin.mail.index', ['route' => $route]));
 });
 
 // Mail > [Inbox | Outbox | Draft | Sent | Trash] > Title
@@ -107,7 +107,7 @@ Breadcrumbs::for('contacts.persons.edit', function (BreadcrumbTrail $trail, $per
 // Dashboard > Contacts > Persons > View
 Breadcrumbs::for('contacts.persons.view', function (BreadcrumbTrail $trail, $person) {
     $trail->parent('contacts.persons');
-    $trail->push('#'.$person->id, route('admin.contacts.persons.index'));
+    $trail->push('#' . $person->id, route('admin.contacts.persons.index'));
 });
 
 // Dashboard > Contacts > Organizations
@@ -143,7 +143,7 @@ Breadcrumbs::for('products.create', function (BreadcrumbTrail $trail) {
 // Dashboard > Products > View Product
 Breadcrumbs::for('products.view', function (BreadcrumbTrail $trail, $product) {
     $trail->parent('products');
-    $trail->push('#'.$product->id, route('admin.products.view', $product->id));
+    $trail->push('#' . $product->id, route('admin.products.view', $product->id));
 });
 
 // Dashboard > Products > Edit Product
@@ -290,6 +290,12 @@ Breadcrumbs::for('settings.email_templates.edit', function (BreadcrumbTrail $tra
     $trail->push(trans('admin::app.settings.email-template.edit.title'), route('admin.settings.email_templates.edit', $emailTemplate->id));
 });
 
+// Settings > Mail Configuration
+Breadcrumbs::for('settings.mail_configuration', function (BreadcrumbTrail $trail) {
+    $trail->parent('settings');
+    $trail->push(trans('admin::app.settings.mail-configuration.index.title'), route('admin.settings.mail_configuration.index'));
+});
+
 // Settings > Marketing Events
 Breadcrumbs::for('settings.marketing.events', function (BreadcrumbTrail $trail) {
     $trail->parent('settings');
@@ -388,7 +394,7 @@ Breadcrumbs::for('settings.warehouses.edit', function (BreadcrumbTrail $trail, $
 // Dashboard > Settings > Warehouse > View Warehouse
 Breadcrumbs::for('settings.warehouses.view', function (BreadcrumbTrail $trail, $warehouse) {
     $trail->parent('settings.warehouses');
-    $trail->push('#'.$warehouse->id, route('admin.settings.warehouses.view', $warehouse->id));
+    $trail->push('#' . $warehouse->id, route('admin.settings.warehouses.view', $warehouse->id));
 });
 
 // Dashboard > Settings > Warehouse > View Warehouse > Products
@@ -455,4 +461,100 @@ Breadcrumbs::for('configuration.slug', function (BreadcrumbTrail $trail, $slug) 
 Breadcrumbs::for('dashboard.account.edit', function (BreadcrumbTrail $trail, $user) {
     $trail->parent('dashboard');
     $trail->push(trans('admin::app.account.edit.title'), route('admin.user.account.edit', $user->id));
+});
+
+// Support Tickets
+Breadcrumbs::for('support.tickets', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push(trans('admin::app.layouts.support-tickets'), route('admin.support.tickets.index'));
+});
+
+// SLA Policies
+Breadcrumbs::for('support.sla.policies', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push(trans('admin::app.layouts.sla-management'), route('admin.support.sla.policies.index'));
+});
+
+// Knowledge Base
+Breadcrumbs::for('support.kb.articles', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push(trans('admin::app.layouts.knowledge-base'), route('admin.support.kb.articles.index'));
+});
+
+// Support Tickets > Create
+Breadcrumbs::for('support.tickets.create', function (BreadcrumbTrail $trail) {
+    $trail->parent('support.tickets');
+    $trail->push(trans('admin::app.support.tickets.create.title'), route('admin.support.tickets.create'));
+});
+
+// Support Tickets > Edit
+Breadcrumbs::for('support.tickets.edit', function (BreadcrumbTrail $trail, $ticket) {
+    $trail->parent('support.tickets');
+    $trail->push(trans('admin::app.support.tickets.edit.title'), route('admin.support.tickets.edit', $ticket->id));
+});
+
+// Support Tickets > View
+Breadcrumbs::for('support.tickets.view', function (BreadcrumbTrail $trail, $ticket) {
+    $trail->parent('support.tickets');
+    $trail->push('#' . $ticket->id, route('admin.support.tickets.show', $ticket->id));
+});
+
+// SLA Policies > Create
+Breadcrumbs::for('support.sla.policies.create', function (BreadcrumbTrail $trail) {
+    $trail->parent('support.sla.policies');
+    $trail->push(trans('admin::app.support.sla.create.title'), route('admin.support.sla.policies.create'));
+});
+
+// SLA Policies > Edit
+Breadcrumbs::for('support.sla.policies.edit', function (BreadcrumbTrail $trail, $policy) {
+    $trail->parent('support.sla.policies');
+    $trail->push(trans('admin::app.support.sla.edit.title'), route('admin.support.sla.policies.edit', $policy->id));
+});
+
+// Knowledge Base > Create
+Breadcrumbs::for('support.kb.articles.create', function (BreadcrumbTrail $trail) {
+    $trail->parent('support.kb.articles');
+    $trail->push(trans('admin::app.support.kb.create.title'), route('admin.support.kb.articles.create'));
+});
+
+// Knowledge Base > Edit
+Breadcrumbs::for('support.kb.articles.edit', function (BreadcrumbTrail $trail, $article) {
+    $trail->parent('support.kb.articles');
+    $trail->push(trans('admin::app.support.kb.edit.title'), route('admin.support.kb.articles.edit', $article->id));
+});
+
+// KB Categories
+Breadcrumbs::for('support.kb.categories.index', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push(trans('admin::app.support.kb.categories.index.title'), route('admin.support.kb.categories.index'));
+});
+
+// KB Categories > Create
+Breadcrumbs::for('support.kb.categories.create', function (BreadcrumbTrail $trail) {
+    $trail->parent('support.kb.categories.index');
+    $trail->push(trans('admin::app.support.kb.categories.create.title'), route('admin.support.kb.categories.create'));
+});
+
+// KB Categories > Edit
+Breadcrumbs::for('support.kb.categories.edit', function (BreadcrumbTrail $trail, $category) {
+    $trail->parent('support.kb.categories.index');
+    $trail->push(trans('admin::app.support.kb.categories.edit.title'), route('admin.support.kb.categories.edit', $category->id));
+});
+
+// Ticket Categories
+Breadcrumbs::for('support.categories.index', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push(trans('admin::app.support.categories.index.title'), route('admin.support.categories.index'));
+});
+
+// Ticket Categories > Create
+Breadcrumbs::for('support.categories.create', function (BreadcrumbTrail $trail) {
+    $trail->parent('support.categories.index');
+    $trail->push(trans('admin::app.support.categories.create.title'), route('admin.support.categories.create'));
+});
+
+// Ticket Categories > Edit
+Breadcrumbs::for('support.categories.edit', function (BreadcrumbTrail $trail, $category) {
+    $trail->parent('support.categories.index');
+    $trail->push(trans('admin::app.support.categories.edit.title'), route('admin.support.categories.edit', $category->id));
 });
