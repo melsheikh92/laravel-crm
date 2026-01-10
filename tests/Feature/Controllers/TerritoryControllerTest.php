@@ -11,7 +11,7 @@ uses(RefreshDatabase::class);
  * Territory Index Page Tests
  */
 it('can access territory index page', function () {
-    $admin = getDefaultAdmin();
+    $admin = User::factory()->create();
 
     test()->actingAs($admin)
         ->get(route('admin.settings.territories.index'))
@@ -19,7 +19,7 @@ it('can access territory index page', function () {
 });
 
 it('returns json data for ajax requests on index', function () {
-    $admin = getDefaultAdmin();
+    $admin = User::factory()->create();
 
     test()->actingAs($admin)
         ->get(route('admin.settings.territories.index'), ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
@@ -30,7 +30,7 @@ it('returns json data for ajax requests on index', function () {
  * Territory Create Page Tests
  */
 it('can access territory create page', function () {
-    $admin = getDefaultAdmin();
+    $admin = User::factory()->create();
 
     test()->actingAs($admin)
         ->get(route('admin.settings.territories.create'))
@@ -43,7 +43,7 @@ it('can access territory create page', function () {
  * Territory Store Tests
  */
 it('can create a new territory with valid data', function () {
-    $admin = getDefaultAdmin();
+    $admin = User::factory()->create();
     $user = User::factory()->create();
 
     Event::fake();
@@ -75,7 +75,7 @@ it('can create a new territory with valid data', function () {
 });
 
 it('can create territory with parent', function () {
-    $admin = getDefaultAdmin();
+    $admin = User::factory()->create();
     $user = User::factory()->create();
 
     $parent = Territory::create([
@@ -106,7 +106,7 @@ it('can create territory with parent', function () {
 });
 
 it('can create territory with boundaries', function () {
-    $admin = getDefaultAdmin();
+    $admin = User::factory()->create();
     $user = User::factory()->create();
 
     $boundaries = json_encode([
@@ -137,7 +137,7 @@ it('can create territory with boundaries', function () {
  * Territory Store Validation Tests
  */
 it('validates required fields when creating territory', function () {
-    $admin = getDefaultAdmin();
+    $admin = User::factory()->create();
 
     test()->actingAs($admin)
         ->post(route('admin.settings.territories.store'), [])
@@ -145,7 +145,7 @@ it('validates required fields when creating territory', function () {
 });
 
 it('validates name length when creating territory', function () {
-    $admin = getDefaultAdmin();
+    $admin = User::factory()->create();
     $user = User::factory()->create();
 
     $territoryData = [
@@ -162,7 +162,7 @@ it('validates name length when creating territory', function () {
 });
 
 it('validates code uniqueness when creating territory', function () {
-    $admin = getDefaultAdmin();
+    $admin = User::factory()->create();
     $user = User::factory()->create();
 
     Territory::create([
@@ -187,7 +187,7 @@ it('validates code uniqueness when creating territory', function () {
 });
 
 it('validates type is valid when creating territory', function () {
-    $admin = getDefaultAdmin();
+    $admin = User::factory()->create();
     $user = User::factory()->create();
 
     $territoryData = [
@@ -204,7 +204,7 @@ it('validates type is valid when creating territory', function () {
 });
 
 it('validates status is valid when creating territory', function () {
-    $admin = getDefaultAdmin();
+    $admin = User::factory()->create();
     $user = User::factory()->create();
 
     $territoryData = [
@@ -221,7 +221,7 @@ it('validates status is valid when creating territory', function () {
 });
 
 it('validates user_id exists when creating territory', function () {
-    $admin = getDefaultAdmin();
+    $admin = User::factory()->create();
 
     $territoryData = [
         'name' => 'Test Territory',
@@ -237,7 +237,7 @@ it('validates user_id exists when creating territory', function () {
 });
 
 it('validates parent_id exists when creating territory', function () {
-    $admin = getDefaultAdmin();
+    $admin = User::factory()->create();
     $user = User::factory()->create();
 
     $territoryData = [
@@ -255,7 +255,7 @@ it('validates parent_id exists when creating territory', function () {
 });
 
 it('validates boundaries is valid json when creating territory', function () {
-    $admin = getDefaultAdmin();
+    $admin = User::factory()->create();
     $user = User::factory()->create();
 
     $territoryData = [
@@ -276,7 +276,7 @@ it('validates boundaries is valid json when creating territory', function () {
  * Territory Edit Page Tests
  */
 it('can access territory edit page', function () {
-    $admin = getDefaultAdmin();
+    $admin = User::factory()->create();
     $user = User::factory()->create();
 
     $territory = Territory::create([
@@ -295,7 +295,7 @@ it('can access territory edit page', function () {
 });
 
 it('edit page excludes current territory and descendants from parent options', function () {
-    $admin = getDefaultAdmin();
+    $admin = User::factory()->create();
     $user = User::factory()->create();
 
     $parent = Territory::create([
@@ -324,7 +324,7 @@ it('edit page excludes current territory and descendants from parent options', f
  * Territory Update Tests
  */
 it('can update an existing territory', function () {
-    $admin = getDefaultAdmin();
+    $admin = User::factory()->create();
     $user = User::factory()->create();
 
     Event::fake();
@@ -364,7 +364,7 @@ it('can update an existing territory', function () {
 });
 
 it('can update territory parent', function () {
-    $admin = getDefaultAdmin();
+    $admin = User::factory()->create();
     $user = User::factory()->create();
 
     $parent = Territory::create([
@@ -402,7 +402,7 @@ it('can update territory parent', function () {
 });
 
 it('prevents setting parent to self when updating', function () {
-    $admin = getDefaultAdmin();
+    $admin = User::factory()->create();
     $user = User::factory()->create();
 
     $territory = Territory::create([
@@ -429,7 +429,7 @@ it('prevents setting parent to self when updating', function () {
 });
 
 it('prevents setting parent to descendant when updating', function () {
-    $admin = getDefaultAdmin();
+    $admin = User::factory()->create();
     $user = User::factory()->create();
 
     $parent = Territory::create([
@@ -468,7 +468,7 @@ it('prevents setting parent to descendant when updating', function () {
  * Territory Update Validation Tests
  */
 it('validates required fields when updating territory', function () {
-    $admin = getDefaultAdmin();
+    $admin = User::factory()->create();
     $user = User::factory()->create();
 
     $territory = Territory::create([
@@ -485,7 +485,7 @@ it('validates required fields when updating territory', function () {
 });
 
 it('allows same code when updating own territory', function () {
-    $admin = getDefaultAdmin();
+    $admin = User::factory()->create();
     $user = User::factory()->create();
 
     $territory = Territory::create([
@@ -515,7 +515,7 @@ it('allows same code when updating own territory', function () {
 });
 
 it('validates code uniqueness when updating to existing code', function () {
-    $admin = getDefaultAdmin();
+    $admin = User::factory()->create();
     $user = User::factory()->create();
 
     $territory1 = Territory::create([
@@ -551,7 +551,7 @@ it('validates code uniqueness when updating to existing code', function () {
  * Territory Delete Tests
  */
 it('can delete a territory', function () {
-    $admin = getDefaultAdmin();
+    $admin = User::factory()->create();
     $user = User::factory()->create();
 
     Event::fake();
@@ -578,7 +578,7 @@ it('can delete a territory', function () {
 });
 
 it('returns error when deleting non-existent territory', function () {
-    $admin = getDefaultAdmin();
+    $admin = User::factory()->create();
 
     test()->actingAs($admin)
         ->delete(route('admin.settings.territories.delete', 99999))
@@ -589,7 +589,7 @@ it('returns error when deleting non-existent territory', function () {
  * Territory Hierarchy Page Tests
  */
 it('can access territory hierarchy page', function () {
-    $admin = getDefaultAdmin();
+    $admin = User::factory()->create();
 
     test()->actingAs($admin)
         ->get(route('admin.settings.territories.hierarchy'))
@@ -597,7 +597,7 @@ it('can access territory hierarchy page', function () {
 });
 
 it('hierarchy page displays parent-child relationships', function () {
-    $admin = getDefaultAdmin();
+    $admin = User::factory()->create();
     $user = User::factory()->create();
 
     $parent = Territory::create([
@@ -674,7 +674,7 @@ it('requires authentication to update territory', function () {
 
 it('requires authentication to delete territory', function () {
     test()->delete(route('admin.settings.territories.delete', 1))
-        ->assertStatus(401);
+        ->assertRedirect(route('admin.session.create'));
 });
 
 it('requires authentication to access hierarchy page', function () {

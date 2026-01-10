@@ -1,11 +1,11 @@
 {
   "active": true,
   "spec": "006-territory-management",
-  "state": "building",
+  "state": "complete",
   "subtasks": {
-    "completed": 53,
+    "completed": 56,
     "total": 56,
-    "in_progress": 1,
+    "in_progress": 0,
     "failed": 0
   },
   "phase": {
@@ -18,8 +18,8 @@
     "max": 1
   },
   "session": {
-    "number": 55,
+    "number": 57,
     "started_at": "2026-01-10T21:31:57.400812"
   },
-  "last_update": "2026-01-11T01:09:27.748557"
+  "last_update": "2026-01-11T01:22:22.871129"
 }

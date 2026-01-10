@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Webkul\Territory\Contracts\TerritoryAssignment as TerritoryAssignmentContract;
 use Webkul\User\Models\UserProxy;
+use App\Models\User;
 
 class TerritoryAssignment extends Model implements TerritoryAssignmentContract
 {
@@ -55,7 +56,7 @@ class TerritoryAssignment extends Model implements TerritoryAssignmentContract
      */
     public function assignedBy(): BelongsTo
     {
-        return $this->belongsTo(UserProxy::modelClass(), 'assigned_by');
+        return $this->belongsTo(User::class, 'assigned_by');
     }
 
     /**

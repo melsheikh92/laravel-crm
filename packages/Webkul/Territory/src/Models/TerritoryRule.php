@@ -132,8 +132,8 @@ class TerritoryRule extends Model implements TerritoryRuleContract
      */
     protected function compareValues(mixed $fieldValue, string $operator, mixed $ruleValue): bool
     {
-        // Handle array rule values for string operators by using the first element
-        if (is_array($ruleValue) && in_array($operator, ['=', '==', '!=', 'contains', 'not_contains', 'starts_with', 'ends_with'])) {
+        // Handle array rule values for single-value operators by using the first element
+        if (is_array($ruleValue) && in_array($operator, ['=', '==', '!=', '>', '>=', '<', '<=', 'contains', 'not_contains', 'starts_with', 'ends_with'])) {
             $ruleValue = $ruleValue[0] ?? null;
         }
 
@@ -141,10 +141,10 @@ class TerritoryRule extends Model implements TerritoryRuleContract
             '=' => $fieldValue == $ruleValue,
             '==' => $fieldValue == $ruleValue,
             '!=' => $fieldValue != $ruleValue,
-            '>' => $fieldValue > $ruleValue,
-            '>=' => $fieldValue >= $ruleValue,
-            '<' => $fieldValue < $ruleValue,
-            '<=' => $fieldValue <= $ruleValue,
+            '>' => is_numeric($fieldValue) && is_numeric($ruleValue) && (float)$fieldValue > (float)$ruleValue,
+            '>=' => is_numeric($fieldValue) && is_numeric($ruleValue) && (float)$fieldValue >= (float)$ruleValue,
+            '<' => is_numeric($fieldValue) && is_numeric($ruleValue) && (float)$fieldValue < (float)$ruleValue,
+            '<=' => is_numeric($fieldValue) && is_numeric($ruleValue) && (float)$fieldValue <= (float)$ruleValue,
             'in' => is_array($ruleValue) && in_array($fieldValue, $ruleValue),
             'not_in' => is_array($ruleValue) && ! in_array($fieldValue, $ruleValue),
             'contains' => is_string($fieldValue) && is_string($ruleValue) && str_contains($fieldValue, $ruleValue),
@@ -153,7 +153,12 @@ class TerritoryRule extends Model implements TerritoryRuleContract
             'ends_with' => is_string($fieldValue) && is_string($ruleValue) && str_ends_with($fieldValue, $ruleValue),
             'is_null' => $fieldValue === null,
             'is_not_null' => $fieldValue !== null,
-            'between' => is_array($ruleValue) && count($ruleValue) === 2 && $fieldValue >= $ruleValue[0] && $fieldValue <= $ruleValue[1],
+            'between' => is_array($ruleValue) && count($ruleValue) === 2
+                         && is_numeric($fieldValue)
+                         && is_numeric($ruleValue[0])
+                         && is_numeric($ruleValue[1])
+                         && (float)$fieldValue >= (float)$ruleValue[0]
+                         && (float)$fieldValue <= (float)$ruleValue[1],
             default => false,
         };
     }

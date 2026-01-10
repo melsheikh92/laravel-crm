@@ -70,6 +70,17 @@ class TerritoryRepository extends Repository
     }
 
     /**
+     * Get territories by type (alias for getTerritoriesByType).
+     *
+     * @param  string  $type
+     * @return \Illuminate\Support\Collection
+     */
+    public function getByType(string $type): Collection
+    {
+        return $this->getTerritoriesByType($type);
+    }
+
+    /**
      * Get root territories (territories without parent).
      *
      * @return \Illuminate\Support\Collection

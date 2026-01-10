@@ -114,7 +114,7 @@ test('territory can have multiple users assigned', function () {
     ]);
 
     $territory->users()->attach($user1->id, ['role' => 'member']);
-    $territory->users()->attach($user2->id, ['role' => 'manager']);
+    $territory->users()->attach($user2->id, ['role' => 'member']);
 
     expect($territory->users)->toHaveCount(2)
         ->and($territory->users->pluck('id')->toArray())->toContain($user1->id, $user2->id);

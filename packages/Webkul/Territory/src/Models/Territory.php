@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Webkul\Territory\Contracts\Territory as TerritoryContract;
 use Webkul\User\Models\UserProxy;
+use App\Models\User;
 
 class Territory extends Model implements TerritoryContract
 {
@@ -43,6 +44,27 @@ class Territory extends Model implements TerritoryContract
     ];
 
     /**
+     * Boot the model.
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        // When a territory is being deleted (soft or hard)
+        static::deleting(function ($territory) {
+            // Check if this is a force delete (hard delete)
+            if ($territory->isForceDeleting()) {
+                // Hard delete - let database handle cascades
+                return;
+            }
+
+            // Soft delete - nullify parent_id in all children
+            // This prevents orphaned child territories
+            $territory->children()->update(['parent_id' => null]);
+        });
+    }
+
+    /**
      * Get the parent territory.
      */
     public function parent(): BelongsTo
@@ -63,7 +85,7 @@ class Territory extends Model implements TerritoryContract
      */
     public function owner(): BelongsTo
     {
-        return $this->belongsTo(UserProxy::modelClass(), 'user_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     /**
@@ -71,7 +93,7 @@ class Territory extends Model implements TerritoryContract
      */
     public function users(): BelongsToMany
     {
-        return $this->belongsToMany(UserProxy::modelClass(), 'territory_users')
+        return $this->belongsToMany(User::class, 'territory_users')
             ->withPivot('role')
             ->withTimestamps();
     }

@@ -84,7 +84,8 @@ class TerritoryAssignmentRepository extends Repository
         return $this->scopeQuery(function ($query) use ($assignableType, $assignableId) {
             return $query->where('assignable_type', $assignableType)
                 ->where('assignable_id', $assignableId)
-                ->orderBy('assigned_at', 'desc');
+                ->orderBy('assigned_at', 'desc')
+                ->orderBy('id', 'desc');
         })->all();
     }
 
@@ -101,6 +102,7 @@ class TerritoryAssignmentRepository extends Repository
             ->where('assignable_type', $assignableType)
             ->where('assignable_id', $assignableId)
             ->orderBy('assigned_at', 'desc')
+            ->orderBy('id', 'desc')
             ->first();
     }
 
