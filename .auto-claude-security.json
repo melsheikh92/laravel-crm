@@ -156,6 +156,7 @@
     "vite"
   ],
   "script_commands": [
+    "./capture-screenshots.sh",
     "./docker-entrypoint.sh",
     "./docker-start.sh",
     "bun",
@@ -199,10 +200,11 @@
     "cargo_aliases": [],
     "shell_scripts": [
       "docker-entrypoint.sh",
-      "docker-start.sh"
+      "docker-start.sh",
+      "capture-screenshots.sh"
     ]
   },
-  "project_dir": "/Users/mahmoudelsheikh/Downloads/Workspace/laravel-crm/.auto-claude/worktrees/tasks/002-admin-mail-settings-configuration",
-  "created_at": "2026-01-05T18:07:46.423838",
-  "project_hash": "e60ddd05704d56aed19c7cce8d2d852d"
+  "project_dir": "/Users/mahmoudelsheikh/Downloads/Workspace/laravel-crm/.auto-claude/worktrees/tasks/006-territory-management",
+  "created_at": "2026-01-10T21:32:09.844225",
+  "project_hash": "80ca7ec85df294617764f404a4c03000"
 }
