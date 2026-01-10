@@ -2,7 +2,9 @@
 
 namespace Webkul\Territory\Models;
 
+use Database\Factories\TerritoryFactory;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -13,7 +15,7 @@ use Webkul\User\Models\UserProxy;
 
 class Territory extends Model implements TerritoryContract
 {
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -141,5 +143,13 @@ class Territory extends Model implements TerritoryContract
     public function hasChildren(): bool
     {
         return $this->children()->count() > 0;
+    }
+
+    /**
+     * Create a new factory instance for the model.
+     */
+    protected static function newFactory(): TerritoryFactory
+    {
+        return TerritoryFactory::new();
     }
 }
