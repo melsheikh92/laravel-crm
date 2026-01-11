@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Webkul\Activity\Models\ActivityProxy;
 use Webkul\Activity\Traits\LogsActivity;
 use Webkul\Attribute\Traits\CustomAttribute;
@@ -15,6 +16,7 @@ use Webkul\Email\Models\EmailProxy;
 use Webkul\Lead\Contracts\Lead as LeadContract;
 use Webkul\Quote\Models\QuoteProxy;
 use Webkul\Tag\Models\TagProxy;
+use Webkul\Territory\Models\TerritoryAssignmentProxy;
 use Webkul\User\Models\UserProxy;
 
 class Lead extends Model implements LeadContract
@@ -147,6 +149,14 @@ class Lead extends Model implements LeadContract
     public function tags(): BelongsToMany
     {
         return $this->belongsToMany(TagProxy::modelClass(), 'lead_tags');
+    }
+
+    /**
+     * Get the territory assignments for the lead.
+     */
+    public function territoryAssignments(): MorphMany
+    {
+        return $this->morphMany(TerritoryAssignmentProxy::modelClass(), 'assignable');
     }
 
     /**

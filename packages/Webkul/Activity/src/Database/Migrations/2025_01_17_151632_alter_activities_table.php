@@ -14,6 +14,11 @@ return new class extends Migration
      */
     public function up()
     {
+        // Skip for SQLite as it doesn't support dropping foreign keys
+        if (DB::connection()->getDriverName() === 'sqlite') {
+            return;
+        }
+
         Schema::table('activities', function (Blueprint $table) {
             $table->dropForeign(['user_id']);
 

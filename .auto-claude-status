@@ -1,25 +1,25 @@
 {
   "active": true,
-  "spec": "002-admin-mail-settings-configuration",
-  "state": "building",
+  "spec": "006-territory-management",
+  "state": "complete",
   "subtasks": {
-    "completed": 0,
-    "total": 26,
-    "in_progress": 1,
+    "completed": 56,
+    "total": 56,
+    "in_progress": 0,
     "failed": 0
   },
   "phase": {
-    "current": "Documentation & Security",
-    "id": null,
-    "total": 3
+    "current": "Documentation and Seeding",
+    "id": 11,
+    "total": 4
   },
   "workers": {
     "active": 0,
     "max": 1
   },
   "session": {
-    "number": 46,
-    "started_at": "2026-01-06T01:25:02.851892"
+    "number": 57,
+    "started_at": "2026-01-10T21:31:57.400812"
   },
-  "last_update": "2026-01-06T09:25:50.560388"
+  "last_update": "2026-01-11T01:22:22.871129"
 }

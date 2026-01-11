@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Webkul\Activity\Models\ActivityProxy;
 use Webkul\Activity\Traits\LogsActivity;
 use Webkul\Attribute\Traits\CustomAttribute;
@@ -14,6 +15,7 @@ use Webkul\Contact\Contracts\Person as PersonContract;
 use Webkul\Contact\Database\Factories\PersonFactory;
 use Webkul\Lead\Models\LeadProxy;
 use Webkul\Tag\Models\TagProxy;
+use Webkul\Territory\Models\TerritoryAssignmentProxy;
 use Webkul\User\Models\UserProxy;
 
 class Person extends Model implements PersonContract
@@ -97,6 +99,14 @@ class Person extends Model implements PersonContract
     public function leads(): HasMany
     {
         return $this->hasMany(LeadProxy::modelClass(), 'person_id');
+    }
+
+    /**
+     * Get the territory assignments for the person.
+     */
+    public function territoryAssignments(): MorphMany
+    {
+        return $this->morphMany(TerritoryAssignmentProxy::modelClass(), 'assignable');
     }
 
     /**

@@ -3,8 +3,12 @@
 namespace Webkul\Contact\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Webkul\Attribute\Traits\CustomAttribute;
 use Webkul\Contact\Contracts\Organization as OrganizationContract;
+use Webkul\Territory\Models\TerritoryAssignmentProxy;
 use Webkul\User\Models\UserProxy;
 
 class Organization extends Model implements OrganizationContract
@@ -28,10 +32,8 @@ class Organization extends Model implements OrganizationContract
 
     /**
      * Get persons.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function persons()
+    public function persons(): HasMany
     {
         return $this->hasMany(PersonProxy::modelClass());
     }
@@ -39,8 +41,16 @@ class Organization extends Model implements OrganizationContract
     /**
      * Get the user that owns the lead.
      */
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(UserProxy::modelClass());
+    }
+
+    /**
+     * Get the territory assignments for the organization.
+     */
+    public function territoryAssignments(): MorphMany
+    {
+        return $this->morphMany(TerritoryAssignmentProxy::modelClass(), 'assignable');
     }
 }

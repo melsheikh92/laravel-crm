@@ -4,6 +4,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\WhatsAppController;
 use App\Http\Controllers\WhatsAppTemplateController;
+use Webkul\Admin\Http\Controllers\Api\TerritoryApiController;
+use Webkul\Admin\Http\Controllers\Api\TerritoryRuleApiController;
+use Webkul\Admin\Http\Controllers\Api\TerritoryAssignmentApiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -62,4 +65,88 @@ Route::prefix('whatsapp')->group(function () {
     // Webhook verification (GET) and message receiver (POST)
     Route::match(['get', 'post'], 'webhook', [WhatsAppController::class, 'webhook'])
         ->name('whatsapp.webhook');
+});
+
+/*
+|--------------------------------------------------------------------------
+| Territory Management API Routes
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware('auth:user')->prefix('territories')->group(function () {
+    // Territory hierarchy endpoints
+    Route::get('hierarchy', [TerritoryApiController::class, 'hierarchy'])
+        ->name('api.territories.hierarchy');
+    Route::get('roots', [TerritoryApiController::class, 'roots'])
+        ->name('api.territories.roots');
+
+    // Territory CRUD routes
+    Route::get('/', [TerritoryApiController::class, 'index'])
+        ->name('api.territories.index');
+    Route::post('/', [TerritoryApiController::class, 'store'])
+        ->name('api.territories.store');
+    Route::get('{id}', [TerritoryApiController::class, 'show'])
+        ->name('api.territories.show');
+    Route::put('{id}', [TerritoryApiController::class, 'update'])
+        ->name('api.territories.update');
+    Route::delete('{id}', [TerritoryApiController::class, 'destroy'])
+        ->name('api.territories.destroy');
+
+    // Territory relationship endpoints
+    Route::get('{id}/children', [TerritoryApiController::class, 'children'])
+        ->name('api.territories.children');
+    Route::get('{id}/descendants', [TerritoryApiController::class, 'descendants'])
+        ->name('api.territories.descendants');
+    Route::get('{id}/rules', [TerritoryApiController::class, 'rules'])
+        ->name('api.territories.rules');
+    Route::get('{id}/assignments', [TerritoryApiController::class, 'assignments'])
+        ->name('api.territories.assignments');
+    Route::get('{id}/statistics', [TerritoryApiController::class, 'statistics'])
+        ->name('api.territories.statistics');
+});
+
+Route::middleware('auth:user')->prefix('territory-rules')->group(function () {
+    // Territory Rule CRUD routes
+    Route::get('/', [TerritoryRuleApiController::class, 'index'])
+        ->name('api.territory-rules.index');
+    Route::post('/', [TerritoryRuleApiController::class, 'store'])
+        ->name('api.territory-rules.store');
+    Route::get('{id}', [TerritoryRuleApiController::class, 'show'])
+        ->name('api.territory-rules.show');
+    Route::put('{id}', [TerritoryRuleApiController::class, 'update'])
+        ->name('api.territory-rules.update');
+    Route::delete('{id}', [TerritoryRuleApiController::class, 'destroy'])
+        ->name('api.territory-rules.destroy');
+
+    // Territory Rule action endpoints
+    Route::patch('{id}/toggle-status', [TerritoryRuleApiController::class, 'toggleStatus'])
+        ->name('api.territory-rules.toggle-status');
+    Route::patch('{id}/priority', [TerritoryRuleApiController::class, 'updatePriority'])
+        ->name('api.territory-rules.update-priority');
+    Route::post('bulk-priorities', [TerritoryRuleApiController::class, 'bulkUpdatePriorities'])
+        ->name('api.territory-rules.bulk-priorities');
+});
+
+Route::middleware('auth:user')->prefix('territory-assignments')->group(function () {
+    // Territory Assignment query endpoints
+    Route::get('history', [TerritoryAssignmentApiController::class, 'history'])
+        ->name('api.territory-assignments.history');
+    Route::get('current', [TerritoryAssignmentApiController::class, 'current'])
+        ->name('api.territory-assignments.current');
+
+    // Territory Assignment CRUD routes
+    Route::get('/', [TerritoryAssignmentApiController::class, 'index'])
+        ->name('api.territory-assignments.index');
+    Route::post('/', [TerritoryAssignmentApiController::class, 'store'])
+        ->name('api.territory-assignments.store');
+    Route::get('{id}', [TerritoryAssignmentApiController::class, 'show'])
+        ->name('api.territory-assignments.show');
+    Route::delete('{id}', [TerritoryAssignmentApiController::class, 'destroy'])
+        ->name('api.territory-assignments.destroy');
+
+    // Territory Assignment action endpoints
+    Route::post('reassign', [TerritoryAssignmentApiController::class, 'reassign'])
+        ->name('api.territory-assignments.reassign');
+    Route::post('bulk-reassign', [TerritoryAssignmentApiController::class, 'bulkReassign'])
+        ->name('api.territory-assignments.bulk-reassign');
 });
