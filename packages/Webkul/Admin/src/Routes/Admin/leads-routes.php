@@ -2,7 +2,10 @@
 
 use Illuminate\Support\Facades\Route;
 use Webkul\Admin\Http\Controllers\Lead\ActivityController;
+use Webkul\Admin\Http\Controllers\Lead\DealScoringController;
 use Webkul\Admin\Http\Controllers\Lead\EmailController;
+use Webkul\Admin\Http\Controllers\Lead\ForecastAnalyticsController;
+use Webkul\Admin\Http\Controllers\Lead\ForecastController;
 use Webkul\Admin\Http\Controllers\Lead\LeadController;
 use Webkul\Admin\Http\Controllers\Lead\QuoteController;
 use Webkul\Admin\Http\Controllers\Lead\TagController;
@@ -67,4 +70,47 @@ Route::controller(LeadController::class)->prefix('leads')->group(function () {
      */
     Route::post('{id}/whatsapp/send', [\App\Http\Controllers\WhatsAppController::class, 'sendFromLead'])
         ->name('admin.leads.whatsapp.send');
+
+    /**
+     * Deal scoring routes.
+     */
+    Route::controller(DealScoringController::class)->prefix('{id}/score')->group(function () {
+        Route::get('', 'show')->name('admin.leads.score.show');
+
+        Route::post('calculate', 'calculate')->name('admin.leads.score.calculate');
+    });
+
+    Route::controller(DealScoringController::class)->group(function () {
+        Route::get('top-scored', 'topScored')->name('admin.leads.top_scored');
+    });
+});
+
+/**
+ * Forecast routes.
+ */
+Route::controller(ForecastController::class)->prefix('forecasts')->group(function () {
+    Route::get('dashboard', 'index')->name('admin.forecasts.index');
+
+    Route::get('', function () {
+        return redirect()->route('admin.forecasts.index');
+    });
+
+    Route::post('generate', 'generate')->name('admin.forecasts.generate');
+
+    Route::get('accuracy', 'accuracy')->name('admin.forecasts.accuracy');
+
+    Route::get('team/{teamId}', 'team')->name('admin.forecasts.team');
+
+    Route::get('{id}', 'show')->name('admin.forecasts.show');
+});
+
+/**
+ * Forecast analytics routes.
+ */
+Route::controller(ForecastAnalyticsController::class)->prefix('forecasts/analytics')->group(function () {
+    Route::get('trends', 'trends')->name('admin.forecasts.analytics.trends');
+
+    Route::get('scenarios', 'scenarios')->name('admin.forecasts.analytics.scenarios');
+
+    Route::get('comparison', 'comparison')->name('admin.forecasts.analytics.comparison');
 });

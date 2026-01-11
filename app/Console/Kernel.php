@@ -19,6 +19,36 @@ class Kernel extends ConsoleKernel
             ->dailyAt('02:00')
             ->withoutOverlapping()
             ->runInBackground();
+
+        // Sales Forecasting: Calculate deal scores for all active leads
+        $schedule->job(new \App\Jobs\CalculateDealScoresJob())
+            ->dailyAt('01:00')
+            ->withoutOverlapping()
+            ->runInBackground()
+            ->name('calculate-deal-scores')
+            ->onFailure(function () {
+                \Illuminate\Support\Facades\Log::error('Deal scores calculation scheduled job failed');
+            });
+
+        // Sales Forecasting: Refresh historical conversion data weekly
+        $schedule->job(new \App\Jobs\RefreshHistoricalConversionsJob())
+            ->weeklyOn(0, '03:00') // Sunday at 3:00 AM
+            ->withoutOverlapping()
+            ->runInBackground()
+            ->name('refresh-historical-conversions')
+            ->onFailure(function () {
+                \Illuminate\Support\Facades\Log::error('Historical conversions refresh scheduled job failed');
+            });
+
+        // Sales Forecasting: Track forecast actuals for completed periods
+        $schedule->job(new \App\Jobs\TrackForecastActualsJob())
+            ->dailyAt('04:00')
+            ->withoutOverlapping()
+            ->runInBackground()
+            ->name('track-forecast-actuals')
+            ->onFailure(function () {
+                \Illuminate\Support\Facades\Log::error('Forecast actuals tracking scheduled job failed');
+            });
     }
 
     /**

@@ -134,9 +134,11 @@ app.directive("tooltip", ToolTip);
  * Global component registration.
  */
 import TerritoryBoundaries from "./components/territories/TerritoryBoundaries.vue";
+import ScenarioModeling from "./components/leads/forecasts/ScenarioModeling.vue";
 
 console.log("Registering TerritoryBoundaries:", TerritoryBoundaries);
 app.component("v-territory-boundaries", TerritoryBoundaries);
+app.component("v-scenario-modeling", ScenarioModeling);
 
 export default app;
 

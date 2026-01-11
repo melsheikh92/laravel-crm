@@ -13,5 +13,8 @@ class ModuleServiceProvider extends BaseModuleServiceProvider
         \Webkul\Lead\Models\Source::class,
         \Webkul\Lead\Models\Stage::class,
         \Webkul\Lead\Models\Type::class,
+        \Webkul\Lead\Models\SalesForecast::class,
+        \Webkul\Lead\Models\HistoricalConversion::class,
+        \Webkul\Lead\Models\ForecastActual::class,
     ];
 }

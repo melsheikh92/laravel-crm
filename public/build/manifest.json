@@ -305,7 +305,7 @@
     "isDynamicEntry": true
   },
   "packages/Webkul/Admin/src/Resources/assets/css/app.css": {
-    "file": "assets/app-CY3UTOlm.css",
+    "file": "assets/app-Dtm5p0sa.css",
     "src": "packages/Webkul/Admin/src/Resources/assets/css/app.css",
     "isEntry": true
   },
@@ -410,7 +410,7 @@
     "src": "packages/Webkul/Admin/src/Resources/assets/images/mobile-dark-logo.svg"
   },
   "packages/Webkul/Admin/src/Resources/assets/js/app.js": {
-    "file": "assets/app-RvVWE8_r.js",
+    "file": "assets/app-utcU3OcH.js",
     "name": "app",
     "src": "packages/Webkul/Admin/src/Resources/assets/js/app.js",
     "isEntry": true,
@@ -462,20 +462,6 @@
       "node_modules/leaflet/dist/images/marker-icon-2x.png",
       "node_modules/leaflet/dist/images/marker-icon.png",
       "node_modules/leaflet/dist/images/marker-shadow.png",
-      "node_modules/leaflet/dist/leaflet-src.esm.js",
-      "node_modules/leaflet/dist/leaflet-src.esm.js",
-      "node_modules/leaflet/dist/leaflet-src.esm.js",
-      "node_modules/leaflet/dist/leaflet-src.esm.js",
-      "node_modules/leaflet/dist/leaflet-src.esm.js",
-      "node_modules/leaflet/dist/leaflet-src.esm.js",
-      "node_modules/leaflet/dist/leaflet-src.esm.js",
-      "node_modules/leaflet/dist/leaflet-src.esm.js",
-      "node_modules/leaflet/dist/leaflet-src.esm.js",
-      "node_modules/leaflet/dist/leaflet-src.esm.js",
-      "node_modules/leaflet/dist/leaflet-src.esm.js",
-      "node_modules/leaflet/dist/leaflet-src.esm.js",
-      "node_modules/leaflet/dist/leaflet-src.esm.js",
-      "node_modules/leaflet/dist/leaflet-src.esm.js",
       "node_modules/leaflet/dist/leaflet-src.esm.js",
       "node_modules/leaflet/dist/leaflet-src.esm.js",
       "node_modules/leaflet/dist/leaflet-src.esm.js",

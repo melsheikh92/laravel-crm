@@ -720,3 +720,27 @@ Breadcrumbs::for('marketplace.revenue.transactions', function (BreadcrumbTrail $
     $trail->parent('marketplace.revenue');
     $trail->push(trans('marketplace::app.admin.revenue.transactions.title'), route('admin.marketplace.revenue.transactions'));
 });
+
+// Dashboard > Forecasts
+Breadcrumbs::for('forecasts', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push(trans('admin::app.layouts.forecasts'), route('admin.forecasts.index'));
+});
+
+// Dashboard > Forecasts > Accuracy
+Breadcrumbs::for('forecasts.accuracy', function (BreadcrumbTrail $trail) {
+    $trail->parent('forecasts');
+    $trail->push(trans('admin::app.layouts.forecast-accuracy'), route('admin.forecasts.accuracy'));
+});
+
+// Dashboard > Forecasts > Team
+Breadcrumbs::for('forecasts.team', function (BreadcrumbTrail $trail, $teamId) {
+    $trail->parent('forecasts');
+    $trail->push(trans('admin::app.layouts.team-forecasts'), route('admin.forecasts.team', $teamId));
+});
+
+// Dashboard > Forecasts > Scenario Modeling
+Breadcrumbs::for('forecasts.scenarios', function (BreadcrumbTrail $trail) {
+    $trail->parent('forecasts');
+    $trail->push(trans('admin::app.layouts.scenario-modeling'), route('admin.forecasts.analytics.scenarios'));
+});

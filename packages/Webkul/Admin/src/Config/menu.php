@@ -35,6 +35,46 @@ return [
     ],
 
     /**
+     * Forecasts.
+     */
+    [
+        'key' => 'forecasts',
+        'name' => 'admin::app.layouts.forecasts',
+        'route' => 'admin.forecasts.index',
+        'sort' => 4,
+        'icon-class' => 'icon-stats-up',
+    ],
+    [
+        'key' => 'forecasts.dashboard',
+        'name' => 'admin::app.layouts.forecast-dashboard',
+        'route' => 'admin.forecasts.index',
+        'sort' => 1,
+        'icon-class' => '',
+    ],
+    [
+        'key' => 'forecasts.accuracy',
+        'name' => 'admin::app.layouts.forecast-accuracy',
+        'route' => 'admin.forecasts.accuracy',
+        'sort' => 2,
+        'icon-class' => '',
+    ],
+    [
+        'key' => 'forecasts.team',
+        'name' => 'admin::app.layouts.team-forecasts',
+        'route' => 'admin.forecasts.team',
+        'params' => ['teamId' => 0],
+        'sort' => 3,
+        'icon-class' => '',
+    ],
+    [
+        'key' => 'forecasts.scenarios',
+        'name' => 'admin::app.layouts.scenario-modeling',
+        'route' => 'admin.forecasts.analytics.scenarios',
+        'sort' => 4,
+        'icon-class' => '',
+    ],
+
+    /**
      * Emails.
      */
     [
@@ -42,7 +82,7 @@ return [
         'name' => 'admin::app.layouts.mail.title',
         'route' => 'admin.mail.index',
         'params' => ['route' => 'inbox'],
-        'sort' => 4,
+        'sort' => 5,
         'icon-class' => 'icon-mail',
     ],
     [
@@ -100,7 +140,7 @@ return [
         'key' => 'activities',
         'name' => 'admin::app.layouts.activities',
         'route' => 'admin.activities.index',
-        'sort' => 5,
+        'sort' => 6,
         'icon-class' => 'icon-activity',
     ],
 
@@ -111,7 +151,7 @@ return [
         'key' => 'marketing',
         'name' => 'admin::app.layouts.marketing-campaigns',
         'route' => 'admin.marketing.campaigns.index',
-        'sort' => 6,
+        'sort' => 7,
         'icon-class' => 'icon-notification',
     ],
     [
@@ -129,7 +169,7 @@ return [
         'key' => 'collaboration',
         'name' => 'admin::app.layouts.collaboration',
         'route' => 'admin.collaboration.channels.index',
-        'sort' => 7,
+        'sort' => 8,
         'icon-class' => 'icon-message',
     ],
     [
@@ -154,7 +194,7 @@ return [
         'key' => 'support',
         'name' => 'admin::app.layouts.support',
         'route' => 'admin.support.tickets.index',
-        'sort' => 8,
+        'sort' => 9,
         'icon-class' => 'icon-note',
     ],
     [

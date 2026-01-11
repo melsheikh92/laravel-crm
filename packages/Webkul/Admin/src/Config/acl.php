@@ -38,6 +38,12 @@ return [
         'sort' => 4,
     ],
     [
+        'key' => 'leads.score',
+        'name' => 'admin::app.acl.deal-scoring',
+        'route' => ['admin.leads.score.show', 'admin.leads.score.calculate', 'admin.leads.top_scored'],
+        'sort' => 5,
+    ],
+    [
         'key' => 'quotes',
         'name' => 'admin::app.acl.quotes',
         'route' => 'admin.quotes.index',
@@ -734,10 +740,22 @@ return [
         'sort' => 3,
     ],
     [
+        'key' => 'settings.forecasting',
+        'name' => 'admin::app.acl.forecasting-settings',
+        'route' => 'admin.settings.forecasting.index',
+        'sort' => 4,
+    ],
+    [
+        'key' => 'settings.forecasting.edit',
+        'name' => 'admin::app.acl.edit',
+        'route' => ['admin.settings.forecasting.edit', 'admin.settings.forecasting.update'],
+        'sort' => 1,
+    ],
+    [
         'key' => 'settings.other_settings',
         'name' => 'admin::app.acl.other-settings',
         'route' => 'admin.settings.tags.index',
-        'sort' => 4,
+        'sort' => 5,
     ],
     [
         'key' => 'settings.other_settings.tags',
@@ -800,9 +818,33 @@ return [
         'sort' => 4,
     ],
     [
+        'key' => 'forecasts',
+        'name' => 'admin::app.acl.forecasts',
+        'route' => 'admin.forecasts.index',
+        'sort' => 10,
+    ],
+    [
+        'key' => 'forecasts.view',
+        'name' => 'admin::app.acl.view',
+        'route' => ['admin.forecasts.index', 'admin.forecasts.show', 'admin.forecasts.team', 'admin.forecasts.accuracy'],
+        'sort' => 1,
+    ],
+    [
+        'key' => 'forecasts.generate',
+        'name' => 'admin::app.acl.generate',
+        'route' => 'admin.forecasts.generate',
+        'sort' => 2,
+    ],
+    [
+        'key' => 'forecasts.analytics',
+        'name' => 'admin::app.acl.analytics',
+        'route' => ['admin.forecasts.analytics.trends', 'admin.forecasts.analytics.scenarios', 'admin.forecasts.analytics.comparison'],
+        'sort' => 3,
+    ],
+    [
         'key' => 'configuration',
         'name' => 'admin::app.acl.configuration',
         'route' => 'admin.configuration.index',
-        'sort' => 9,
+        'sort' => 11,
     ],
 ];

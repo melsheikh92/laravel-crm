@@ -7,6 +7,9 @@ use Illuminate\Support\Facades\DB;
 use Webkul\AI\Repositories\InsightRepository;
 use Webkul\Email\Repositories\EmailRepository;
 use Webkul\Lead\Repositories\LeadRepository;
+use Webkul\Lead\Repositories\SalesForecastRepository;
+use Webkul\Lead\Repositories\DealScoreRepository;
+use Webkul\Lead\Services\DealScoringService;
 use Webkul\Quote\Repositories\QuoteRepository;
 
 class InsightService
@@ -28,7 +31,10 @@ class InsightService
         protected InsightRepository $insightRepository,
         protected LeadRepository $leadRepository,
         protected EmailRepository $emailRepository,
-        protected QuoteRepository $quoteRepository
+        protected QuoteRepository $quoteRepository,
+        protected SalesForecastRepository $salesForecastRepository,
+        protected DealScoreRepository $dealScoreRepository,
+        protected DealScoringService $dealScoringService
     ) {}
 
     /**
@@ -118,6 +124,184 @@ class InsightService
             'entity_type' => $entityType,
             'entity_id' => $entityId,
         ])->sortByDesc('priority')->sortByDesc('created_at');
+    }
+
+    /**
+     * Generate forecast insights for a sales forecast.
+     *
+     * @param  int  $forecastId
+     * @return array|null
+     */
+    public function generateForecastInsights(int $forecastId): ?array
+    {
+        $forecast = $this->salesForecastRepository->with(['user', 'actuals'])->findOrFail($forecastId);
+
+        // Build context for forecast analysis
+        $context = $this->buildForecastContext($forecast);
+
+        // Generate AI insight
+        $prompt = $this->buildForecastInsightPrompt($forecast, $context);
+        $result = $this->callAI($prompt);
+
+        if (isset($result['error']) || !isset($result['insight'])) {
+            return null;
+        }
+
+        $insight = [
+            'type' => 'forecast_analysis',
+            'title' => $result['insight']['title'] ?? 'Forecast Insight',
+            'description' => $result['insight']['description'] ?? '',
+            'priority' => $result['insight']['priority'] ?? 5,
+            'metadata' => array_merge(
+                $result['insight']['metadata'] ?? [],
+                ['forecast_id' => $forecastId]
+            ),
+        ];
+
+        // Store insight (using forecast as entity)
+        $existing = $this->insightRepository->findWhere([
+            'entity_type' => 'forecast',
+            'entity_id' => $forecastId,
+            'type' => 'forecast_analysis',
+        ])->first();
+
+        if ($existing) {
+            $this->insightRepository->update($insight, $existing->id);
+        } else {
+            $this->insightRepository->create(array_merge($insight, [
+                'entity_type' => 'forecast',
+                'entity_id' => $forecastId,
+            ]));
+        }
+
+        return $insight;
+    }
+
+    /**
+     * Generate deal prioritization insights for a user.
+     *
+     * @param  int  $userId
+     * @param  int  $limit
+     * @return array
+     */
+    public function generateDealPrioritizationInsights(int $userId, int $limit = 10): array
+    {
+        // Get top priority deals for the user
+        $topDeals = $this->dealScoringService->getTopPriorityDeals($limit, $userId);
+
+        if ($topDeals->isEmpty()) {
+            return [
+                'insights' => [],
+                'message' => 'No deals found for prioritization',
+            ];
+        }
+
+        // Build context with deal scores
+        $context = $this->buildPrioritizationContext($topDeals, $userId);
+
+        // Generate AI recommendations
+        $prompt = $this->buildPrioritizationPrompt($context);
+        $result = $this->callAI($prompt);
+
+        if (isset($result['error']) || !isset($result['insight'])) {
+            return [
+                'insights' => [],
+                'error' => $result['error'] ?? 'Failed to generate insights',
+            ];
+        }
+
+        $insight = [
+            'type' => 'deal_prioritization',
+            'title' => $result['insight']['title'] ?? 'Deal Prioritization Recommendations',
+            'description' => $result['insight']['description'] ?? '',
+            'priority' => $result['insight']['priority'] ?? 8,
+            'metadata' => array_merge(
+                $result['insight']['metadata'] ?? [],
+                [
+                    'user_id' => $userId,
+                    'deal_count' => $topDeals->count(),
+                    'top_deals' => $topDeals->pluck('lead_id')->toArray(),
+                ]
+            ),
+        ];
+
+        // Store insight for user entity
+        $existing = $this->insightRepository->findWhere([
+            'entity_type' => 'user',
+            'entity_id' => $userId,
+            'type' => 'deal_prioritization',
+        ])->first();
+
+        if ($existing) {
+            $this->insightRepository->update($insight, $existing->id);
+        } else {
+            $this->insightRepository->create(array_merge($insight, [
+                'entity_type' => 'user',
+                'entity_id' => $userId,
+            ]));
+        }
+
+        return ['insights' => [$insight]];
+    }
+
+    /**
+     * Generate risk assessment insights for a lead.
+     *
+     * @param  int  $leadId
+     * @return array|null
+     */
+    public function generateRiskAssessmentInsights(int $leadId): ?array
+    {
+        $lead = $this->leadRepository->with([
+            'person',
+            'person.organization',
+            'stage',
+            'pipeline',
+            'user',
+        ])->findOrFail($leadId);
+
+        // Get deal score
+        $dealScore = $this->dealScoreRepository->getLatestByLead($leadId);
+
+        // Build context for risk analysis
+        $context = $this->buildRiskContext($lead, $dealScore);
+
+        // Generate AI risk assessment
+        $prompt = $this->buildRiskAssessmentPrompt($lead, $context);
+        $result = $this->callAI($prompt);
+
+        if (isset($result['error']) || !isset($result['insight'])) {
+            return null;
+        }
+
+        $insight = [
+            'type' => 'risk_assessment',
+            'title' => $result['insight']['title'] ?? 'Risk Assessment',
+            'description' => $result['insight']['description'] ?? '',
+            'priority' => $result['insight']['priority'] ?? 7,
+            'metadata' => array_merge(
+                $result['insight']['metadata'] ?? [],
+                ['risk_level' => $this->determineRiskLevel($context)]
+            ),
+        ];
+
+        // Store insight
+        $existing = $this->insightRepository->findWhere([
+            'entity_type' => 'lead',
+            'entity_id' => $leadId,
+            'type' => 'risk_assessment',
+        ])->first();
+
+        if ($existing) {
+            $this->insightRepository->update($insight, $existing->id);
+        } else {
+            $this->insightRepository->create(array_merge($insight, [
+                'entity_type' => 'lead',
+                'entity_id' => $leadId,
+            ]));
+        }
+
+        return $insight;
     }
 
     /**
@@ -476,6 +660,260 @@ class InsightService
             'priority' => $priority,
             'metadata' => is_array($insight['metadata'] ?? null) ? $insight['metadata'] : [],
         ];
+    }
+
+    /**
+     * Build context for forecast analysis.
+     */
+    protected function buildForecastContext($forecast): array
+    {
+        $metadata = is_array($forecast->metadata) ? $forecast->metadata : json_decode($forecast->metadata ?? '{}', true);
+
+        $context = [
+            'period_type' => $forecast->period_type,
+            'period_start' => $forecast->period_start->format('Y-m-d'),
+            'period_end' => $forecast->period_end->format('Y-m-d'),
+            'forecast_value' => $forecast->forecast_value,
+            'weighted_forecast' => $forecast->weighted_forecast,
+            'best_case' => $forecast->best_case,
+            'worst_case' => $forecast->worst_case,
+            'confidence_score' => $forecast->confidence_score,
+            'total_leads' => $metadata['total_leads'] ?? 0,
+            'total_value' => $metadata['total_value'] ?? 0,
+            'average_deal_size' => $metadata['average_deal_size'] ?? 0,
+        ];
+
+        // Add actual vs forecast comparison if available
+        if ($forecast->actuals && $forecast->actuals->count() > 0) {
+            $actual = $forecast->actuals->first();
+            $context['actual_value'] = $actual->actual_value;
+            $context['variance'] = $actual->variance;
+            $context['variance_percentage'] = $actual->variance_percentage;
+        }
+
+        return $context;
+    }
+
+    /**
+     * Build context for deal prioritization.
+     */
+    protected function buildPrioritizationContext($topDeals, int $userId): array
+    {
+        $deals = $topDeals->map(function ($scoreRecord) {
+            $lead = $scoreRecord->lead;
+            $factors = is_array($scoreRecord->factors) ? $scoreRecord->factors : json_decode($scoreRecord->factors ?? '{}', true);
+
+            return [
+                'lead_id' => $lead->id,
+                'title' => $lead->title,
+                'value' => $lead->lead_value ?? 0,
+                'score' => $scoreRecord->score,
+                'win_probability' => $scoreRecord->win_probability,
+                'engagement_score' => $scoreRecord->engagement_score,
+                'velocity_score' => $scoreRecord->velocity_score,
+                'stage' => $lead->stage ? $lead->stage->name : 'Unknown',
+                'expected_close_date' => $lead->expected_close_date ? $lead->expected_close_date->format('Y-m-d') : null,
+            ];
+        })->toArray();
+
+        return [
+            'user_id' => $userId,
+            'deal_count' => count($deals),
+            'total_value' => array_sum(array_column($deals, 'value')),
+            'average_score' => count($deals) > 0 ? array_sum(array_column($deals, 'score')) / count($deals) : 0,
+            'average_win_probability' => count($deals) > 0 ? array_sum(array_column($deals, 'win_probability')) / count($deals) : 0,
+            'deals' => array_slice($deals, 0, 5), // Top 5 for prompt
+        ];
+    }
+
+    /**
+     * Build context for risk assessment.
+     */
+    protected function buildRiskContext($lead, $dealScore): array
+    {
+        $context = [
+            'lead_id' => $lead->id,
+            'title' => $lead->title,
+            'value' => $lead->lead_value ?? 0,
+            'stage' => $lead->stage ? $lead->stage->name : 'Unknown',
+            'pipeline' => $lead->pipeline ? $lead->pipeline->name : 'Unknown',
+            'created_at' => $lead->created_at->format('Y-m-d'),
+            'days_in_pipeline' => $lead->created_at->diffInDays(now()),
+        ];
+
+        if ($lead->expected_close_date) {
+            $context['expected_close_date'] = $lead->expected_close_date->format('Y-m-d');
+            $context['days_until_close'] = now()->diffInDays($lead->expected_close_date, false);
+            $context['is_overdue'] = $lead->expected_close_date < now();
+        }
+
+        // Add deal score data if available
+        if ($dealScore) {
+            $context['score'] = $dealScore->score;
+            $context['win_probability'] = $dealScore->win_probability;
+            $context['engagement_score'] = $dealScore->engagement_score;
+            $context['velocity_score'] = $dealScore->velocity_score;
+
+            $factors = is_array($dealScore->factors) ? $dealScore->factors : json_decode($dealScore->factors ?? '{}', true);
+            $context['engagement_details'] = $factors['engagement_details'] ?? [];
+            $context['velocity_details'] = $factors['velocity_details'] ?? [];
+        }
+
+        // Get recent activity data
+        $leadContext = $this->buildLeadContext($lead);
+        $context['email_count'] = $leadContext['email_count'];
+        $context['activity_count'] = $leadContext['activity_count'];
+        $context['quote_count'] = $leadContext['quote_count'];
+
+        return $context;
+    }
+
+    /**
+     * Build prompt for forecast insights.
+     */
+    protected function buildForecastInsightPrompt($forecast, array $context): string
+    {
+        $prompt = "Analyze this sales forecast and provide strategic insights.\n\n";
+        $prompt .= "Forecast Information:\n";
+        $prompt .= "- Period: {$context['period_type']} ({$context['period_start']} to {$context['period_end']})\n";
+        $prompt .= "- Weighted Forecast: \${$context['weighted_forecast']}\n";
+        $prompt .= "- Best Case: \${$context['best_case']}\n";
+        $prompt .= "- Worst Case: \${$context['worst_case']}\n";
+        $prompt .= "- Confidence Score: {$context['confidence_score']}%\n";
+        $prompt .= "- Total Leads: {$context['total_leads']}\n";
+        $prompt .= "- Average Deal Size: \${$context['average_deal_size']}\n";
+
+        if (isset($context['actual_value'])) {
+            $prompt .= "- Actual Value: \${$context['actual_value']}\n";
+            $prompt .= "- Variance: {$context['variance_percentage']}%\n";
+        }
+
+        $prompt .= "\nProvide insights on:\n";
+        $prompt .= "1. Forecast confidence and reliability\n";
+        $prompt .= "2. Key risks or opportunities\n";
+        $prompt .= "3. Actionable recommendations\n\n";
+        $prompt .= "Respond with ONLY a valid JSON object (no markdown, no code blocks, no explanations):\n";
+        $prompt .= '{"title":"Brief descriptive title","description":"Concise analysis (2-3 sentences)","priority":7,"metadata":{}}';
+
+        return $prompt;
+    }
+
+    /**
+     * Build prompt for deal prioritization.
+     */
+    protected function buildPrioritizationPrompt(array $context): string
+    {
+        $prompt = "Analyze these top-priority deals and provide prioritization recommendations.\n\n";
+        $prompt .= "Portfolio Overview:\n";
+        $prompt .= "- Total Deals: {$context['deal_count']}\n";
+        $prompt .= "- Total Value: \${$context['total_value']}\n";
+        $prompt .= "- Average Score: {$context['average_score']}\n";
+        $prompt .= "- Average Win Probability: {$context['average_win_probability']}%\n\n";
+
+        $prompt .= "Top Deals:\n";
+        foreach ($context['deals'] as $i => $deal) {
+            $num = $i + 1;
+            $prompt .= "{$num}. {$deal['title']} - Value: \${$deal['value']}, Score: {$deal['score']}, Win%: {$deal['win_probability']}%, Stage: {$deal['stage']}\n";
+        }
+
+        $prompt .= "\nProvide strategic recommendations on:\n";
+        $prompt .= "1. Which deals to focus on first and why\n";
+        $prompt .= "2. Potential quick wins\n";
+        $prompt .= "3. Deals that need immediate attention\n\n";
+        $prompt .= "Respond with ONLY a valid JSON object (no markdown, no code blocks, no explanations):\n";
+        $prompt .= '{"title":"Brief descriptive title","description":"Concise prioritization guidance (2-3 sentences)","priority":8,"metadata":{}}';
+
+        return $prompt;
+    }
+
+    /**
+     * Build prompt for risk assessment.
+     */
+    protected function buildRiskAssessmentPrompt($lead, array $context): string
+    {
+        $prompt = "Analyze this deal for potential risks and provide a risk assessment.\n\n";
+        $prompt .= "Deal Information:\n";
+        $prompt .= "- Title: {$context['title']}\n";
+        $prompt .= "- Value: \${$context['value']}\n";
+        $prompt .= "- Stage: {$context['stage']}\n";
+        $prompt .= "- Days in Pipeline: {$context['days_in_pipeline']}\n";
+
+        if (isset($context['expected_close_date'])) {
+            $prompt .= "- Expected Close: {$context['expected_close_date']}\n";
+            $prompt .= "- Days Until Close: {$context['days_until_close']}\n";
+            if ($context['is_overdue']) {
+                $prompt .= "- Status: OVERDUE\n";
+            }
+        }
+
+        if (isset($context['score'])) {
+            $prompt .= "- Deal Score: {$context['score']}\n";
+            $prompt .= "- Win Probability: {$context['win_probability']}%\n";
+            $prompt .= "- Engagement Score: {$context['engagement_score']}\n";
+            $prompt .= "- Velocity Score: {$context['velocity_score']}\n";
+        }
+
+        $prompt .= "- Email Count: {$context['email_count']}\n";
+        $prompt .= "- Activity Count: {$context['activity_count']}\n";
+        $prompt .= "- Quote Count: {$context['quote_count']}\n\n";
+
+        $prompt .= "Assess risks including:\n";
+        $prompt .= "1. Deal stagnation or velocity concerns\n";
+        $prompt .= "2. Engagement issues\n";
+        $prompt .= "3. Timeline risks\n";
+        $prompt .= "4. Mitigation recommendations\n\n";
+        $prompt .= "Respond with ONLY a valid JSON object (no markdown, no code blocks, no explanations):\n";
+        $prompt .= '{"title":"Brief descriptive title","description":"Concise risk analysis (2-3 sentences)","priority":7,"metadata":{}}';
+
+        return $prompt;
+    }
+
+    /**
+     * Determine risk level based on context.
+     */
+    protected function determineRiskLevel(array $context): string
+    {
+        $riskScore = 0;
+
+        // Check if overdue
+        if (isset($context['is_overdue']) && $context['is_overdue']) {
+            $riskScore += 30;
+        }
+
+        // Check days in pipeline
+        if ($context['days_in_pipeline'] > 90) {
+            $riskScore += 20;
+        } elseif ($context['days_in_pipeline'] > 60) {
+            $riskScore += 10;
+        }
+
+        // Check engagement
+        if ($context['email_count'] < 3 && $context['activity_count'] < 3) {
+            $riskScore += 25;
+        }
+
+        // Check deal score if available
+        if (isset($context['score'])) {
+            if ($context['score'] < 40) {
+                $riskScore += 20;
+            } elseif ($context['score'] < 60) {
+                $riskScore += 10;
+            }
+
+            // Check velocity
+            if ($context['velocity_score'] < 40) {
+                $riskScore += 15;
+            }
+        }
+
+        // Determine level
+        if ($riskScore >= 60) {
+            return 'high';
+        } elseif ($riskScore >= 30) {
+            return 'medium';
+        }
+
+        return 'low';
     }
 }
 
