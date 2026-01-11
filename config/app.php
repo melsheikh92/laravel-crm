@@ -224,6 +224,7 @@ return [
         Webkul\AI\Providers\AIServiceProvider::class,
         Webkul\Collaboration\Providers\CollaborationServiceProvider::class,
         Webkul\Portal\Providers\PortalServiceProvider::class,
+        Webkul\Marketplace\Providers\MarketplaceServiceProvider::class,
     ])->toArray(),
 
     /*

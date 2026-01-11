@@ -85,7 +85,8 @@
             "Webkul\\Support\\": "packages/Webkul/Support/src",
             "Webkul\\Integration\\": "packages/Webkul/Integration/src",
             "Webkul\\Portal\\": "packages/Webkul/Portal/src",
-            "Webkul\\Territory\\": "packages/Webkul/Territory/src"
+            "Webkul\\Territory\\": "packages/Webkul/Territory/src",
+            "Webkul\\Marketplace\\": "packages/Webkul/Marketplace/src"
         }
     },
     "autoload-dev": {

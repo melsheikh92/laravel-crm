@@ -14,15 +14,15 @@ return new class extends Migration
      */
     public function up()
     {
-        // SQLite doesn't support dropping foreign keys
-        if (DB::getDriverName() !== 'sqlite') {
-            Schema::table('activities', function (Blueprint $table) {
+        Schema::table('activities', function (Blueprint $table) {
+            // SQLite doesn't support dropping foreign keys - skip on SQLite
+            if (DB::getDriverName() !== 'sqlite') {
                 $table->dropForeign(['user_id']);
+            }
 
-                $table->unsignedInteger('user_id')->nullable()->change();
-                $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            });
-        }
+            $table->unsignedInteger('user_id')->nullable()->change();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+        });
     }
 
     /**
@@ -32,9 +32,9 @@ return new class extends Migration
      */
     public function down()
     {
-        // SQLite doesn't support dropping foreign keys or SET FOREIGN_KEY_CHECKS
-        if (DB::getDriverName() !== 'sqlite') {
-            Schema::table('activities', function (Blueprint $table) {
+        Schema::table('activities', function (Blueprint $table) {
+            // SQLite doesn't support these operations - skip on SQLite
+            if (DB::getDriverName() !== 'sqlite') {
                 $tablePrefix = DB::getTablePrefix();
 
                 // Disable foreign key checks temporarily.
@@ -46,13 +46,13 @@ return new class extends Migration
                 // Drop the index.
                 DB::statement('ALTER TABLE '.$tablePrefix.'activities DROP INDEX activities_user_id_foreign');
 
-                // Change the column to be non-nullable.
-                $table->unsignedInteger('user_id')->nullable(false)->change();
-                $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-
                 // Re-enable foreign key checks.
                 DB::statement('SET FOREIGN_KEY_CHECKS=1');
-            });
-        }
+            }
+
+            // Change the column to be non-nullable.
+            $table->unsignedInteger('user_id')->nullable(false)->change();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+        });
     }
 };

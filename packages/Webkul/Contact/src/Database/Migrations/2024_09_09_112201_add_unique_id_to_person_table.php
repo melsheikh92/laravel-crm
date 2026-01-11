@@ -16,22 +16,10 @@ return new class extends Migration
             $table->string('unique_id')->nullable()->unique();
         });
 
-        $tableName = DB::getTablePrefix().'persons';
-        $driver = config('database.default');
+        // SQLite doesn't support JSON_UNQUOTE and JSON_EXTRACT in the same way
+        if (DB::connection()->getDriverName() !== 'sqlite') {
+            $tableName = DB::getTablePrefix().'persons';
 
-        // Use different SQL syntax for different database drivers
-        if ($driver === 'sqlite') {
-            // SQLite syntax
-            DB::statement("
-                UPDATE {$tableName}
-                SET unique_id =
-                    CAST(user_id AS TEXT) || '|' ||
-                    CAST(organization_id AS TEXT) || '|' ||
-                    COALESCE(json_extract(emails, '$[0].value'), '') || '|' ||
-                    COALESCE(json_extract(contact_numbers, '$[0].value'), '')
-            ");
-        } else {
-            // MySQL/PostgreSQL syntax
             DB::statement("
                 UPDATE {$tableName}
                 SET unique_id = CONCAT(
@@ -40,6 +28,18 @@ return new class extends Migration
                     JSON_UNQUOTE(JSON_EXTRACT(emails, '$[0].value')), '|',
                     JSON_UNQUOTE(JSON_EXTRACT(contact_numbers, '$[0].value'))
                 )
+            ");
+        } else {
+            // SQLite syntax
+            $tableName = DB::getTablePrefix().'persons';
+
+            DB::statement("
+                UPDATE {$tableName}
+                SET unique_id =
+                    CAST(user_id AS TEXT) || '|' ||
+                    CAST(organization_id AS TEXT) || '|' ||
+                    COALESCE(json_extract(emails, '$[0].value'), '') || '|' ||
+                    COALESCE(json_extract(contact_numbers, '$[0].value'), '')
             ");
         }
     }

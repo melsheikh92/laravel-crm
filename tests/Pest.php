@@ -48,6 +48,28 @@ function getDefaultAdmin()
 {
     $admin = \Webkul\User\Models\User::find(1);
 
+    // If admin doesn't exist (e.g., in tests), create one
+    if (!$admin) {
+        $role = \Webkul\User\Models\Role::firstOrCreate(
+            ['name' => 'Administrator'],
+            [
+                'name'            => 'Administrator',
+                'description'     => 'Administrator role',
+                'permission_type' => 'all',
+                'permissions'     => [],
+            ]
+        );
+
+        $admin = \Webkul\User\Models\User::create([
+            'id'       => 1,
+            'name'     => 'Admin User',
+            'email'    => 'admin@example.com',
+            'password' => bcrypt('password'),
+            'role_id'  => $role->id,
+            'status'   => 1,
+        ]);
+    }
+
     return $admin;
 }
 

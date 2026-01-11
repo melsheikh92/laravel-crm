@@ -3,6 +3,8 @@
 @section('title', 'Dashboard')
 
 @section('content')
+    {!! view_render_event('portal.dashboard.content.before') !!}
+
     <div class="flex flex-col gap-4">
         <div class="card">
             <h1 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem;">Welcome,
@@ -42,6 +44,10 @@
                 <a href="{{ route('portal.kb.index') }}" class="btn btn-link mt-4" style="display: inline-block;">Browse
                     Knowledge Base &rarr;</a>
             </div>
+
+            {!! view_render_event('portal.dashboard.content.widgets') !!}
         </div>
     </div>
+
+    {!! view_render_event('portal.dashboard.content.after') !!}
 @endsection

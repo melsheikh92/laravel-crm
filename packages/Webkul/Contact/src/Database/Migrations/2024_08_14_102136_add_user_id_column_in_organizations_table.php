@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -22,16 +23,12 @@ return new class extends Migration
      */
     public function down(): void
     {
-        // SQLite doesn't support dropping foreign keys
-        if (config('database.default') !== 'sqlite') {
-            Schema::table('organizations', function (Blueprint $table) {
+        Schema::table('organizations', function (Blueprint $table) {
+            // SQLite doesn't support dropping foreign keys - skip on SQLite
+            if (DB::connection()->getDriverName() !== 'sqlite') {
                 $table->dropForeign(['user_id']);
-                $table->dropColumn('user_id');
-            });
-        } else {
-            Schema::table('organizations', function (Blueprint $table) {
-                $table->dropColumn('user_id');
-            });
-        }
+            }
+            $table->dropColumn('user_id');
+        });
     }
 };
