@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -13,11 +12,14 @@ return new class extends Migration
     {
         Schema::create('extension_review_reports', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('review_id')->constrained('extension_reviews')->onDelete('cascade');
-            $table->foreignId('reported_by')->constrained('users')->onDelete('cascade');
+            $table->unsignedInteger('review_id');
+            $table->foreign('review_id')->references('id')->on('extension_reviews')->onDelete('cascade');
+            $table->unsignedInteger('reported_by');
+            $table->foreign('reported_by')->references('id')->on('users')->onDelete('cascade');
             $table->text('reason');
             $table->enum('status', ['pending', 'reviewed', 'resolved', 'dismissed'])->default('pending');
-            $table->foreignId('reviewed_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->unsignedInteger('reviewed_by')->nullable();
+            $table->foreign('reviewed_by')->references('id')->on('users')->onDelete('set null');
             $table->text('admin_notes')->nullable();
             $table->timestamp('reviewed_at')->nullable();
             $table->timestamps();

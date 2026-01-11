@@ -29,7 +29,7 @@ window.app = createApp({
     },
 
     methods: {
-        onSubmit() {},
+        onSubmit() { },
 
         onInvalidSubmit({ values, errors, results }) {
             setTimeout(() => {
@@ -129,6 +129,14 @@ import ToolTip from "./directives/tooltip";
 app.directive("debounce", Debounce);
 app.directive("safe-html", DOMPurify);
 app.directive("tooltip", ToolTip);
+
+/**
+ * Global component registration.
+ */
+import TerritoryBoundaries from "./components/territories/TerritoryBoundaries.vue";
+
+console.log("Registering TerritoryBoundaries:", TerritoryBoundaries);
+app.component("v-territory-boundaries", TerritoryBoundaries);
 
 export default app;
 

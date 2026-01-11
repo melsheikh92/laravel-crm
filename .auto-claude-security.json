@@ -135,7 +135,10 @@
     "docker-buildx",
     "docker-compose",
     "dockerfile",
+    "erb",
+    "gem",
     "ipython",
+    "irb",
     "jupyter",
     "mysql",
     "mysqladmin",
@@ -159,6 +162,7 @@
     "redis-benchmark",
     "redis-cli",
     "redis-server",
+    "ruby",
     "sail",
     "ts-node",
     "tsc",
@@ -180,9 +184,11 @@
       "python",
       "javascript",
       "typescript",
+      "ruby",
       "php"
     ],
     "package_managers": [
+      "npm",
       "composer"
     ],
     "frameworks": [
@@ -215,7 +221,7 @@
       "capture-screenshots.sh"
     ]
   },
-  "project_dir": "/Users/mahmoudelsheikh/Downloads/Workspace/laravel-crm/.auto-claude/worktrees/tasks/008-advanced-compliance-features",
-  "created_at": "2026-01-11T01:13:21.826864",
-  "project_hash": "4aae31d1a301016d3290ee595647e3f6"
+  "project_dir": "/Users/mahmoudelsheikh/Downloads/Workspace/laravel-crm",
+  "created_at": "2026-01-11T17:11:51.554280",
+  "project_hash": "e25c54eda320c9884626aa73a8ffe340"
 }

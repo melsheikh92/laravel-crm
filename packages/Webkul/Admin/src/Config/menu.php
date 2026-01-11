@@ -193,30 +193,30 @@ return [
         'icon-class' => '',
     ],
 
-    /**
-     * Integrations.
-     */
-    [
-        'key' => 'integrations',
-        'name' => 'admin::app.layouts.integrations',
-        'route' => 'admin.integrations.marketplace.index',
-        'sort' => 9,
-        'icon-class' => 'icon-setting',
-    ],
-    [
-        'key' => 'integrations.marketplace',
-        'name' => 'admin::app.layouts.integrations-marketplace',
-        'route' => 'admin.integrations.marketplace.index',
-        'sort' => 1,
-        'icon-class' => '',
-    ],
-    [
-        'key' => 'integrations.manage',
-        'name' => 'admin::app.layouts.integration-management',
-        'route' => 'admin.integrations.index',
-        'sort' => 2,
-        'icon-class' => '',
-    ],
+    // /**
+    //  * Integrations - COMMENTED OUT per user request
+    //  */
+    // [
+    //     'key' => 'integrations',
+    //     'name' => 'admin::app.layouts.integrations',
+    //     'route' => 'admin.integrations.marketplace.index',
+    //     'sort' => 9,
+    //     'icon-class' => 'icon-setting',
+    // ],
+    // [
+    //     'key' => 'integrations.marketplace',
+    //     'name' => 'admin::app.layouts.integrations-marketplace',
+    //     'route' => 'admin.integrations.marketplace.index',
+    //     'sort' => 1,
+    //     'icon-class' => '',
+    // ],
+    // [
+    //     'key' => 'integrations.manage',
+    //     'name' => 'admin::app.layouts.integration-management',
+    //     'route' => 'admin.integrations.index',
+    //     'sort' => 2,
+    //     'icon-class' => '',
+    // ],
 
     /**
      * Contacts.

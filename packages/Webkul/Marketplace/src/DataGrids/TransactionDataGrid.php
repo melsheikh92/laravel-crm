@@ -45,103 +45,103 @@ class TransactionDataGrid extends DataGrid
     public function prepareColumns(): void
     {
         $this->addColumn([
-            'index'    => 'id',
-            'label'    => trans('marketplace::app.admin.revenue.transactions.datagrid.id'),
-            'type'     => 'string',
+            'index' => 'id',
+            'label' => trans('marketplace::app.admin.revenue.transactions.datagrid.id'),
+            'type' => 'string',
             'sortable' => true,
         ]);
 
         $this->addColumn([
-            'index'      => 'transaction_id',
-            'label'      => trans('marketplace::app.admin.revenue.transactions.datagrid.transaction-id'),
-            'type'       => 'string',
-            'sortable'   => true,
-            'searchable' => true,
-            'filterable' => true,
-        ]);
-
-        $this->addColumn([
-            'index'      => 'extension_name',
-            'label'      => trans('marketplace::app.admin.revenue.transactions.datagrid.extension'),
-            'type'       => 'string',
-            'sortable'   => true,
-            'searchable' => true,
-            'filterable' => true,
-        ]);
-
-        $this->addColumn([
-            'index'      => 'buyer_name',
-            'label'      => trans('marketplace::app.admin.revenue.transactions.datagrid.buyer'),
-            'type'       => 'string',
-            'sortable'   => true,
-            'searchable' => true,
-            'filterable' => true,
-        ]);
-
-        $this->addColumn([
-            'index'      => 'seller_name',
-            'label'      => trans('marketplace::app.admin.revenue.transactions.datagrid.seller'),
-            'type'       => 'string',
-            'sortable'   => true,
-            'searchable' => true,
-            'filterable' => true,
-        ]);
-
-        $this->addColumn([
-            'index'    => 'amount',
-            'label'    => trans('marketplace::app.admin.revenue.transactions.datagrid.amount'),
-            'type'     => 'string',
+            'index' => 'transaction_id',
+            'label' => trans('marketplace::app.admin.revenue.transactions.datagrid.transaction-id'),
+            'type' => 'string',
             'sortable' => true,
-            'closure'  => function ($row) {
+            'searchable' => true,
+            'filterable' => true,
+        ]);
+
+        $this->addColumn([
+            'index' => 'extension_name',
+            'label' => trans('marketplace::app.admin.revenue.transactions.datagrid.extension'),
+            'type' => 'string',
+            'sortable' => true,
+            'searchable' => true,
+            'filterable' => true,
+        ]);
+
+        $this->addColumn([
+            'index' => 'buyer_name',
+            'label' => trans('marketplace::app.admin.revenue.transactions.datagrid.buyer'),
+            'type' => 'string',
+            'sortable' => true,
+            'searchable' => true,
+            'filterable' => true,
+        ]);
+
+        $this->addColumn([
+            'index' => 'seller_name',
+            'label' => trans('marketplace::app.admin.revenue.transactions.datagrid.seller'),
+            'type' => 'string',
+            'sortable' => true,
+            'searchable' => true,
+            'filterable' => true,
+        ]);
+
+        $this->addColumn([
+            'index' => 'amount',
+            'label' => trans('marketplace::app.admin.revenue.transactions.datagrid.amount'),
+            'type' => 'string',
+            'sortable' => true,
+            'closure' => function ($row) {
                 return '$' . number_format($row->amount, 2);
             },
         ]);
 
         $this->addColumn([
-            'index'    => 'platform_fee',
-            'label'    => trans('marketplace::app.admin.revenue.transactions.datagrid.platform-fee'),
-            'type'     => 'string',
+            'index' => 'platform_fee',
+            'label' => trans('marketplace::app.admin.revenue.transactions.datagrid.platform-fee'),
+            'type' => 'string',
             'sortable' => true,
-            'closure'  => function ($row) {
+            'closure' => function ($row) {
                 return '$' . number_format($row->platform_fee, 2);
             },
         ]);
 
         $this->addColumn([
-            'index'    => 'seller_revenue',
-            'label'    => trans('marketplace::app.admin.revenue.transactions.datagrid.seller-revenue'),
-            'type'     => 'string',
+            'index' => 'seller_revenue',
+            'label' => trans('marketplace::app.admin.revenue.transactions.datagrid.seller-revenue'),
+            'type' => 'string',
             'sortable' => true,
-            'closure'  => function ($row) {
+            'closure' => function ($row) {
                 return '$' . number_format($row->seller_revenue, 2);
             },
         ]);
 
         $this->addColumn([
-            'index'      => 'payment_method',
-            'label'      => trans('marketplace::app.admin.revenue.transactions.datagrid.payment-method'),
-            'type'       => 'string',
-            'sortable'   => true,
+            'index' => 'payment_method',
+            'label' => trans('marketplace::app.admin.revenue.transactions.datagrid.payment-method'),
+            'type' => 'string',
+            'sortable' => true,
             'searchable' => true,
             'filterable' => true,
-            'closure'    => function ($row) {
+            'closure' => function ($row) {
                 return ucfirst($row->payment_method);
             },
         ]);
 
         $this->addColumn([
-            'index'      => 'status',
-            'label'      => trans('marketplace::app.admin.revenue.transactions.datagrid.status'),
-            'type'       => 'string',
-            'sortable'   => true,
+            'index' => 'status',
+            'label' => trans('marketplace::app.admin.revenue.transactions.datagrid.status'),
+            'type' => 'string',
+            'sortable' => true,
             'searchable' => true,
             'filterable' => true,
-            'closure'    => function ($row) {
+            'closure' => function ($row) {
                 $statusClasses = [
                     'completed' => 'badge-success',
-                    'pending'   => 'badge-warning',
-                    'failed'    => 'badge-danger',
-                    'refunded'  => 'badge-info',
+                    'pending' => 'badge-warning',
+                    'failed' => 'badge-danger',
+                    'refunded' => 'badge-info',
                     'cancelled' => 'badge-secondary',
                 ];
 
@@ -155,11 +155,12 @@ class TransactionDataGrid extends DataGrid
         ]);
 
         $this->addColumn([
-            'index'      => 'created_at',
-            'label'      => trans('marketplace::app.admin.revenue.transactions.datagrid.created-at'),
-            'type'       => 'date_range',
-            'sortable'   => true,
+            'index' => 'created_at',
+            'label' => trans('marketplace::app.admin.revenue.transactions.datagrid.created-at'),
+            'type' => 'datetime',
+            'sortable' => true,
             'searchable' => false,
+            'filterable_type' => 'datetime_range',
             'filterable' => true,
         ]);
     }
@@ -171,10 +172,10 @@ class TransactionDataGrid extends DataGrid
     {
         if (bouncer()->hasPermission('marketplace.revenue.view')) {
             $this->addAction([
-                'icon'   => 'icon-eye',
-                'title'  => trans('marketplace::app.admin.revenue.transactions.datagrid.view'),
+                'icon' => 'icon-eye',
+                'title' => trans('marketplace::app.admin.revenue.transactions.datagrid.view'),
                 'method' => 'GET',
-                'url'    => function ($row) {
+                'url' => function ($row) {
                     return route('admin.marketplace.revenue.show', $row->id);
                 },
             ]);
@@ -182,10 +183,10 @@ class TransactionDataGrid extends DataGrid
 
         if (bouncer()->hasPermission('marketplace.revenue.refund')) {
             $this->addAction([
-                'icon'   => 'icon-refresh',
-                'title'  => trans('marketplace::app.admin.revenue.transactions.datagrid.refund'),
+                'icon' => 'icon-refresh',
+                'title' => trans('marketplace::app.admin.revenue.transactions.datagrid.refund'),
                 'method' => 'POST',
-                'url'    => function ($row) {
+                'url' => function ($row) {
                     return route('admin.marketplace.revenue.refund', $row->id);
                 },
                 'condition' => function ($row) {

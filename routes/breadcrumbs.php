@@ -337,6 +337,12 @@ Breadcrumbs::for('settings.territories.assignments', function (BreadcrumbTrail $
     $trail->push(trans('admin::app.settings.territory-assignments.index.title'), route('admin.settings.territories.assignments.index'));
 });
 
+// Dashboard > Settings > Territory Assignments > Create
+Breadcrumbs::for('settings.territories.assignments.create', function (BreadcrumbTrail $trail) {
+    $trail->parent('settings.territories.assignments');
+    $trail->push(trans('admin::app.settings.territory-assignments.create.title'), route('admin.settings.territories.assignments.create'));
+});
+
 // Dashboard > Settings > Territories > Assignments (Specific Territory)
 Breadcrumbs::for('settings.territories.assignments.territory', function (BreadcrumbTrail $trail, $territory) {
     $trail->parent('settings.territories.view', $territory);
@@ -647,4 +653,70 @@ Breadcrumbs::for('marketing.campaigns.edit', function (BreadcrumbTrail $trail, $
 Breadcrumbs::for('marketing.campaigns.view', function (BreadcrumbTrail $trail, $campaign) {
     $trail->parent('marketing.campaigns.index');
     $trail->push($campaign->name, route('admin.marketing.campaigns.view', $campaign->id));
+});
+
+// Marketplace
+Breadcrumbs::for('marketplace.extensions', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push(trans('marketplace::app.layouts.extensions'), route('admin.marketplace.extensions.index'));
+});
+
+Breadcrumbs::for('marketplace.extensions.create', function (BreadcrumbTrail $trail) {
+    $trail->parent('marketplace.extensions');
+    $trail->push(trans('marketplace::app.admin.extensions.create.title'), route('admin.marketplace.extensions.create'));
+});
+
+Breadcrumbs::for('marketplace.extensions.edit', function (BreadcrumbTrail $trail, $extension) {
+    $trail->parent('marketplace.extensions');
+    $trail->push(trans('marketplace::app.admin.extensions.edit.title'), route('admin.marketplace.extensions.edit', $extension->id));
+});
+
+Breadcrumbs::for('marketplace.extensions.show', function (BreadcrumbTrail $trail, $extension) {
+    $trail->parent('marketplace.extensions');
+    $trail->push($extension->name, route('admin.marketplace.extensions.show', $extension->id));
+});
+
+Breadcrumbs::for('marketplace.categories', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push(trans('marketplace::app.layouts.categories'), route('admin.marketplace.categories.index'));
+});
+
+Breadcrumbs::for('marketplace.categories.create', function (BreadcrumbTrail $trail) {
+    $trail->parent('marketplace.categories');
+    $trail->push(trans('marketplace::app.admin.categories.create.title'), route('admin.marketplace.categories.create'));
+});
+
+Breadcrumbs::for('marketplace.categories.edit', function (BreadcrumbTrail $trail, $category) {
+    $trail->parent('marketplace.categories');
+    $trail->push(trans('marketplace::app.admin.categories.edit.title'), route('admin.marketplace.categories.edit', $category->id));
+});
+
+Breadcrumbs::for('marketplace.submissions', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push(trans('marketplace::app.layouts.submissions'), route('admin.marketplace.submissions.index'));
+});
+
+Breadcrumbs::for('marketplace.submissions.review', function (BreadcrumbTrail $trail, $submission) {
+    $trail->parent('marketplace.submissions');
+    $trail->push(trans('marketplace::app.admin.submissions.review.title'), route('admin.marketplace.submissions.review', $submission->id));
+});
+
+Breadcrumbs::for('marketplace.developer-applications', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push(trans('marketplace::app.layouts.developer-applications'), route('admin.marketplace.developer-applications.index'));
+});
+
+Breadcrumbs::for('marketplace.developer-applications.show', function (BreadcrumbTrail $trail, $application) {
+    $trail->parent('marketplace.developer-applications');
+    $trail->push($application->name, route('admin.marketplace.developer-applications.show', $application->id));
+});
+
+Breadcrumbs::for('marketplace.revenue', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push(trans('marketplace::app.layouts.revenue'), route('admin.marketplace.revenue.index'));
+});
+
+Breadcrumbs::for('marketplace.revenue.transactions', function (BreadcrumbTrail $trail) {
+    $trail->parent('marketplace.revenue');
+    $trail->push(trans('marketplace::app.admin.revenue.transactions.title'), route('admin.marketplace.revenue.transactions'));
 });

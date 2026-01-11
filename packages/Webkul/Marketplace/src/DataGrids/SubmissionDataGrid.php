@@ -45,57 +45,57 @@ class SubmissionDataGrid extends DataGrid
     public function prepareColumns(): void
     {
         $this->addColumn([
-            'index'    => 'id',
-            'label'    => trans('marketplace::app.admin.submissions.index.datagrid.id'),
-            'type'     => 'string',
+            'index' => 'id',
+            'label' => trans('marketplace::app.admin.submissions.index.datagrid.id'),
+            'type' => 'string',
             'sortable' => true,
         ]);
 
         $this->addColumn([
-            'index'      => 'extension_name',
-            'label'      => trans('marketplace::app.admin.submissions.index.datagrid.extension'),
-            'type'       => 'string',
-            'sortable'   => true,
+            'index' => 'extension_name',
+            'label' => trans('marketplace::app.admin.submissions.index.datagrid.extension'),
+            'type' => 'string',
+            'sortable' => true,
             'searchable' => true,
             'filterable' => true,
         ]);
 
         $this->addColumn([
-            'index'      => 'extension_type',
-            'label'      => trans('marketplace::app.admin.submissions.index.datagrid.type'),
-            'type'       => 'string',
-            'sortable'   => true,
+            'index' => 'extension_type',
+            'label' => trans('marketplace::app.admin.submissions.index.datagrid.type'),
+            'type' => 'string',
+            'sortable' => true,
             'searchable' => true,
-            'closure'    => function ($row) {
+            'closure' => function ($row) {
                 return ucfirst($row->extension_type);
             },
         ]);
 
         $this->addColumn([
-            'index'      => 'version_number',
-            'label'      => trans('marketplace::app.admin.submissions.index.datagrid.version'),
-            'type'       => 'string',
-            'sortable'   => true,
+            'index' => 'version_number',
+            'label' => trans('marketplace::app.admin.submissions.index.datagrid.version'),
+            'type' => 'string',
+            'sortable' => true,
             'searchable' => true,
         ]);
 
         $this->addColumn([
-            'index'      => 'submitter_name',
-            'label'      => trans('marketplace::app.admin.submissions.index.datagrid.submitter'),
-            'type'       => 'string',
-            'sortable'   => true,
+            'index' => 'submitter_name',
+            'label' => trans('marketplace::app.admin.submissions.index.datagrid.submitter'),
+            'type' => 'string',
+            'sortable' => true,
             'searchable' => true,
             'filterable' => true,
         ]);
 
         $this->addColumn([
-            'index'      => 'status',
-            'label'      => trans('marketplace::app.admin.submissions.index.datagrid.status'),
-            'type'       => 'string',
-            'sortable'   => true,
+            'index' => 'status',
+            'label' => trans('marketplace::app.admin.submissions.index.datagrid.status'),
+            'type' => 'string',
+            'sortable' => true,
             'searchable' => true,
             'filterable' => true,
-            'closure'    => function ($row) {
+            'closure' => function ($row) {
                 $statusClasses = [
                     'pending' => 'warning',
                     'approved' => 'success',
@@ -109,11 +109,11 @@ class SubmissionDataGrid extends DataGrid
         ]);
 
         $this->addColumn([
-            'index'      => 'security_scan_results',
-            'label'      => trans('marketplace::app.admin.submissions.index.datagrid.security'),
-            'type'       => 'string',
-            'sortable'   => false,
-            'closure'    => function ($row) {
+            'index' => 'security_scan_results',
+            'label' => trans('marketplace::app.admin.submissions.index.datagrid.security'),
+            'type' => 'string',
+            'sortable' => false,
+            'closure' => function ($row) {
                 if (!$row->security_scan_results) {
                     return '<span class="label label-secondary">Not Scanned</span>';
                 }
@@ -131,35 +131,35 @@ class SubmissionDataGrid extends DataGrid
         ]);
 
         $this->addColumn([
-            'index'           => 'submitted_at',
-            'label'           => trans('marketplace::app.admin.submissions.index.datagrid.submitted-at'),
-            'type'            => 'datetime',
-            'sortable'        => true,
-            'searchable'      => true,
-            'filterable_type' => 'date_range',
-            'filterable'      => true,
+            'index' => 'submitted_at',
+            'label' => trans('marketplace::app.admin.submissions.index.datagrid.submitted-at'),
+            'type' => 'datetime',
+            'sortable' => true,
+            'searchable' => true,
+            'filterable_type' => 'datetime_range',
+            'filterable' => true,
         ]);
 
         $this->addColumn([
-            'index'      => 'reviewer_name',
-            'label'      => trans('marketplace::app.admin.submissions.index.datagrid.reviewer'),
-            'type'       => 'string',
-            'sortable'   => true,
+            'index' => 'reviewer_name',
+            'label' => trans('marketplace::app.admin.submissions.index.datagrid.reviewer'),
+            'type' => 'string',
+            'sortable' => true,
             'searchable' => true,
-            'closure'    => function ($row) {
+            'closure' => function ($row) {
                 return $row->reviewer_name ?? '-';
             },
         ]);
 
         $this->addColumn([
-            'index'           => 'reviewed_at',
-            'label'           => trans('marketplace::app.admin.submissions.index.datagrid.reviewed-at'),
-            'type'            => 'datetime',
-            'sortable'        => true,
-            'searchable'      => true,
-            'filterable_type' => 'date_range',
-            'filterable'      => true,
-            'closure'         => function ($row) {
+            'index' => 'reviewed_at',
+            'label' => trans('marketplace::app.admin.submissions.index.datagrid.reviewed-at'),
+            'type' => 'datetime',
+            'sortable' => true,
+            'searchable' => true,
+            'filterable_type' => 'datetime_range',
+            'filterable' => true,
+            'closure' => function ($row) {
                 return $row->reviewed_at ?? '-';
             },
         ]);
@@ -172,21 +172,21 @@ class SubmissionDataGrid extends DataGrid
     {
         if (bouncer()->hasPermission('marketplace.submissions.view')) {
             $this->addAction([
-                'index'  => 'view',
-                'icon'   => 'icon-eye',
-                'title'  => trans('marketplace::app.admin.submissions.index.datagrid.view'),
+                'index' => 'view',
+                'icon' => 'icon-eye',
+                'title' => trans('marketplace::app.admin.submissions.index.datagrid.view'),
                 'method' => 'GET',
-                'url'    => fn ($row) => route('admin.marketplace.submissions.show', $row->id),
+                'url' => fn($row) => route('admin.marketplace.submissions.show', $row->id),
             ]);
         }
 
         if (bouncer()->hasPermission('marketplace.submissions.review')) {
             $this->addAction([
-                'index'  => 'review',
-                'icon'   => 'icon-settings',
-                'title'  => trans('marketplace::app.admin.submissions.index.datagrid.review'),
+                'index' => 'review',
+                'icon' => 'icon-settings',
+                'title' => trans('marketplace::app.admin.submissions.index.datagrid.review'),
                 'method' => 'GET',
-                'url'    => fn ($row) => route('admin.marketplace.submissions.review', $row->id),
+                'url' => fn($row) => route('admin.marketplace.submissions.review', $row->id),
             ]);
         }
     }
@@ -198,17 +198,17 @@ class SubmissionDataGrid extends DataGrid
     {
         if (bouncer()->hasPermission('marketplace.submissions.review')) {
             $this->addMassAction([
-                'icon'   => 'icon-check',
-                'title'  => trans('marketplace::app.admin.submissions.index.datagrid.approve'),
+                'icon' => 'icon-check',
+                'title' => trans('marketplace::app.admin.submissions.index.datagrid.approve'),
                 'method' => 'POST',
-                'url'    => route('admin.marketplace.submissions.mass_approve'),
+                'url' => route('admin.marketplace.submissions.mass_approve'),
             ]);
 
             $this->addMassAction([
-                'icon'   => 'icon-cancel',
-                'title'  => trans('marketplace::app.admin.submissions.index.datagrid.reject'),
+                'icon' => 'icon-cancel',
+                'title' => trans('marketplace::app.admin.submissions.index.datagrid.reject'),
                 'method' => 'POST',
-                'url'    => route('admin.marketplace.submissions.mass_reject'),
+                'url' => route('admin.marketplace.submissions.mass_reject'),
             ]);
         }
     }

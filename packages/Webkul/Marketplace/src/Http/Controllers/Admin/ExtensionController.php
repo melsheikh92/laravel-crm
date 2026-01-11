@@ -21,7 +21,8 @@ class ExtensionController extends Controller
     public function __construct(
         protected ExtensionRepository $extensionRepository,
         protected ExtensionCategoryRepository $categoryRepository
-    ) {}
+    ) {
+    }
 
     /**
      * Display a listing of the resource.
@@ -53,21 +54,21 @@ class ExtensionController extends Controller
     public function store(): JsonResponse
     {
         $this->validate(request(), [
-            'name'              => 'required|string|max:255',
-            'slug'              => 'required|string|max:255|unique:extensions,slug',
-            'description'       => 'nullable|string',
-            'long_description'  => 'nullable|string',
-            'type'              => 'required|in:plugin,theme,integration',
-            'category_id'       => 'nullable|integer|exists:extension_categories,id',
-            'price'             => 'required|numeric|min:0',
-            'status'            => 'required|in:draft,pending,approved,rejected,disabled',
-            'featured'          => 'boolean',
-            'logo'              => 'nullable|string',
+            'name' => 'required|string|max:255',
+            'slug' => 'required|string|max:255|unique:extensions,slug',
+            'description' => 'nullable|string',
+            'long_description' => 'nullable|string',
+            'type' => 'required|in:plugin,theme,integration',
+            'category_id' => 'nullable|integer|exists:extension_categories,id',
+            'price' => 'required|numeric|min:0',
+            'status' => 'required|in:draft,pending,approved,rejected,disabled',
+            'featured' => 'boolean',
+            'logo' => 'nullable|string',
             'documentation_url' => 'nullable|url',
-            'demo_url'          => 'nullable|url',
-            'repository_url'    => 'nullable|url',
-            'support_email'     => 'nullable|email',
-            'tags'              => 'nullable|array',
+            'demo_url' => 'nullable|url',
+            'repository_url' => 'nullable|url',
+            'support_email' => 'nullable|email',
+            'tags' => 'nullable|array',
         ]);
 
         $data = request()->all();
@@ -81,8 +82,8 @@ class ExtensionController extends Controller
         Event::dispatch('marketplace.extension.create.after', $extension);
 
         return new JsonResponse([
-            'data'    => $extension,
-            'message' => trans('marketplace::app.admin.extensions.create-success'),
+            'data' => $extension,
+            'message' => trans('marketplace::app.admin.extensions.index.create-success'),
         ]);
     }
 
@@ -117,7 +118,7 @@ class ExtensionController extends Controller
 
         if (request()->ajax()) {
             return new JsonResponse([
-                'data'       => $extension,
+                'data' => $extension,
                 'categories' => $categories,
             ]);
         }
@@ -131,21 +132,21 @@ class ExtensionController extends Controller
     public function update(int $id): JsonResponse
     {
         $this->validate(request(), [
-            'name'              => 'required|string|max:255',
-            'slug'              => 'required|string|max:255|unique:extensions,slug,'.$id,
-            'description'       => 'nullable|string',
-            'long_description'  => 'nullable|string',
-            'type'              => 'required|in:plugin,theme,integration',
-            'category_id'       => 'nullable|integer|exists:extension_categories,id',
-            'price'             => 'required|numeric|min:0',
-            'status'            => 'required|in:draft,pending,approved,rejected,disabled',
-            'featured'          => 'boolean',
-            'logo'              => 'nullable|string',
+            'name' => 'required|string|max:255',
+            'slug' => 'required|string|max:255|unique:extensions,slug,' . $id,
+            'description' => 'nullable|string',
+            'long_description' => 'nullable|string',
+            'type' => 'required|in:plugin,theme,integration',
+            'category_id' => 'nullable|integer|exists:extension_categories,id',
+            'price' => 'required|numeric|min:0',
+            'status' => 'required|in:draft,pending,approved,rejected,disabled',
+            'featured' => 'boolean',
+            'logo' => 'nullable|string',
             'documentation_url' => 'nullable|url',
-            'demo_url'          => 'nullable|url',
-            'repository_url'    => 'nullable|url',
-            'support_email'     => 'nullable|email',
-            'tags'              => 'nullable|array',
+            'demo_url' => 'nullable|url',
+            'repository_url' => 'nullable|url',
+            'support_email' => 'nullable|email',
+            'tags' => 'nullable|array',
         ]);
 
         $data = request()->all();
@@ -157,8 +158,8 @@ class ExtensionController extends Controller
         Event::dispatch('marketplace.extension.update.after', $extension);
 
         return new JsonResponse([
-            'data'    => $extension,
-            'message' => trans('marketplace::app.admin.extensions.update-success'),
+            'data' => $extension,
+            'message' => trans('marketplace::app.admin.extensions.index.update-success'),
         ]);
     }
 
@@ -175,11 +176,11 @@ class ExtensionController extends Controller
             Event::dispatch('marketplace.extension.delete.after', $id);
 
             return new JsonResponse([
-                'message' => trans('marketplace::app.admin.extensions.delete-success'),
+                'message' => trans('marketplace::app.admin.extensions.index.delete-success'),
             ], 200);
         } catch (\Exception $e) {
             return new JsonResponse([
-                'message' => trans('marketplace::app.admin.extensions.delete-failed'),
+                'message' => trans('marketplace::app.admin.extensions.index.delete-failed'),
             ], 500);
         }
     }
@@ -199,12 +200,12 @@ class ExtensionController extends Controller
             Event::dispatch('marketplace.extension.enable.after', $extension);
 
             return new JsonResponse([
-                'data'    => $extension,
-                'message' => trans('marketplace::app.admin.extensions.enable-success'),
+                'data' => $extension,
+                'message' => trans('marketplace::app.admin.extensions.index.enable-success'),
             ], 200);
         } catch (\Exception $e) {
             return new JsonResponse([
-                'message' => trans('marketplace::app.admin.extensions.enable-failed'),
+                'message' => trans('marketplace::app.admin.extensions.index.enable-failed'),
             ], 500);
         }
     }
@@ -224,12 +225,12 @@ class ExtensionController extends Controller
             Event::dispatch('marketplace.extension.disable.after', $extension);
 
             return new JsonResponse([
-                'data'    => $extension,
-                'message' => trans('marketplace::app.admin.extensions.disable-success'),
+                'data' => $extension,
+                'message' => trans('marketplace::app.admin.extensions.index.disable-success'),
             ], 200);
         } catch (\Exception $e) {
             return new JsonResponse([
-                'message' => trans('marketplace::app.admin.extensions.disable-failed'),
+                'message' => trans('marketplace::app.admin.extensions.index.disable-failed'),
             ], 500);
         }
     }
@@ -249,12 +250,12 @@ class ExtensionController extends Controller
             Event::dispatch('marketplace.extension.feature.after', $extension);
 
             return new JsonResponse([
-                'data'    => $extension,
-                'message' => trans('marketplace::app.admin.extensions.feature-success'),
+                'data' => $extension,
+                'message' => trans('marketplace::app.admin.extensions.index.feature-success'),
             ], 200);
         } catch (\Exception $e) {
             return new JsonResponse([
-                'message' => trans('marketplace::app.admin.extensions.feature-failed'),
+                'message' => trans('marketplace::app.admin.extensions.index.feature-failed'),
             ], 500);
         }
     }
@@ -274,12 +275,12 @@ class ExtensionController extends Controller
             Event::dispatch('marketplace.extension.unfeature.after', $extension);
 
             return new JsonResponse([
-                'data'    => $extension,
-                'message' => trans('marketplace::app.admin.extensions.unfeature-success'),
+                'data' => $extension,
+                'message' => trans('marketplace::app.admin.extensions.index.unfeature-success'),
             ], 200);
         } catch (\Exception $e) {
             return new JsonResponse([
-                'message' => trans('marketplace::app.admin.extensions.unfeature-failed'),
+                'message' => trans('marketplace::app.admin.extensions.index.unfeature-failed'),
             ], 500);
         }
     }
@@ -303,14 +304,14 @@ class ExtensionController extends Controller
             $count++;
         }
 
-        if (! $count) {
+        if (!$count) {
             return response()->json([
-                'message' => trans('marketplace::app.admin.extensions.mass-delete-failed'),
+                'message' => trans('marketplace::app.admin.extensions.index.mass-delete-failed'),
             ], 400);
         }
 
         return response()->json([
-            'message' => trans('marketplace::app.admin.extensions.mass-delete-success'),
+            'message' => trans('marketplace::app.admin.extensions.index.mass-delete-success'),
         ]);
     }
 
@@ -338,14 +339,14 @@ class ExtensionController extends Controller
             $count++;
         }
 
-        if (! $count) {
+        if (!$count) {
             return response()->json([
-                'message' => trans('marketplace::app.admin.extensions.mass-update-failed'),
+                'message' => trans('marketplace::app.admin.extensions.index.mass-update-failed'),
             ], 400);
         }
 
         return response()->json([
-            'message' => trans('marketplace::app.admin.extensions.mass-update-success'),
+            'message' => trans('marketplace::app.admin.extensions.index.mass-update-success'),
         ]);
     }
 
@@ -370,14 +371,14 @@ class ExtensionController extends Controller
             $count++;
         }
 
-        if (! $count) {
+        if (!$count) {
             return response()->json([
-                'message' => trans('marketplace::app.admin.extensions.mass-disable-failed'),
+                'message' => trans('marketplace::app.admin.extensions.index.mass-disable-failed'),
             ], 400);
         }
 
         return response()->json([
-            'message' => trans('marketplace::app.admin.extensions.mass-disable-success'),
+            'message' => trans('marketplace::app.admin.extensions.index.mass-disable-success'),
         ]);
     }
 }

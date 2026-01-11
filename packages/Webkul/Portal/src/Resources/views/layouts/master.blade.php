@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>@yield('title', 'Customer Portal') - {{ config('app.name') }}</title>
+    <title>@yield('title', core()->getConfigData('portal.general.settings.portal_name') ?? 'Customer Portal') - {{ config('app.name') }}</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -226,6 +226,14 @@
             font-weight: 700;
             color: var(--text-main);
             text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .nav-brand img {
+            max-height: 40px;
+            width: auto;
         }
 
         /* Alert */
@@ -248,7 +256,13 @@
     @auth('portal')
         <header class="navbar">
             <div class="container flex items-center justify-between">
-                <a href="{{ route('portal.dashboard') }}" class="nav-brand">{{ config('app.name') }} Portal</a>
+                <a href="{{ route('portal.dashboard') }}" class="nav-brand">
+                    @if($logo = core()->getConfigData('portal.general.settings.logo'))
+                        <img src="{{ \Illuminate\Support\Facades\Storage::url($logo) }}" alt="{{ core()->getConfigData('portal.general.settings.portal_name') }}">
+                    @else
+                        {{ core()->getConfigData('portal.general.settings.portal_name') ?? config('app.name') . ' Portal' }}
+                    @endif
+                </a>
 
                 <nav class="flex items-center">
                     <a href="{{ route('portal.dashboard') }}"

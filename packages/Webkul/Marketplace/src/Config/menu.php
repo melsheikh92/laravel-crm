@@ -25,52 +25,52 @@ return [
         'sort' => 2,
         'icon-class' => '',
     ],
-    [
-        'key' => 'marketplace.become-developer',
-        'name' => 'marketplace::app.layouts.become-developer',
-        'route' => 'marketplace.developer-registration.create',
-        'sort' => 3,
-        'icon-class' => '',
-    ],
+    // [
+    //     'key' => 'marketplace.become-developer',
+    //     'name' => 'marketplace::app.layouts.become-developer',
+    //     'route' => 'marketplace.developer-registration.create',
+    //     'sort' => 3,
+    //     'icon-class' => '',
+    // ],
 
     /**
-     * Developer Portal.
+     * Developer Portal - COMMENTED OUT (routes not defined)
      */
-    [
-        'key' => 'developer',
-        'name' => 'marketplace::app.layouts.developer',
-        'route' => 'developer.dashboard.index',
-        'sort' => 10,
-        'icon-class' => 'icon-configuration',
-    ],
-    [
-        'key' => 'developer.dashboard',
-        'name' => 'marketplace::app.layouts.dashboard',
-        'route' => 'developer.dashboard.index',
-        'sort' => 1,
-        'icon-class' => '',
-    ],
-    [
-        'key' => 'developer.extensions',
-        'name' => 'marketplace::app.layouts.my-extensions',
-        'route' => 'developer.extensions.index',
-        'sort' => 2,
-        'icon-class' => '',
-    ],
-    [
-        'key' => 'developer.submissions',
-        'name' => 'marketplace::app.layouts.submissions',
-        'route' => 'developer.submissions.index',
-        'sort' => 3,
-        'icon-class' => '',
-    ],
-    [
-        'key' => 'developer.earnings',
-        'name' => 'marketplace::app.layouts.earnings',
-        'route' => 'developer.earnings.index',
-        'sort' => 4,
-        'icon-class' => '',
-    ],
+    // [
+    //     'key' => 'developer',
+    //     'name' => 'marketplace::app.layouts.developer',
+    //     'route' => 'developer.dashboard.index',
+    //     'sort' => 10,
+    //     'icon-class' => 'icon-configuration',
+    // ],
+    // [
+    //     'key' => 'developer.dashboard',
+    //     'name' => 'marketplace::app.layouts.dashboard',
+    //     'route' => 'developer.dashboard.index',
+    //     'sort' => 1,
+    //     'icon-class' => '',
+    // ],
+    // [
+    //     'key' => 'developer.extensions',
+    //     'name' => 'marketplace::app.layouts.my-extensions',
+    //     'route' => 'developer.extensions.index',
+    //     'sort' => 2,
+    //     'icon-class' => '',
+    // ],
+    // [
+    //     'key' => 'developer.submissions',
+    //     'name' => 'marketplace::app.layouts.submissions',
+    //     'route' => 'developer.submissions.index',
+    //     'sort' => 3,
+    //     'icon-class' => '',
+    // ],
+    // [
+    //     'key' => 'developer.earnings',
+    //     'name' => 'marketplace::app.layouts.earnings',
+    //     'route' => 'developer.earnings.index',
+    //     'sort' => 4,
+    //     'icon-class' => '',
+    // ],
 
     /**
      * Admin - Marketplace Management.
