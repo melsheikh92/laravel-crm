@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extension Marketplace API Documentation</title>
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@5.10.5/swagger-ui.css" />
+    <style>
+        html {
+            box-sizing: border-box;
+            overflow: -moz-scrollbars-vertical;
+            overflow-y: scroll;
+        }
+
+        *,
+        *:before,
+        *:after {
+            box-sizing: inherit;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        .topbar {
+            background-color: #1f2937 !important;
+        }
+
+        .topbar-wrapper img {
+            content: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 50"><text x="10" y="35" font-family="Arial, sans-serif" font-size="24" fill="white">Marketplace API</text></svg>');
+        }
+
+        .swagger-ui .topbar .download-url-wrapper {
+            display: none;
+        }
+
+        .custom-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .custom-header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+
+        .custom-header p {
+            margin: 0.5rem 0 0 0;
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .info-section {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .info-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .info-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #667eea;
+        }
+
+        .info-card h3 {
+            margin: 0 0 0.5rem 0;
+            color: #1f2937;
+            font-size: 1.2rem;
+        }
+
+        .info-card p {
+            margin: 0;
+            color: #6b7280;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .info-card ul {
+            margin: 0.5rem 0 0 0;
+            padding-left: 1.5rem;
+            color: #6b7280;
+        }
+
+        .info-card ul li {
+            margin: 0.25rem 0;
+        }
+
+        .quick-links {
+            background: #f9fafb;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .quick-links h3 {
+            margin: 0 0 1rem 0;
+            color: #1f2937;
+        }
+
+        .quick-links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .quick-link {
+            background: white;
+            padding: 1rem;
+            border-radius: 6px;
+            text-decoration: none;
+            color: #667eea;
+            font-weight: 500;
+            transition: all 0.2s;
+            border: 2px solid #e5e7eb;
+        }
+
+        .quick-link:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(102, 126, 234, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .custom-header h1 {
+                font-size: 1.75rem;
+            }
+
+            .info-section {
+                padding: 0 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="custom-header">
+        <h1>Extension Marketplace API</h1>
+        <p>Comprehensive RESTful API for managing extensions, versions, installations, and reviews</p>
+    </div>
+
+    <div class="info-section">
+        <div class="info-cards">
+            <div class="info-card">
+                <h3>🚀 Getting Started</h3>
+                <p>Welcome to the Extension Marketplace API documentation. This API enables developers to publish extensions and users to discover and install them.</p>
+            </div>
+
+            <div class="info-card">
+                <h3>🔐 Authentication</h3>
+                <p>Most endpoints require authentication using:</p>
+                <ul>
+                    <li>Bearer Token (API tokens)</li>
+                    <li>Session Auth (cookie-based)</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h3>📊 Features</h3>
+                <p>Key capabilities include:</p>
+                <ul>
+                    <li>Extension management</li>
+                    <li>Version control</li>
+                    <li>Installation tracking</li>
+                    <li>Review system</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h3>⚡ Rate Limits</h3>
+                <p>API rate limits:</p>
+                <ul>
+                    <li>Authenticated: 60/min</li>
+                    <li>Public: 30/min</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="quick-links">
+            <h3>📚 Quick Links</h3>
+            <div class="quick-links-grid">
+                <a href="#/Extensions" class="quick-link">Browse Extensions</a>
+                <a href="#/Installations" class="quick-link">Manage Installations</a>
+                <a href="#/Reviews" class="quick-link">Reviews & Ratings</a>
+                <a href="#/Versions" class="quick-link">Version Control</a>
+                <a href="#/Developer" class="quick-link">Developer Portal</a>
+                <a href="#/Payments" class="quick-link">Payments</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="swagger-ui"></div>
+
+    <script src="https://unpkg.com/swagger-ui-dist@5.10.5/swagger-ui-bundle.js"></script>
+    <script src="https://unpkg.com/swagger-ui-dist@5.10.5/swagger-ui-standalone-preset.js"></script>
+    <script>
+        window.onload = function() {
+            // Determine the URL to the OpenAPI spec
+            const specUrl = window.location.href.replace('index.html', 'openapi.yaml');
+
+            // Initialize Swagger UI
+            window.ui = SwaggerUIBundle({
+                url: specUrl,
+                dom_id: '#swagger-ui',
+                deepLinking: true,
+                presets: [
+                    SwaggerUIBundle.presets.apis,
+                    SwaggerUIStandalonePreset
+                ],
+                plugins: [
+                    SwaggerUIBundle.plugins.DownloadUrl
+                ],
+                layout: "StandaloneLayout",
+                defaultModelsExpandDepth: 1,
+                defaultModelExpandDepth: 1,
+                docExpansion: 'list',
+                filter: true,
+                showExtensions: true,
+                showCommonExtensions: true,
+                tryItOutEnabled: true,
+                requestInterceptor: (request) => {
+                    // Add custom headers or modify request if needed
+                    return request;
+                },
+                responseInterceptor: (response) => {
+                    // Handle response if needed
+                    return response;
+                }
+            });
+        };
+    </script>
+</body>
+</html>

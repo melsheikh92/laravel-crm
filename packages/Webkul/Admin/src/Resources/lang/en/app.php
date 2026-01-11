@@ -1596,6 +1596,7 @@ return [
                 'status' => 'Status',
                 'description' => 'Description',
                 'geographic-boundaries' => 'Geographic Boundaries',
+                'boundaries-json' => 'Boundaries (JSON)',
                 'boundaries-info' => 'Enter geographic boundaries data in JSON format',
                 'select-type' => 'Select Type',
                 'select-parent' => 'Select Parent Territory',
@@ -2948,7 +2949,7 @@ return [
         'warehouses' => 'Warehouses',
         'warehouse' => 'Warehouse',
         'warehouses-info' => 'Add, edit or delete warehouses from CRM',
-        'territories' => 'Territories',
+        // 'territories' => 'Territories', // DUPLICATE - Full territories array is in settings section (line 1565)
         'territories-info' => 'Manage territories, rules, and assignments in the CRM',
         'territory-management' => 'Territory Management',
         'territory-management-info' => 'Add, edit or delete territories from CRM',

@@ -307,6 +307,72 @@ Breadcrumbs::for('settings.marketing.campaigns', function (BreadcrumbTrail $trai
     $trail->push(trans('admin::app.settings.marketing.campaigns.index.title'), route('admin.settings.marketing.campaigns.index'));
 });
 
+// Dashboard > Settings > Territories
+Breadcrumbs::for('settings.territories', function (BreadcrumbTrail $trail) {
+    $trail->parent('settings');
+    $trail->push(trans('admin::app.settings.territories.index.title'), route('admin.settings.territories.index'));
+});
+
+// Dashboard > Settings > Territories > Create
+Breadcrumbs::for('settings.territories.create', function (BreadcrumbTrail $trail) {
+    $trail->parent('settings.territories');
+    $trail->push(trans('admin::app.settings.territories.create.title'), route('admin.settings.territories.create'));
+});
+
+// Dashboard > Settings > Territories > Edit
+Breadcrumbs::for('settings.territories.edit', function (BreadcrumbTrail $trail, $territory) {
+    $trail->parent('settings.territories');
+    $trail->push(trans('admin::app.settings.territories.edit.title'), route('admin.settings.territories.edit', $territory->id));
+});
+
+// Dashboard > Settings > Territories > View
+Breadcrumbs::for('settings.territories.view', function (BreadcrumbTrail $trail, $territory) {
+    $trail->parent('settings.territories');
+    $trail->push($territory ? $territory->name : 'Territory', $territory ? route('admin.settings.territories.view', $territory->id) : '#');
+});
+
+// Dashboard > Settings > Territory Assignments (Global Index)
+Breadcrumbs::for('settings.territories.assignments', function (BreadcrumbTrail $trail) {
+    $trail->parent('settings');
+    $trail->push(trans('admin::app.settings.territory-assignments.index.title'), route('admin.settings.territories.assignments.index'));
+});
+
+// Dashboard > Settings > Territories > Assignments (Specific Territory)
+Breadcrumbs::for('settings.territories.assignments.territory', function (BreadcrumbTrail $trail, $territory) {
+    $trail->parent('settings.territories.view', $territory);
+    $trail->push(trans('admin::app.settings.territories.view.assignments'), route('admin.settings.territories.assignments.index', $territory->id));
+});
+
+// Dashboard > Settings > Territories > Analytics (Global)
+Breadcrumbs::for('settings.territories.analytics', function (BreadcrumbTrail $trail) {
+    $trail->parent('settings.territories');
+    $trail->push(trans('admin::app.settings.territories.analytics.title'), route('admin.settings.territories.analytics.index'));
+});
+
+// Dashboard > Settings > Territories > Analytics (Specific Territory)
+Breadcrumbs::for('settings.territories.analytics.territory', function (BreadcrumbTrail $trail, $territory) {
+    $trail->parent('settings.territories.view', $territory);
+    $trail->push(trans('admin::app.settings.territories.view.analytics'), route('admin.settings.territories.analytics.index', $territory->id));
+});
+
+// Dashboard > Settings > Territories > Rules
+Breadcrumbs::for('settings.territories.rules', function (BreadcrumbTrail $trail, $territory) {
+    $trail->parent('settings.territories.view', $territory);
+    $trail->push(trans('admin::app.settings.territories.view.rules'), route('admin.settings.territories.rules.index', $territory->id));
+});
+
+// Dashboard > Settings > Territories > Rules > Create
+Breadcrumbs::for('settings.territories.rules.create', function (BreadcrumbTrail $trail, $territory) {
+    $trail->parent('settings.territories.rules', $territory);
+    $trail->push(trans('admin::app.settings.territories.rules.create.title'), route('admin.settings.territories.rules.create', $territory->id));
+});
+
+// Dashboard > Settings > Territories > Rules > Edit
+Breadcrumbs::for('settings.territories.rules.edit', function (BreadcrumbTrail $trail, $territory, $rule) {
+    $trail->parent('settings.territories.rules', $territory);
+    $trail->push(trans('admin::app.settings.territories.rules.edit.title'), route('admin.settings.territories.rules.edit', [$territory->id, $rule->id]));
+});
+
 // Settings > Workflows
 Breadcrumbs::for('settings.workflows', function (BreadcrumbTrail $trail) {
     $trail->parent('settings');

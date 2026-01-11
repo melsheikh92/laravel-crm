@@ -1,0 +1,1833 @@
+openapi: 3.0.3
+info:
+  title: Extension Marketplace API
+  description: |
+    Comprehensive API documentation for the Laravel CRM Extension Marketplace.
+
+    This API enables developers to publish, manage, and monetize extensions while allowing users to discover,
+    install, and review extensions. The marketplace supports plugins, themes, and integrations with built-in
+    security review, payment processing, and automatic update management.
+
+    ## Features
+    - Extension browsing and search
+    - Version management and compatibility checking
+    - User reviews and ratings
+    - Installation and update management
+    - Payment processing for paid extensions
+    - Developer earnings tracking
+    - Security scanning and submission review
+
+    ## Authentication
+    Most endpoints require authentication using Laravel Sanctum tokens or session-based authentication.
+    Include the token in the `Authorization` header as `Bearer {token}`.
+
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: support@example.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: https://api.example.com/api
+    description: Production server
+  - url: https://staging-api.example.com/api
+    description: Staging server
+  - url: http://localhost:8000/api
+    description: Development server
+
+tags:
+  - name: Extensions
+    description: Extension discovery and management endpoints
+  - name: Versions
+    description: Extension version management
+  - name: Installations
+    description: Extension installation and update management
+  - name: Reviews
+    description: Extension reviews and ratings
+  - name: Submissions
+    description: Extension submission and approval workflow
+  - name: Developer
+    description: Developer portal endpoints
+  - name: Payments
+    description: Payment and transaction management
+  - name: Admin
+    description: Administrative endpoints
+
+security:
+  - bearerAuth: []
+  - sanctumAuth: []
+
+paths:
+  # ==================== Extension Endpoints ====================
+  /marketplace/extensions:
+    get:
+      tags:
+        - Extensions
+      summary: List all extensions
+      description: Retrieve a paginated list of approved extensions with optional filtering
+      operationId: getExtensions
+      security: []
+      parameters:
+        - name: page
+          in: query
+          description: Page number for pagination
+          schema:
+            type: integer
+            default: 1
+        - name: per_page
+          in: query
+          description: Number of items per page
+          schema:
+            type: integer
+            default: 15
+            maximum: 100
+        - name: type
+          in: query
+          description: Filter by extension type
+          schema:
+            type: string
+            enum: [plugin, theme, integration]
+        - name: category_id
+          in: query
+          description: Filter by category ID
+          schema:
+            type: integer
+        - name: search
+          in: query
+          description: Search term for name and description
+          schema:
+            type: string
+        - name: sort
+          in: query
+          description: Sort field
+          schema:
+            type: string
+            enum: [name, price, downloads_count, average_rating, created_at]
+            default: created_at
+        - name: order
+          in: query
+          description: Sort order
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: desc
+        - name: price_filter
+          in: query
+          description: Filter by price
+          schema:
+            type: string
+            enum: [free, paid, all]
+            default: all
+        - name: featured
+          in: query
+          description: Show only featured extensions
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Extension'
+                  meta:
+                    $ref: '#/components/schemas/PaginationMeta'
+                  links:
+                    $ref: '#/components/schemas/PaginationLinks'
+    post:
+      tags:
+        - Extensions
+      summary: Create a new extension
+      description: Create a new extension (developers only)
+      operationId: createExtension
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExtensionCreateRequest'
+      responses:
+        '201':
+          description: Extension created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Extension'
+                  message:
+                    type: string
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /marketplace/extensions/{id}:
+    get:
+      tags:
+        - Extensions
+      summary: Get extension details
+      description: Retrieve detailed information about a specific extension
+      operationId: getExtension
+      security: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Extension ID
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/ExtensionDetail'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      tags:
+        - Extensions
+      summary: Update extension
+      description: Update extension details (author only)
+      operationId: updateExtension
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Extension ID
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExtensionUpdateRequest'
+      responses:
+        '200':
+          description: Extension updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Extension'
+                  message:
+                    type: string
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+    delete:
+      tags:
+        - Extensions
+      summary: Delete extension
+      description: Delete an extension (author only)
+      operationId: deleteExtension
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Extension ID
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Extension deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /marketplace/extensions/slug/{slug}:
+    get:
+      tags:
+        - Extensions
+      summary: Get extension by slug
+      description: Retrieve extension details using its URL slug
+      operationId: getExtensionBySlug
+      security: []
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          description: Extension slug
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/ExtensionDetail'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /marketplace/extensions/{id}/versions:
+    get:
+      tags:
+        - Extensions
+      summary: Get extension versions
+      description: List all versions of an extension
+      operationId: getExtensionVersions
+      security: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Extension ID
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ExtensionVersion'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /marketplace/extensions/{id}/reviews:
+    get:
+      tags:
+        - Extensions
+      summary: Get extension reviews
+      description: List all reviews for an extension
+      operationId: getExtensionReviews
+      security: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Extension ID
+          schema:
+            type: integer
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+            default: 10
+        - name: rating
+          in: query
+          description: Filter by rating
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 5
+        - name: sort
+          in: query
+          description: Sort order
+          schema:
+            type: string
+            enum: [recent, helpful, rating_high, rating_low]
+            default: recent
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Review'
+                  meta:
+                    $ref: '#/components/schemas/PaginationMeta'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /marketplace/extensions/{id}/stats:
+    get:
+      tags:
+        - Extensions
+      summary: Get extension statistics
+      description: Retrieve statistics and analytics for an extension
+      operationId: getExtensionStats
+      security: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Extension ID
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/ExtensionStats'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /marketplace/extensions/featured:
+    get:
+      tags:
+        - Extensions
+      summary: Get featured extensions
+      description: Retrieve a list of featured extensions
+      operationId: getFeaturedExtensions
+      security: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Extension'
+
+  /marketplace/extensions/popular:
+    get:
+      tags:
+        - Extensions
+      summary: Get popular extensions
+      description: Retrieve extensions sorted by download count
+      operationId: getPopularExtensions
+      security: []
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+            maximum: 50
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Extension'
+
+  # ==================== Version Endpoints ====================
+  /marketplace/versions/{id}:
+    get:
+      tags:
+        - Versions
+      summary: Get version details
+      description: Retrieve detailed information about a specific version
+      operationId: getVersion
+      security: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Version ID
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/ExtensionVersion'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      tags:
+        - Versions
+      summary: Update version
+      description: Update version details (author only)
+      operationId: updateVersion
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Version ID
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VersionUpdateRequest'
+      responses:
+        '200':
+          description: Version updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/ExtensionVersion'
+                  message:
+                    type: string
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+    delete:
+      tags:
+        - Versions
+      summary: Delete version
+      description: Delete a version (author only)
+      operationId: deleteVersion
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Version ID
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Version deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /marketplace/versions/extension/{extension_id}:
+    post:
+      tags:
+        - Versions
+      summary: Create new version
+      description: Create a new version for an extension
+      operationId: createVersion
+      parameters:
+        - name: extension_id
+          in: path
+          required: true
+          description: Extension ID
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VersionCreateRequest'
+      responses:
+        '201':
+          description: Version created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/ExtensionVersion'
+                  message:
+                    type: string
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /marketplace/versions/{id}/compatibility:
+    get:
+      tags:
+        - Versions
+      summary: Check version compatibility
+      description: Check if version is compatible with current system
+      operationId: checkVersionCompatibility
+      security: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Version ID
+          schema:
+            type: integer
+        - name: laravel_version
+          in: query
+          schema:
+            type: string
+        - name: crm_version
+          in: query
+          schema:
+            type: string
+        - name: php_version
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Compatibility check result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  compatible:
+                    type: boolean
+                  details:
+                    type: object
+                    properties:
+                      laravel:
+                        type: boolean
+                      crm:
+                        type: boolean
+                      php:
+                        type: boolean
+                  messages:
+                    type: array
+                    items:
+                      type: string
+
+  /marketplace/versions/{id}/changelog:
+    get:
+      tags:
+        - Versions
+      summary: Get version changelog
+      description: Retrieve the changelog for a specific version
+      operationId: getVersionChangelog
+      security: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Version ID
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      version:
+                        type: string
+                      changelog:
+                        type: string
+                      release_date:
+                        type: string
+                        format: date-time
+
+  # ==================== Installation Endpoints ====================
+  /marketplace/installations:
+    get:
+      tags:
+        - Installations
+      summary: List user installations
+      description: Get all extensions installed by the authenticated user
+      operationId: getInstallations
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Installation'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      tags:
+        - Installations
+      summary: Install extension
+      description: Install an extension for the authenticated user
+      operationId: installExtension
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - extension_id
+                - version_id
+              properties:
+                extension_id:
+                  type: integer
+                version_id:
+                  type: integer
+                auto_update_enabled:
+                  type: boolean
+                  default: false
+      responses:
+        '201':
+          description: Extension installed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Installation'
+                  message:
+                    type: string
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /marketplace/installations/{id}:
+    get:
+      tags:
+        - Installations
+      summary: Get installation details
+      description: Retrieve details of a specific installation
+      operationId: getInstallation
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Installation ID
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Installation'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      tags:
+        - Installations
+      summary: Update installation
+      description: Update an extension to the latest version
+      operationId: updateInstallation
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Installation ID
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                version_id:
+                  type: integer
+      responses:
+        '200':
+          description: Extension updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Installation'
+                  message:
+                    type: string
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+    delete:
+      tags:
+        - Installations
+      summary: Uninstall extension
+      description: Uninstall an extension
+      operationId: uninstallExtension
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Installation ID
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Extension uninstalled successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /marketplace/installations/{id}/enable:
+    post:
+      tags:
+        - Installations
+      summary: Enable extension
+      description: Enable a disabled extension
+      operationId: enableInstallation
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Installation ID
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Extension enabled successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Installation'
+                  message:
+                    type: string
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /marketplace/installations/{id}/disable:
+    post:
+      tags:
+        - Installations
+      summary: Disable extension
+      description: Disable an active extension
+      operationId: disableInstallation
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Installation ID
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Extension disabled successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Installation'
+                  message:
+                    type: string
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /marketplace/installations/{id}/toggle-auto-update:
+    post:
+      tags:
+        - Installations
+      summary: Toggle auto-update
+      description: Enable or disable automatic updates for an installation
+      operationId: toggleAutoUpdate
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Installation ID
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - enabled
+              properties:
+                enabled:
+                  type: boolean
+      responses:
+        '200':
+          description: Auto-update setting updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Installation'
+                  message:
+                    type: string
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /marketplace/installations/check-updates:
+    get:
+      tags:
+        - Installations
+      summary: Check for updates
+      description: Check all installations for available updates
+      operationId: checkUpdates
+      responses:
+        '200':
+          description: Update check completed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        installation_id:
+                          type: integer
+                        extension_id:
+                          type: integer
+                        current_version:
+                          type: string
+                        latest_version:
+                          type: string
+                        update_available:
+                          type: boolean
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /marketplace/installations/updates-available:
+    get:
+      tags:
+        - Installations
+      summary: Get available updates
+      description: Get list of installations with available updates
+      operationId: getAvailableUpdates
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Installation'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  # ==================== Review Endpoints ====================
+  /marketplace/reviews/extension/{extension_id}:
+    post:
+      tags:
+        - Reviews
+      summary: Create review
+      description: Submit a review for an extension
+      operationId: createReview
+      parameters:
+        - name: extension_id
+          in: path
+          required: true
+          description: Extension ID
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReviewCreateRequest'
+      responses:
+        '201':
+          description: Review created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Review'
+                  message:
+                    type: string
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /marketplace/reviews/{id}:
+    get:
+      tags:
+        - Reviews
+      summary: Get review details
+      description: Retrieve details of a specific review
+      operationId: getReview
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Review ID
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Review'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      tags:
+        - Reviews
+      summary: Update review
+      description: Update a review (author only)
+      operationId: updateReview
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Review ID
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReviewUpdateRequest'
+      responses:
+        '200':
+          description: Review updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Review'
+                  message:
+                    type: string
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+    delete:
+      tags:
+        - Reviews
+      summary: Delete review
+      description: Delete a review (author only)
+      operationId: deleteReview
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Review ID
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Review deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /marketplace/reviews/{id}/helpful:
+    post:
+      tags:
+        - Reviews
+      summary: Mark review as helpful
+      description: Mark a review as helpful
+      operationId: markReviewHelpful
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Review ID
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Review marked as helpful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  helpful_count:
+                    type: integer
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /marketplace/reviews/{id}/report:
+    post:
+      tags:
+        - Reviews
+      summary: Report review
+      description: Report a review as inappropriate
+      operationId: reportReview
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Review ID
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - reason
+              properties:
+                reason:
+                  type: string
+                  description: Reason for reporting
+      responses:
+        '200':
+          description: Review reported successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /marketplace/reviews/my-reviews:
+    get:
+      tags:
+        - Reviews
+      summary: Get my reviews
+      description: Get all reviews by the authenticated user
+      operationId: getMyReviews
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Review'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    sanctumAuth:
+      type: apiKey
+      in: cookie
+      name: XSRF-TOKEN
+
+  schemas:
+    Extension:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Payment Gateway Integration"
+        slug:
+          type: string
+          example: "payment-gateway-integration"
+        description:
+          type: string
+          example: "Integrate popular payment gateways with your CRM"
+        long_description:
+          type: string
+          nullable: true
+        type:
+          type: string
+          enum: [plugin, theme, integration]
+          example: "integration"
+        category_id:
+          type: integer
+          nullable: true
+          example: 3
+        price:
+          type: number
+          format: decimal
+          example: 49.99
+        status:
+          type: string
+          enum: [draft, pending, approved, rejected, disabled]
+          example: "approved"
+        downloads_count:
+          type: integer
+          example: 1250
+        average_rating:
+          type: number
+          format: decimal
+          example: 4.75
+        featured:
+          type: boolean
+          example: true
+        logo:
+          type: string
+          nullable: true
+          example: "https://example.com/storage/extensions/logo.png"
+        screenshots:
+          type: array
+          items:
+            type: string
+          example: ["https://example.com/storage/extensions/screenshot1.png"]
+        documentation_url:
+          type: string
+          nullable: true
+          example: "https://docs.example.com/payment-gateway"
+        demo_url:
+          type: string
+          nullable: true
+          example: "https://demo.example.com"
+        repository_url:
+          type: string
+          nullable: true
+          example: "https://github.com/example/payment-gateway"
+        support_email:
+          type: string
+          nullable: true
+          example: "support@example.com"
+        tags:
+          type: array
+          items:
+            type: string
+          example: ["payment", "gateway", "stripe"]
+        requirements:
+          type: object
+          nullable: true
+          example: {"php": "^8.0", "laravel": "^10.0"}
+        author_id:
+          type: integer
+          example: 42
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    ExtensionDetail:
+      allOf:
+        - $ref: '#/components/schemas/Extension'
+        - type: object
+          properties:
+            author:
+              $ref: '#/components/schemas/User'
+            category:
+              $ref: '#/components/schemas/Category'
+            latest_version:
+              $ref: '#/components/schemas/ExtensionVersion'
+            reviews_count:
+              type: integer
+            rating_distribution:
+              type: object
+              properties:
+                5:
+                  type: integer
+                4:
+                  type: integer
+                3:
+                  type: integer
+                2:
+                  type: integer
+                1:
+                  type: integer
+
+    ExtensionVersion:
+      type: object
+      properties:
+        id:
+          type: integer
+        extension_id:
+          type: integer
+        version:
+          type: string
+          example: "1.2.3"
+        changelog:
+          type: string
+          nullable: true
+        file_path:
+          type: string
+        status:
+          type: string
+          enum: [draft, pending, approved, rejected]
+          example: "approved"
+        release_date:
+          type: string
+          format: date-time
+          nullable: true
+        laravel_version:
+          type: string
+          example: "^10.0"
+        crm_version:
+          type: string
+          example: "^1.0"
+        php_version:
+          type: string
+          example: "^8.0"
+        dependencies:
+          type: array
+          items:
+            type: object
+          nullable: true
+        downloads_count:
+          type: integer
+        file_size:
+          type: integer
+          description: File size in bytes
+        checksum:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    Installation:
+      type: object
+      properties:
+        id:
+          type: integer
+        user_id:
+          type: integer
+        extension_id:
+          type: integer
+        version_id:
+          type: integer
+        installed_at:
+          type: string
+          format: date-time
+        updated_at_version:
+          type: string
+          format: date-time
+          nullable: true
+        status:
+          type: string
+          enum: [active, inactive, failed, updating, uninstalling]
+          example: "active"
+        auto_update_enabled:
+          type: boolean
+        installation_notes:
+          type: string
+          nullable: true
+        settings:
+          type: object
+          nullable: true
+        extension:
+          $ref: '#/components/schemas/Extension'
+        version:
+          $ref: '#/components/schemas/ExtensionVersion'
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    Review:
+      type: object
+      properties:
+        id:
+          type: integer
+        extension_id:
+          type: integer
+        user_id:
+          type: integer
+        title:
+          type: string
+          example: "Great extension!"
+        review_text:
+          type: string
+          example: "This extension works perfectly and has great support."
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+          example: 5
+        helpful_count:
+          type: integer
+          example: 12
+        status:
+          type: string
+          enum: [pending, approved, rejected, flagged]
+          example: "approved"
+        is_verified_purchase:
+          type: boolean
+          example: true
+        user:
+          $ref: '#/components/schemas/User'
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    ExtensionStats:
+      type: object
+      properties:
+        total_downloads:
+          type: integer
+        total_reviews:
+          type: integer
+        average_rating:
+          type: number
+          format: decimal
+        rating_distribution:
+          type: object
+        total_revenue:
+          type: number
+          format: decimal
+        active_installations:
+          type: integer
+
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        is_developer:
+          type: boolean
+        developer_company_name:
+          type: string
+          nullable: true
+
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        slug:
+          type: string
+        description:
+          type: string
+          nullable: true
+        parent_id:
+          type: integer
+          nullable: true
+
+    ExtensionCreateRequest:
+      type: object
+      required:
+        - name
+        - description
+        - type
+      properties:
+        name:
+          type: string
+          minLength: 3
+          maxLength: 255
+        slug:
+          type: string
+          nullable: true
+        description:
+          type: string
+          minLength: 10
+        long_description:
+          type: string
+          nullable: true
+        type:
+          type: string
+          enum: [plugin, theme, integration]
+        category_id:
+          type: integer
+          nullable: true
+        price:
+          type: number
+          format: decimal
+          minimum: 0
+          default: 0
+        logo:
+          type: string
+          nullable: true
+        screenshots:
+          type: array
+          items:
+            type: string
+          nullable: true
+        documentation_url:
+          type: string
+          format: uri
+          nullable: true
+        demo_url:
+          type: string
+          format: uri
+          nullable: true
+        repository_url:
+          type: string
+          format: uri
+          nullable: true
+        support_email:
+          type: string
+          format: email
+          nullable: true
+        tags:
+          type: array
+          items:
+            type: string
+          nullable: true
+        requirements:
+          type: object
+          nullable: true
+
+    ExtensionUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 3
+          maxLength: 255
+        description:
+          type: string
+          minLength: 10
+        long_description:
+          type: string
+          nullable: true
+        category_id:
+          type: integer
+          nullable: true
+        price:
+          type: number
+          format: decimal
+          minimum: 0
+        logo:
+          type: string
+          nullable: true
+        screenshots:
+          type: array
+          items:
+            type: string
+          nullable: true
+        documentation_url:
+          type: string
+          format: uri
+          nullable: true
+        demo_url:
+          type: string
+          format: uri
+          nullable: true
+        repository_url:
+          type: string
+          format: uri
+          nullable: true
+        support_email:
+          type: string
+          format: email
+          nullable: true
+        tags:
+          type: array
+          items:
+            type: string
+          nullable: true
+        requirements:
+          type: object
+          nullable: true
+
+    VersionCreateRequest:
+      type: object
+      required:
+        - version
+      properties:
+        version:
+          type: string
+          pattern: '^\d+\.\d+\.\d+$'
+          example: "1.0.0"
+        changelog:
+          type: string
+          nullable: true
+        file_path:
+          type: string
+        release_date:
+          type: string
+          format: date-time
+          nullable: true
+        laravel_version:
+          type: string
+        crm_version:
+          type: string
+        php_version:
+          type: string
+        dependencies:
+          type: array
+          items:
+            type: object
+          nullable: true
+
+    VersionUpdateRequest:
+      type: object
+      properties:
+        changelog:
+          type: string
+          nullable: true
+        release_date:
+          type: string
+          format: date-time
+          nullable: true
+        laravel_version:
+          type: string
+        crm_version:
+          type: string
+        php_version:
+          type: string
+        dependencies:
+          type: array
+          items:
+            type: object
+          nullable: true
+
+    ReviewCreateRequest:
+      type: object
+      required:
+        - rating
+        - title
+        - review_text
+      properties:
+        title:
+          type: string
+          minLength: 5
+          maxLength: 255
+        review_text:
+          type: string
+          minLength: 20
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+
+    ReviewUpdateRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 5
+          maxLength: 255
+        review_text:
+          type: string
+          minLength: 20
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+
+    PaginationMeta:
+      type: object
+      properties:
+        current_page:
+          type: integer
+        from:
+          type: integer
+          nullable: true
+        last_page:
+          type: integer
+        per_page:
+          type: integer
+        to:
+          type: integer
+          nullable: true
+        total:
+          type: integer
+
+    PaginationLinks:
+      type: object
+      properties:
+        first:
+          type: string
+          nullable: true
+        last:
+          type: string
+          nullable: true
+        prev:
+          type: string
+          nullable: true
+        next:
+          type: string
+          nullable: true
+
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+
+  responses:
+    Unauthorized:
+      description: Unauthorized - Authentication required
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Unauthenticated."
+
+    Forbidden:
+      description: Forbidden - Insufficient permissions
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "You do not have permission to perform this action."
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Resource not found."
+
+    ValidationError:
+      description: Validation error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: "The given data was invalid."
+            errors:
+              name:
+                - "The name field is required."
+              price:
+                - "The price must be at least 0."
