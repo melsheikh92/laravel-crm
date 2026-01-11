@@ -1,17 +1,21 @@
 @if($view === 'grid')
     <!-- Grid Card View -->
-    <div class="flex flex-col rounded-lg border border-gray-200 bg-white transition-all hover:shadow-lg dark:border-gray-800 dark:bg-gray-900">
+    <div
+        class="flex flex-col rounded-lg border border-gray-200 bg-white transition-all hover:shadow-lg dark:border-gray-800 dark:bg-gray-900">
         <!-- Extension Logo/Header -->
         <div class="relative border-b border-gray-200 p-4 dark:border-gray-800">
             <a href="{{ route('marketplace.extension.show', $extension->slug) }}" class="flex items-center gap-4">
                 @if($extension->logo)
-                    <img
-                        src="{{ Storage::url($extension->logo) }}"
-                        alt="{{ $extension->name }}"
+                    <img src="{{ Storage::url($extension->logo) }}" alt="{{ $extension->name }}"
                         class="h-16 w-16 rounded-lg object-cover"
-                    />
+                        onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+                    <div
+                        class="hidden h-16 w-16 items-center justify-center rounded-lg bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900/30 dark:to-purple-900/30">
+                        <span class="icon-package text-2xl text-blue-600 dark:text-blue-400"></span>
+                    </div>
                 @else
-                    <div class="flex h-16 w-16 items-center justify-center rounded-lg bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900/30 dark:to-purple-900/30">
+                    <div
+                        class="flex h-16 w-16 items-center justify-center rounded-lg bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900/30 dark:to-purple-900/30">
                         <span class="icon-package text-2xl text-blue-600 dark:text-blue-400"></span>
                     </div>
                 @endif
@@ -28,7 +32,8 @@
 
             <!-- Featured Badge -->
             @if($extension->is_featured)
-                <span class="absolute right-4 top-4 flex items-center gap-1 rounded-full bg-gradient-to-r from-yellow-400 to-orange-400 px-2 py-1 text-xs font-medium text-white">
+                <span
+                    class="absolute right-4 top-4 flex items-center gap-1 rounded-full bg-gradient-to-r from-yellow-400 to-orange-400 px-2 py-1 text-xs font-medium text-white">
                     <span class="icon-star text-xs"></span>
                     Featured
                 </span>
@@ -72,10 +77,8 @@
 
             <!-- Category -->
             <div class="mt-4">
-                <a
-                    href="{{ route('marketplace.browse.category', $extension->category->slug) }}"
-                    class="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
-                >
+                <a href="{{ route('marketplace.browse.category', $extension->category->slug) }}"
+                    class="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700">
                     <span class="icon-tag text-xs"></span>
                     {{ $extension->category->name }}
                 </a>
@@ -96,28 +99,29 @@
                 @endif
             </div>
 
-            <a
-                href="{{ route('marketplace.extension.show', $extension->slug) }}"
-                class="primary-button"
-            >
+            <a href="{{ route('marketplace.extension.show', $extension->slug) }}" class="primary-button">
                 View Details
             </a>
         </div>
     </div>
 @else
     <!-- List Card View -->
-    <div class="flex flex-col rounded-lg border border-gray-200 bg-white transition-all hover:shadow-lg dark:border-gray-800 dark:bg-gray-900 md:flex-row">
+    <div
+        class="flex flex-col rounded-lg border border-gray-200 bg-white transition-all hover:shadow-lg dark:border-gray-800 dark:bg-gray-900 md:flex-row">
         <!-- Extension Logo -->
         <div class="relative flex-shrink-0 border-b border-gray-200 p-6 dark:border-gray-800 md:border-b-0 md:border-r">
             <a href="{{ route('marketplace.extension.show', $extension->slug) }}" class="flex justify-center md:block">
                 @if($extension->logo)
-                    <img
-                        src="{{ Storage::url($extension->logo) }}"
-                        alt="{{ $extension->name }}"
+                    <img src="{{ Storage::url($extension->logo) }}" alt="{{ $extension->name }}"
                         class="h-24 w-24 rounded-lg object-cover"
-                    />
+                        onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+                    <div
+                        class="hidden h-24 w-24 items-center justify-center rounded-lg bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900/30 dark:to-purple-900/30">
+                        <span class="icon-package text-4xl text-blue-600 dark:text-blue-400"></span>
+                    </div>
                 @else
-                    <div class="flex h-24 w-24 items-center justify-center rounded-lg bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900/30 dark:to-purple-900/30">
+                    <div
+                        class="flex h-24 w-24 items-center justify-center rounded-lg bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900/30 dark:to-purple-900/30">
                         <span class="icon-package text-4xl text-blue-600 dark:text-blue-400"></span>
                     </div>
                 @endif
@@ -125,7 +129,8 @@
 
             <!-- Featured Badge -->
             @if($extension->is_featured)
-                <span class="absolute left-6 top-6 flex items-center gap-1 rounded-full bg-gradient-to-r from-yellow-400 to-orange-400 px-2 py-1 text-xs font-medium text-white">
+                <span
+                    class="absolute left-6 top-6 flex items-center gap-1 rounded-full bg-gradient-to-r from-yellow-400 to-orange-400 px-2 py-1 text-xs font-medium text-white">
                     <span class="icon-star text-xs"></span>
                     Featured
                 </span>
@@ -147,10 +152,8 @@
                                 {{ ucfirst($extension->type) }}
                             </span>
                             <span class="text-gray-300 dark:text-gray-600">•</span>
-                            <a
-                                href="{{ route('marketplace.browse.category', $extension->category->slug) }}"
-                                class="text-sm text-blue-600 hover:underline dark:text-blue-400"
-                            >
+                            <a href="{{ route('marketplace.browse.category', $extension->category->slug) }}"
+                                class="text-sm text-blue-600 hover:underline dark:text-blue-400">
                                 {{ $extension->category->name }}
                             </a>
                         </div>
@@ -209,17 +212,12 @@
 
             <!-- Actions -->
             <div class="mt-4 flex gap-3">
-                <a
-                    href="{{ route('marketplace.extension.show', $extension->slug) }}"
-                    class="primary-button"
-                >
+                <a href="{{ route('marketplace.extension.show', $extension->slug) }}" class="primary-button">
                     View Details
                 </a>
                 @if($extension->price == 0)
-                    <button
-                        onclick="window.location.href = '{{ route('marketplace.extension.show', $extension->slug) }}'"
-                        class="secondary-button"
-                    >
+                    <button onclick="window.location.href = '{{ route('marketplace.extension.show', $extension->slug) }}'"
+                        class="secondary-button">
                         Install Now
                     </button>
                 @endif
