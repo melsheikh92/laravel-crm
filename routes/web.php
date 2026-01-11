@@ -22,3 +22,20 @@ Route::get('/landing', function () {
 });
 
 Route::post('/demo-request', [App\Http\Controllers\LandingController::class, 'sendDemoRequest'])->name('demo.request');
+
+/*
+|--------------------------------------------------------------------------
+| Compliance Routes
+|--------------------------------------------------------------------------
+|
+| Routes for compliance dashboard, audit logs, and reporting.
+| All routes are protected by authentication middleware in the controller.
+|
+*/
+
+Route::prefix('compliance')->name('compliance.')->group(function () {
+    Route::get('/dashboard', [App\Http\Controllers\ComplianceController::class, 'dashboard'])->name('dashboard');
+    Route::get('/audit-logs', [App\Http\Controllers\ComplianceController::class, 'auditLogs'])->name('audit-logs');
+    Route::get('/export-audit-report', [App\Http\Controllers\ComplianceController::class, 'exportAuditReport'])->name('export-audit-report');
+    Route::get('/metrics', [App\Http\Controllers\ComplianceController::class, 'metrics'])->name('metrics');
+});

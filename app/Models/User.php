@@ -2,13 +2,35 @@
 
 namespace App\Models;
 
+use App\Traits\Auditable;
+use App\Traits\Encryptable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, Auditable, Encryptable;
+
+    /**
+     * The attributes that should be encrypted.
+     *
+     * @var array
+     */
+    protected $encrypted = [
+        'email',
+        'phone',
+    ];
+
+    /**
+     * The attributes that should be masked in audit logs.
+     *
+     * @var array
+     */
+    protected $auditMaskedFields = [
+        'password',
+        'remember_token',
+    ];
 
     /**
      * The attributes that are mass assignable.
@@ -19,6 +41,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role_id',
     ];
 
     /**

@@ -35,10 +35,13 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('leads', function (Blueprint $table) {
-            $table->dropForeign(['lead_pipeline_stage_id']);
+        // SQLite doesn't support dropForeign
+        if (DB::connection()->getDriverName() !== 'sqlite') {
+            Schema::table('leads', function (Blueprint $table) {
+                $table->dropForeign(['lead_pipeline_stage_id']);
 
-            $table->foreign('lead_pipeline_stage_id')->references('id')->on('lead_pipeline_stages')->onDelete('cascade');
-        });
+                $table->foreign('lead_pipeline_stage_id')->references('id')->on('lead_pipeline_stages')->onDelete('cascade');
+            });
+        }
     }
 };

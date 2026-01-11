@@ -16,22 +16,32 @@ return new class extends Migration
             $table->string('unique_id')->nullable()->unique();
         });
 
-        // Skip unique_id update for SQLite as it doesn't support JSON_UNQUOTE and CONCAT
-        if (DB::connection()->getDriverName() === 'sqlite') {
-            return;
-        }
-
         $tableName = DB::getTablePrefix().'persons';
+        $driver = config('database.default');
 
-        DB::statement("
-            UPDATE {$tableName}
-            SET unique_id = CONCAT(
-                user_id, '|',
-                organization_id, '|',
-                JSON_UNQUOTE(JSON_EXTRACT(emails, '$[0].value')), '|',
-                JSON_UNQUOTE(JSON_EXTRACT(contact_numbers, '$[0].value'))
-            )
-        ");
+        // Use different SQL syntax for different database drivers
+        if ($driver === 'sqlite') {
+            // SQLite syntax
+            DB::statement("
+                UPDATE {$tableName}
+                SET unique_id =
+                    CAST(user_id AS TEXT) || '|' ||
+                    CAST(organization_id AS TEXT) || '|' ||
+                    COALESCE(json_extract(emails, '$[0].value'), '') || '|' ||
+                    COALESCE(json_extract(contact_numbers, '$[0].value'), '')
+            ");
+        } else {
+            // MySQL/PostgreSQL syntax
+            DB::statement("
+                UPDATE {$tableName}
+                SET unique_id = CONCAT(
+                    user_id, '|',
+                    organization_id, '|',
+                    JSON_UNQUOTE(JSON_EXTRACT(emails, '$[0].value')), '|',
+                    JSON_UNQUOTE(JSON_EXTRACT(contact_numbers, '$[0].value'))
+                )
+            ");
+        }
     }
 
     /**

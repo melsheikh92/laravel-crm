@@ -13,6 +13,12 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         $schedule->command('inbound-emails:process')->everyFiveMinutes();
+
+        // Clean up expired data according to retention policies
+        $schedule->command('compliance:cleanup-expired-data')
+            ->dailyAt('02:00')
+            ->withoutOverlapping()
+            ->runInBackground();
     }
 
     /**

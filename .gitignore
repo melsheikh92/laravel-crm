@@ -36,3 +36,4 @@ node_modules/
 
 # Auto Claude data directory
 .auto-claude/
+.phpunit.cache/

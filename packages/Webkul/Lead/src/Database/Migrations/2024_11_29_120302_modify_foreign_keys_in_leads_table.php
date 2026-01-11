@@ -77,32 +77,58 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('leads', function (Blueprint $table) {
-            $table->dropForeign(['user_id']);
-            $table->dropForeign(['person_id']);
-            $table->dropForeign(['lead_source_id']);
-            $table->dropForeign(['lead_type_id']);
+        // SQLite doesn't support dropForeign
+        if (DB::connection()->getDriverName() === 'sqlite') {
+            Schema::table('leads', function (Blueprint $table) {
+                $table->integer('user_id')->unsigned()->nullable()->change();
+                $table->integer('person_id')->unsigned()->nullable(false)->change();
+                $table->integer('lead_source_id')->unsigned()->nullable(false)->change();
+                $table->integer('lead_type_id')->unsigned()->nullable(false)->change();
 
-            $table->integer('user_id')->unsigned()->nullable()->change();
-            $table->integer('person_id')->unsigned()->nullable(false)->change();
-            $table->integer('lead_source_id')->unsigned()->nullable(false)->change();
-            $table->integer('lead_type_id')->unsigned()->nullable(false)->change();
+                $table->foreign('user_id')
+                    ->references('id')->on('users')
+                    ->onDelete('cascade');
 
-            $table->foreign('user_id')
-                ->references('id')->on('users')
-                ->onDelete('cascade');
+                $table->foreign('person_id')
+                    ->references('id')->on('persons')
+                    ->onDelete('cascade');
 
-            $table->foreign('person_id')
-                ->references('id')->on('persons')
-                ->onDelete('cascade');
+                $table->foreign('lead_source_id')
+                    ->references('id')->on('lead_sources')
+                    ->onDelete('cascade');
 
-            $table->foreign('lead_source_id')
-                ->references('id')->on('lead_sources')
-                ->onDelete('cascade');
+                $table->foreign('lead_type_id')
+                    ->references('id')->on('lead_types')
+                    ->onDelete('cascade');
+            });
+        } else {
+            Schema::table('leads', function (Blueprint $table) {
+                $table->dropForeign(['user_id']);
+                $table->dropForeign(['person_id']);
+                $table->dropForeign(['lead_source_id']);
+                $table->dropForeign(['lead_type_id']);
 
-            $table->foreign('lead_type_id')
-                ->references('id')->on('lead_types')
-                ->onDelete('cascade');
-        });
+                $table->integer('user_id')->unsigned()->nullable()->change();
+                $table->integer('person_id')->unsigned()->nullable(false)->change();
+                $table->integer('lead_source_id')->unsigned()->nullable(false)->change();
+                $table->integer('lead_type_id')->unsigned()->nullable(false)->change();
+
+                $table->foreign('user_id')
+                    ->references('id')->on('users')
+                    ->onDelete('cascade');
+
+                $table->foreign('person_id')
+                    ->references('id')->on('persons')
+                    ->onDelete('cascade');
+
+                $table->foreign('lead_source_id')
+                    ->references('id')->on('lead_sources')
+                    ->onDelete('cascade');
+
+                $table->foreign('lead_type_id')
+                    ->references('id')->on('lead_types')
+                    ->onDelete('cascade');
+            });
+        }
     }
 };

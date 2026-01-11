@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('support_tickets', function (Blueprint $table) {
             $table->increments('id');
             $table->string('ticket_number')->unique();
-            $table->string('title');
+            $table->string('subject');
             $table->text('description');
             $table->enum('status', ['open', 'assigned', 'in_progress', 'waiting_customer', 'resolved', 'closed'])->default('open');
             $table->enum('priority', ['low', 'medium', 'high', 'urgent'])->default('medium');
@@ -24,12 +24,14 @@ return new class extends Migration
             $table->timestamp('resolved_at')->nullable();
             $table->timestamp('closed_at')->nullable();
             $table->unsignedInteger('closed_by')->nullable();
+            $table->unsignedInteger('created_by')->nullable();
             $table->timestamps();
 
             $table->foreign('customer_id')->references('id')->on('persons')->onDelete('cascade');
             $table->foreign('assigned_to')->references('id')->on('users')->onDelete('set null');
             $table->foreign('sla_id')->references('id')->on('support_slas')->onDelete('set null');
             $table->foreign('closed_by')->references('id')->on('users')->onDelete('set null');
+            $table->foreign('created_by')->references('id')->on('users')->onDelete('set null');
             $table->index('status');
             $table->index('priority');
             $table->index('ticket_number');

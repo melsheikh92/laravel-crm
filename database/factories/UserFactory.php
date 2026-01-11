@@ -22,13 +22,23 @@ class UserFactory extends Factory
      */
     public function definition()
     {
+        // Get or create a default role for testing
+        $role = \Webkul\User\Models\Role::firstOrCreate(
+            ['name' => 'Administrator'],
+            [
+                'description' => 'Default administrator role for testing',
+                'permission_type' => 'all',
+                'permissions' => [],
+            ]
+        );
+
         return [
             'name'           => $this->faker->name,
             'email'          => $this->faker->unique()->safeEmail,
             'password'       => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
-            'status'         => 1,
-            'role_id'        => 1, // Default role
             'remember_token' => Str::random(10),
+            'role_id'        => $role->id,
+            'status'         => 1,
         ];
     }
 }

@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use App\Events\SensitiveDataAccessed;
+use App\Listeners\Compliance\LogAuthenticationEvents;
+use App\Listeners\Compliance\LogSensitiveDataAccess;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -18,6 +21,18 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
+        SensitiveDataAccessed::class => [
+            LogSensitiveDataAccess::class,
+        ],
+    ];
+
+    /**
+     * The subscriber classes to register.
+     *
+     * @var array
+     */
+    protected $subscribe = [
+        LogAuthenticationEvents::class,
     ];
 
     /**

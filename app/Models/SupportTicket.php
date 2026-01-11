@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Traits\Auditable;
+use App\Traits\Encryptable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -13,34 +15,37 @@ use Webkul\Tag\Models\Tag;
 
 class SupportTicket extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, Auditable, Encryptable;
+
+    /**
+     * The attributes that should be encrypted.
+     *
+     * @var array
+     */
+    protected $encrypted = [
+        'title',
+        'description',
+    ];
 
     protected $fillable = [
         'ticket_number',
-        'subject',
+        'title',
         'description',
         'status',
         'priority',
-        'category_id',
-        'assigned_to',
+        'type',
         'customer_id',
-        'contact_id',
-        'lead_id',
-        'source',
-        'sla_policy_id',
-        'first_response_at',
-        'first_response_due_at',
-        'resolution_due_at',
+        'assigned_to',
+        'sla_id',
+        'sla_due_at',
+        'sla_breached',
         'resolved_at',
         'closed_at',
-        'sla_breached',
-        'created_by',
+        'closed_by',
     ];
 
     protected $casts = [
-        'first_response_at' => 'datetime',
-        'first_response_due_at' => 'datetime',
-        'resolution_due_at' => 'datetime',
+        'sla_due_at' => 'datetime',
         'resolved_at' => 'datetime',
         'closed_at' => 'datetime',
         'sla_breached' => 'boolean',
@@ -75,11 +80,6 @@ class SupportTicket extends Model
     /**
      * Relationships
      */
-    public function category(): BelongsTo
-    {
-        return $this->belongsTo(TicketCategory::class, 'category_id');
-    }
-
     public function assignedTo(): BelongsTo
     {
         return $this->belongsTo(User::class, 'assigned_to');
@@ -90,24 +90,9 @@ class SupportTicket extends Model
         return $this->belongsTo(Person::class, 'customer_id');
     }
 
-    public function contact(): BelongsTo
+    public function closedBy(): BelongsTo
     {
-        return $this->belongsTo(Person::class, 'contact_id');
-    }
-
-    public function lead(): BelongsTo
-    {
-        return $this->belongsTo(Lead::class);
-    }
-
-    public function slaPolicy(): BelongsTo
-    {
-        return $this->belongsTo(SlaPolicy::class);
-    }
-
-    public function createdBy(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'created_by');
+        return $this->belongsTo(User::class, 'closed_by');
     }
 
     public function messages(): HasMany
@@ -184,8 +169,8 @@ class SupportTicket extends Model
 
     public function isOverdue(): bool
     {
-        return $this->resolution_due_at &&
-            $this->resolution_due_at->isPast() &&
+        return $this->sla_due_at &&
+            $this->sla_due_at->isPast() &&
             !$this->isClosed();
     }
 
