@@ -13,8 +13,8 @@ return [
     'viters' => [
         'admin' => [
             'hot_file' => 'admin-vite.hot',
-            'build_directory' => 'build',
-            'package_assets_directory' => 'packages/Webkul/Admin/src/Resources/assets',
+            'build_directory' => 'admin/build',
+            'package_assets_directory' => 'src/Resources/assets',
         ],
 
         'installer' => [

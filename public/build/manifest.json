@@ -305,7 +305,7 @@
     "isDynamicEntry": true
   },
   "packages/Webkul/Admin/src/Resources/assets/css/app.css": {
-    "file": "assets/app-Dtm5p0sa.css",
+    "file": "assets/app-CXCmONQZ.css",
     "src": "packages/Webkul/Admin/src/Resources/assets/css/app.css",
     "isEntry": true
   },
@@ -489,15 +489,34 @@
     "isEntry": true
   },
   "resources/css/app.css": {
-    "file": "assets/app-l0sNRNKZ.js",
-    "name": "app",
+    "file": "assets/app-BD_X2gLF.css",
     "src": "resources/css/app.css",
     "isEntry": true
   },
+  "resources/css/onboarding.css": {
+    "file": "assets/onboarding-Bl6MyUvU.css",
+    "src": "resources/css/onboarding.css",
+    "isEntry": true
+  },
   "resources/js/app.js": {
-    "file": "assets/app-CAiCLEjY.js",
+    "file": "assets/app-JLRuqn2G.js",
     "name": "app",
     "src": "resources/js/app.js",
+    "isEntry": true,
+    "imports": [
+      "resources/js/onboarding.js"
+    ]
+  },
+  "resources/js/onboarding-animations.js": {
+    "file": "assets/onboarding-animations-Dc9zUud7.js",
+    "name": "onboarding-animations",
+    "src": "resources/js/onboarding-animations.js",
+    "isEntry": true
+  },
+  "resources/js/onboarding.js": {
+    "file": "assets/onboarding-YxDIU0pv.js",
+    "name": "onboarding",
+    "src": "resources/js/onboarding.js",
     "isEntry": true
   }
 }

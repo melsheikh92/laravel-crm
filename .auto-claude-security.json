@@ -137,9 +137,7 @@
     "dockerfile",
     "erb",
     "gem",
-    "ipython",
     "irb",
-    "jupyter",
     "mysql",
     "mysqladmin",
     "mysqlcheck",
@@ -147,18 +145,10 @@
     "mysqlimport",
     "mysqlshow",
     "node",
-    "notebook",
     "npm",
     "npx",
-    "pdb",
     "php",
     "phpunit",
-    "pip",
-    "pip3",
-    "pipx",
-    "pudb",
-    "python",
-    "python3",
     "redis-benchmark",
     "redis-cli",
     "redis-server",
@@ -167,7 +157,8 @@
     "ts-node",
     "tsc",
     "tsx",
-    "vite"
+    "vite",
+    "vue-cli-service"
   ],
   "script_commands": [
     "./capture-screenshots.sh",
@@ -181,7 +172,6 @@
   "custom_commands": [],
   "detected_stack": {
     "languages": [
-      "python",
       "javascript",
       "typescript",
       "ruby",
@@ -192,13 +182,14 @@
       "composer"
     ],
     "frameworks": [
+      "vue",
       "vite",
       "laravel",
       "phpunit"
     ],
     "databases": [
-      "mysql",
-      "redis"
+      "redis",
+      "mysql"
     ],
     "infrastructure": [
       "docker"
@@ -221,7 +212,7 @@
       "capture-screenshots.sh"
     ]
   },
-  "project_dir": "/Users/mahmoudelsheikh/Downloads/Workspace/laravel-crm",
-  "created_at": "2026-01-11T17:11:51.554280",
-  "project_hash": "e25c54eda320c9884626aa73a8ffe340"
+  "project_dir": "/Users/mahmoudelsheikh/Downloads/Workspace/laravel-crm/.auto-claude/worktrees/tasks/010-interactive-onboarding-wizard",
+  "created_at": "2026-01-12T07:01:47.840578",
+  "project_hash": "46e8476bfe278999b808b2419aa33dc1"
 }

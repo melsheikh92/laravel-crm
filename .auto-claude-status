@@ -1,6 +1,6 @@
 {
   "active": true,
-  "spec": "009-sales-forecasting",
+  "spec": "010-interactive-onboarding-wizard",
   "state": "building",
   "subtasks": {
     "completed": 0,
@@ -18,8 +18,8 @@
     "max": 1
   },
   "session": {
-    "number": 53,
-    "started_at": "2026-01-11T17:00:22.460373"
+    "number": 31,
+    "started_at": "2026-01-12T00:19:26.391616"
   },
-  "last_update": "2026-01-11T23:11:22.002140"
+  "last_update": "2026-01-12T07:22:03.716346"
 }

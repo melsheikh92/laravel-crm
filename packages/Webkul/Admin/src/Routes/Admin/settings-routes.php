@@ -15,6 +15,7 @@ use Webkul\Admin\Http\Controllers\Settings\SettingController;
 use Webkul\Admin\Http\Controllers\Settings\SourceController;
 use Webkul\Admin\Http\Controllers\Settings\TagController;
 use Webkul\Admin\Http\Controllers\Settings\TypeController;
+use Webkul\Admin\Http\Controllers\Settings\OnboardingController;
 use Webkul\Admin\Http\Controllers\Settings\UserController;
 use Webkul\Admin\Http\Controllers\Settings\Warehouse\ActivityController;
 use Webkul\Admin\Http\Controllers\Settings\Warehouse\TagController as WarehouseTagController;
@@ -158,6 +159,13 @@ Route::prefix('settings')->group(function () {
         Route::delete('{id}', 'destroy')->name('admin.settings.tags.delete');
 
         Route::post('mass-destroy', 'massDestroy')->name('admin.settings.tags.mass_delete');
+    });
+
+    /**
+     * Onboarding Routes.
+     */
+    Route::controller(OnboardingController::class)->prefix('onboarding')->group(function () {
+        Route::get('', 'index')->name('admin.settings.onboarding.index');
     });
 
     /**

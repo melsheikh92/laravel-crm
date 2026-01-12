@@ -7,6 +7,9 @@ module.exports = {
         "./packages/Webkul/Marketplace/src/Resources/**/*.blade.php",
         "./packages/Webkul/Marketplace/src/Resources/**/*.js",
         "./packages/Webkul/Marketplace/src/Resources/**/*.vue",
+        "./resources/**/*.blade.php",
+        "./resources/**/*.js",
+        "./resources/**/*.vue",
     ],
 
     theme: {

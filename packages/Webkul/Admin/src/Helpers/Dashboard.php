@@ -6,6 +6,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Webkul\Admin\Helpers\Reporting\Activity;
 use Webkul\Admin\Helpers\Reporting\Lead;
+use Webkul\Admin\Helpers\Reporting\Onboarding;
 use Webkul\Admin\Helpers\Reporting\Organization;
 use Webkul\Admin\Helpers\Reporting\Person;
 use Webkul\Admin\Helpers\Reporting\Product;
@@ -25,6 +26,7 @@ class Dashboard
         protected Person $personReporting,
         protected Organization $organizationReporting,
         protected Quote $quoteReporting,
+        protected Onboarding $onboardingReporting,
     ) {}
 
     /**
@@ -138,5 +140,19 @@ class Dashboard
     public function getDateRange(): string
     {
         return $this->getStartDate()->format('d M').' - '.$this->getEndDate()->format('d M');
+    }
+
+    /**
+     * Returns onboarding completion statistics.
+     */
+    public function getOnboardingStats(): array
+    {
+        return [
+            'completion_rate' => $this->onboardingReporting->getCompletionRateProgress(),
+            'average_time' => $this->onboardingReporting->getAverageCompletionTimeProgress(),
+            'total_started' => $this->onboardingReporting->getTotalStartedProgress(),
+            'total_completed' => $this->onboardingReporting->getTotalCompletedProgress(),
+            'step_analytics' => $this->onboardingReporting->getStepAnalytics(),
+        ];
     }
 }

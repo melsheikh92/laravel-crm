@@ -496,6 +496,14 @@ return [
         'sort' => 1,
         'icon-class' => 'icon-settings-tag',
     ],
+    [
+        'key' => 'settings.other_settings.onboarding',
+        'name' => 'admin::app.layouts.onboarding',
+        'info' => 'admin::app.layouts.onboarding-info',
+        'route' => 'admin.settings.onboarding.index',
+        'sort' => 2,
+        'icon-class' => 'icon-user',
+    ],
 
     /**
      * Configuration.

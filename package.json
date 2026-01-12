@@ -15,7 +15,22 @@
     "vite": "^5.0.0"
   },
   "dependencies": {
+    "@vee-validate/i18n": "^4.15.1",
+    "@vee-validate/rules": "^4.15.1",
     "@vue-leaflet/vue-leaflet": "^0.10.1",
-    "leaflet": "^1.9.4"
+    "@vuelidate/core": "^2.0.3",
+    "@vuelidate/validators": "^2.0.4",
+    "alpinejs": "^3.15.3",
+    "chartjs-chart-funnel": "^4.2.5",
+    "dompurify": "^3.3.1",
+    "dotenv": "^17.2.3",
+    "flatpickr": "^4.6.13",
+    "leaflet": "^1.9.4",
+    "mitt": "^3.0.1",
+    "vee-validate": "^4.15.1",
+    "vue": "^3.5.26",
+    "vue-cal": "^4.10.2",
+    "vue-flatpickr": "^2.3.0",
+    "vuedraggable": "^2.24.3"
   }
 }

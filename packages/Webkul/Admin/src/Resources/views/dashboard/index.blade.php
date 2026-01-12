@@ -47,6 +47,9 @@
                 <!-- Over All Stats -->
                 @include('admin::dashboard.index.over-all')
 
+                <!-- Onboarding Stats -->
+                @include('admin::dashboard.index.onboarding-stats')
+
                 <!-- Total Leads Stats -->
                 @include('admin::dashboard.index.total-leads')
 

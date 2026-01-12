@@ -1,0 +1,457 @@
+/**
+ * Onboarding Wizard Custom Styles
+ *
+ * This file contains custom CSS for animations, transitions, and visual
+ * enhancements specific to the onboarding wizard experience.
+ */
+
+/* ========================================================================
+   SMOOTH TRANSITIONS
+   ======================================================================== */
+
+/* Fade-in animation for page load */
+.onboarding-fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Slide-in animation for step transitions */
+.onboarding-slide-in {
+    animation: slideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Smooth transitions for all interactive elements */
+.onboarding-transition {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Button hover effect */
+.onboarding-button {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.onboarding-button::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.onboarding-button:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+/* ========================================================================
+   LOADING STATES
+   ======================================================================== */
+
+/* Spinner animation */
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.onboarding-spinner {
+    animation: spin 1s linear infinite;
+}
+
+/* Pulse animation for loading indicators */
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.onboarding-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Skeleton loading for content */
+@keyframes skeleton-loading {
+    0% {
+        background-position: -200px 0;
+    }
+    100% {
+        background-position: calc(200px + 100%) 0;
+    }
+}
+
+.onboarding-skeleton {
+    background: linear-gradient(
+        90deg,
+        #f0f0f0 0px,
+        #e0e0e0 40px,
+        #f0f0f0 80px
+    );
+    background-size: 200px 100%;
+    animation: skeleton-loading 1.2s ease-in-out infinite;
+}
+
+.dark .onboarding-skeleton {
+    background: linear-gradient(
+        90deg,
+        #374151 0px,
+        #4b5563 40px,
+        #374151 80px
+    );
+    background-size: 200px 100%;
+}
+
+/* Loading overlay */
+.onboarding-loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(2px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    animation: fadeIn 0.2s ease-in-out;
+}
+
+/* Progress bar animation */
+@keyframes progressBar {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
+
+.onboarding-progress-bar {
+    animation: progressBar 0.5s ease-out;
+}
+
+/* ========================================================================
+   SUCCESS ANIMATIONS
+   ======================================================================== */
+
+/* Checkmark animation */
+@keyframes checkmark {
+    0% {
+        stroke-dashoffset: 100;
+    }
+    100% {
+        stroke-dashoffset: 0;
+    }
+}
+
+.onboarding-checkmark {
+    stroke-dasharray: 100;
+    stroke-dashoffset: 100;
+    animation: checkmark 0.6s ease-in-out forwards;
+}
+
+/* Success pulse effect */
+@keyframes successPulse {
+    0% {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.onboarding-success-pulse {
+    animation: successPulse 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Confetti animation */
+@keyframes confetti {
+    0% {
+        transform: translateY(0) rotateZ(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100vh) rotateZ(720deg);
+        opacity: 0;
+    }
+}
+
+.onboarding-confetti {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    animation: confetti 3s ease-in-out forwards;
+    pointer-events: none;
+}
+
+/* Celebration effect */
+@keyframes celebrate {
+    0%, 100% {
+        transform: scale(1);
+    }
+    25% {
+        transform: scale(1.1) rotate(5deg);
+    }
+    75% {
+        transform: scale(1.1) rotate(-5deg);
+    }
+}
+
+.onboarding-celebrate {
+    animation: celebrate 0.5s ease-in-out;
+}
+
+/* ========================================================================
+   ERROR HANDLING
+   ======================================================================== */
+
+/* Shake animation for errors */
+@keyframes shake {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    10%, 30%, 50%, 70%, 90% {
+        transform: translateX(-5px);
+    }
+    20%, 40%, 60%, 80% {
+        transform: translateX(5px);
+    }
+}
+
+.onboarding-shake {
+    animation: shake 0.5s ease-in-out;
+}
+
+/* Error highlight pulse */
+@keyframes errorPulse {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+    }
+    50% {
+        box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.2);
+    }
+}
+
+.onboarding-error-pulse {
+    animation: errorPulse 1s ease-in-out;
+}
+
+/* Error notification slide-in */
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.onboarding-notification-slide-in {
+    animation: slideInRight 0.3s ease-out;
+}
+
+/* ========================================================================
+   PROGRESS INDICATOR ANIMATIONS
+   ======================================================================== */
+
+/* Step completion animation */
+@keyframes stepComplete {
+    0% {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.onboarding-step-complete {
+    animation: stepComplete 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* Progress bar shimmer */
+@keyframes shimmer {
+    0% {
+        background-position: -1000px 0;
+    }
+    100% {
+        background-position: 1000px 0;
+    }
+}
+
+.onboarding-progress-shimmer {
+    background: linear-gradient(
+        90deg,
+        #3b82f6 0%,
+        #60a5fa 50%,
+        #3b82f6 100%
+    );
+    background-size: 1000px 100%;
+    animation: shimmer 2s infinite;
+}
+
+/* ========================================================================
+   INTERACTIVE ELEMENTS
+   ======================================================================== */
+
+/* Focus ring animation */
+@keyframes focusRing {
+    0% {
+        box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.5);
+    }
+    100% {
+        box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+    }
+}
+
+.onboarding-focus-ring:focus {
+    animation: focusRing 0.3s ease-out;
+}
+
+/* Card hover effect */
+.onboarding-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.onboarding-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.dark .onboarding-card:hover {
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
+}
+
+/* ========================================================================
+   TOOLTIP ANIMATIONS
+   ======================================================================== */
+
+@keyframes tooltipFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.onboarding-tooltip {
+    animation: tooltipFadeIn 0.2s ease-out;
+}
+
+/* ========================================================================
+   MOBILE OPTIMIZATIONS
+   ======================================================================== */
+
+@media (max-width: 640px) {
+    /* Reduce animation complexity on mobile */
+    .onboarding-fade-in,
+    .onboarding-slide-in {
+        animation-duration: 0.3s;
+    }
+
+    /* Simpler confetti on mobile */
+    .onboarding-confetti {
+        animation-duration: 2s;
+    }
+}
+
+/* ========================================================================
+   ACCESSIBILITY
+   ======================================================================== */
+
+/* Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    .onboarding-confetti,
+    .onboarding-celebrate,
+    .onboarding-shake {
+        animation: none !important;
+    }
+}
+
+/* ========================================================================
+   UTILITY CLASSES
+   ======================================================================== */
+
+/* Fade in with delay variations */
+.onboarding-fade-in-delay-1 {
+    animation: fadeIn 0.5s ease-in-out 0.1s both;
+}
+
+.onboarding-fade-in-delay-2 {
+    animation: fadeIn 0.5s ease-in-out 0.2s both;
+}
+
+.onboarding-fade-in-delay-3 {
+    animation: fadeIn 0.5s ease-in-out 0.3s both;
+}
+
+/* Scale on hover */
+.onboarding-scale-hover {
+    transition: transform 0.2s ease;
+}
+
+.onboarding-scale-hover:hover {
+    transform: scale(1.05);
+}
+
+/* Smooth opacity transitions */
+.onboarding-opacity-transition {
+    transition: opacity 0.3s ease;
+}

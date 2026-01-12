@@ -10,6 +10,16 @@ window.axios = axios;
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 /**
+ * Alpine.js is a rugged, minimal framework for composing JavaScript behavior
+ * in your markup. It offers you the reactive and declarative nature of big
+ * frameworks like Vue or React at a much lower cost.
+ */
+
+import Alpine from 'alpinejs';
+window.Alpine = Alpine;
+Alpine.start();
+
+/**
  * Echo exposes an expressive API for subscribing to channels and listening
  * for events that are broadcast by Laravel. Echo and event broadcasting
  * allows your team to easily build robust real-time web applications.

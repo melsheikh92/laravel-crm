@@ -318,3 +318,48 @@ Route::middleware('auth:api')->prefix('compliance')->group(function () {
     Route::post('reports/audit/generate', [ComplianceReportController::class, 'generateAuditReport'])
         ->name('compliance.reports.audit.generate');
 });
+
+/*
+|--------------------------------------------------------------------------
+| Onboarding Wizard API Routes
+|--------------------------------------------------------------------------
+*/
+
+// Authenticated routes for onboarding wizard AJAX/API endpoints
+Route::middleware('auth:user')->prefix('onboarding')->group(function () {
+    // Get current user's onboarding progress
+    Route::get('progress', [App\Http\Controllers\Api\OnboardingApiController::class, 'progress'])
+        ->name('api.onboarding.progress');
+
+    // Get completion statistics (for admin dashboard)
+    Route::get('statistics', [App\Http\Controllers\Api\OnboardingApiController::class, 'statistics'])
+        ->name('api.onboarding.statistics');
+
+    // Validate step data via AJAX
+    Route::post('step/{step}/validate', [App\Http\Controllers\Api\OnboardingApiController::class, 'validateStep'])
+        ->name('api.onboarding.step.validate');
+
+    // Update step (complete and save data)
+    Route::post('step/{step}', [App\Http\Controllers\Api\OnboardingApiController::class, 'updateStep'])
+        ->name('api.onboarding.step.update');
+
+    // Skip a specific step
+    Route::post('step/{step}/skip', [App\Http\Controllers\Api\OnboardingApiController::class, 'skipStep'])
+        ->name('api.onboarding.step.skip');
+
+    // Navigate to next step
+    Route::post('next', [App\Http\Controllers\Api\OnboardingApiController::class, 'next'])
+        ->name('api.onboarding.next');
+
+    // Navigate to previous step
+    Route::post('previous', [App\Http\Controllers\Api\OnboardingApiController::class, 'previous'])
+        ->name('api.onboarding.previous');
+
+    // Complete the entire onboarding wizard
+    Route::post('complete', [App\Http\Controllers\Api\OnboardingApiController::class, 'complete'])
+        ->name('api.onboarding.complete');
+
+    // Restart the onboarding wizard
+    Route::post('restart', [App\Http\Controllers\Api\OnboardingApiController::class, 'restart'])
+        ->name('api.onboarding.restart');
+});
