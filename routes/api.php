@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\ConsentController;
 use App\Http\Controllers\Api\DataRetentionController;
 use App\Http\Controllers\Api\DataDeletionController;
 use App\Http\Controllers\Api\ComplianceReportController;
+use App\Http\Controllers\Api\DocumentationSearchController;
 
 /*
 |--------------------------------------------------------------------------
@@ -317,4 +318,37 @@ Route::middleware('auth:api')->prefix('compliance')->group(function () {
     // Generate audit report (CSV, JSON, PDF)
     Route::post('reports/audit/generate', [ComplianceReportController::class, 'generateAuditReport'])
         ->name('compliance.reports.audit.generate');
+});
+
+/*
+|--------------------------------------------------------------------------
+| Documentation Search Routes
+|--------------------------------------------------------------------------
+*/
+
+// Public routes for documentation search (no authentication required)
+Route::prefix('docs')->group(function () {
+    // Instant search endpoint
+    Route::post('search', [DocumentationSearchController::class, 'search'])
+        ->name('api.docs.search');
+
+    // Autocomplete suggestions
+    Route::get('autocomplete', [DocumentationSearchController::class, 'autocomplete'])
+        ->name('api.docs.autocomplete');
+
+    // Popular articles
+    Route::get('popular', [DocumentationSearchController::class, 'popular'])
+        ->name('api.docs.popular');
+
+    // Helpful articles
+    Route::get('helpful', [DocumentationSearchController::class, 'helpful'])
+        ->name('api.docs.helpful');
+
+    // Articles by category
+    Route::get('category/{categoryId}', [DocumentationSearchController::class, 'byCategory'])
+        ->name('api.docs.by-category');
+
+    // Articles by type
+    Route::get('type/{type}', [DocumentationSearchController::class, 'byType'])
+        ->name('api.docs.by-type');
 });
