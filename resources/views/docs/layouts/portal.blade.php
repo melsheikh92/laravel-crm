@@ -425,32 +425,27 @@
 </head>
 
 <body>
-    <!-- Header -->
-    <header class="docs-header">
-        <div class="header-container">
-            <button class="mobile-menu-toggle" onclick="toggleSidebar()">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M3 12h18M3 6h18M3 18h18"/>
-                </svg>
-            </button>
+    <div id="vue-app">
+        <!-- Header -->
+        <header class="docs-header">
+            <div class="header-container">
+                <button class="mobile-menu-toggle" onclick="toggleSidebar()">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 12h18M3 6h18M3 18h18"/>
+                    </svg>
+                </button>
 
-            <a href="{{ route('docs.index') }}" class="docs-brand">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
-                    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
-                </svg>
-                <span>Documentation</span>
-            </a>
+                <a href="{{ route('docs.index') }}" class="docs-brand">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                        <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                    </svg>
+                    <span>Documentation</span>
+                </a>
 
-            <div class="docs-search">
-                <input
-                    type="text"
-                    id="docs-search-input"
-                    placeholder="Search documentation..."
-                    autocomplete="off"
-                >
-                <div id="search-results" class="search-results hidden"></div>
-            </div>
+                <div class="docs-search">
+                    @include('docs.partials.search')
+                </div>
 
             <nav class="flex items-center gap-4">
                 <a href="{{ url('/') }}" class="btn btn-link" style="color: var(--text-secondary);">Back to App</a>
@@ -545,21 +540,9 @@
                 }
             });
         });
-
-        // Search functionality placeholder
-        const searchInput = document.getElementById('docs-search-input');
-        if (searchInput) {
-            searchInput.addEventListener('input', function(e) {
-                const query = e.target.value.trim();
-
-                if (query.length > 2) {
-                    // TODO: Implement search API call
-                    console.log('Searching for:', query);
-                }
-            });
-        }
     </script>
     @stack('scripts')
+</div>
 </body>
 
 </html>
