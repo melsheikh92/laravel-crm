@@ -76,7 +76,7 @@ class DocumentationController extends Controller
 
         $article->incrementViews();
 
-        return view('docs.show', compact('article'));
+        return view('docs.article', compact('article'));
     }
 
     /**
