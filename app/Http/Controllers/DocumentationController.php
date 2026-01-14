@@ -4,11 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Routing\Controller;
 use App\Repositories\DocArticleRepository;
+use App\Repositories\DocCategoryRepository;
 
 class DocumentationController extends Controller
 {
-    public function __construct(protected DocArticleRepository $docArticleRepository)
-    {
+    public function __construct(
+        protected DocArticleRepository $docArticleRepository,
+        protected DocCategoryRepository $docCategoryRepository
+    ) {
     }
 
     /**
@@ -34,7 +37,25 @@ class DocumentationController extends Controller
 
         $articles = $query->paginate(10);
 
-        return view('docs.index', compact('articles'));
+        // Get categories for home page display
+        $categories = $this->docCategoryRepository->getActiveRootCategories();
+
+        // Get getting started articles
+        $gettingStartedArticles = $this->docArticleRepository->gettingStarted()
+            ->published()
+            ->public()
+            ->orderBy('sort_order')
+            ->limit(6)
+            ->get();
+
+        // Get popular articles
+        $popularArticles = $this->docArticleRepository->popular()
+            ->published()
+            ->public()
+            ->limit(5)
+            ->get();
+
+        return view('docs.home', compact('articles', 'categories', 'gettingStartedArticles', 'popularArticles'));
     }
 
     /**
