@@ -3,6 +3,10 @@
 use App\Models\DocArticle;
 use App\Models\DocCategory;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
+
+uses(RefreshDatabase::class);
+
 test('search returns articles matching title', function () {
     $category = DocCategory::create([
         'name' => 'Test Category',

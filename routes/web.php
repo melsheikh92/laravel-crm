@@ -69,6 +69,7 @@ Route::prefix('docs')->name('docs.')->group(function () {
 Route::prefix('admin/docs')->name('admin.docs.')->group(function () {
     Route::get('/', [App\Http\Controllers\AdminDocumentationController::class, 'index'])->name('index');
     Route::get('/create', [App\Http\Controllers\AdminDocumentationController::class, 'create'])->name('create');
+    Route::get('/stats', [App\Http\Controllers\AdminDocumentationController::class, 'stats'])->name('stats');
     Route::post('/', [App\Http\Controllers\AdminDocumentationController::class, 'store'])->name('store');
     Route::get('/{id}', [App\Http\Controllers\AdminDocumentationController::class, 'show'])->name('show');
     Route::get('/{id}/edit', [App\Http\Controllers\AdminDocumentationController::class, 'edit'])->name('edit');
@@ -78,5 +79,4 @@ Route::prefix('admin/docs')->name('admin.docs.')->group(function () {
     Route::post('/{id}/unpublish', [App\Http\Controllers\AdminDocumentationController::class, 'unpublish'])->name('unpublish');
     Route::post('/mass-destroy', [App\Http\Controllers\AdminDocumentationController::class, 'massDestroy'])->name('mass-destroy');
     Route::post('/mass-update', [App\Http\Controllers\AdminDocumentationController::class, 'massUpdate'])->name('mass-update');
-    Route::get('/stats', [App\Http\Controllers\AdminDocumentationController::class, 'stats'])->name('stats');
 });

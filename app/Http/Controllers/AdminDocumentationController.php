@@ -52,11 +52,11 @@ class AdminDocumentationController extends Controller
 
         // Get statistics
         $stats = [
-            'total' => $this->docArticleRepository->model->count(),
-            'published' => $this->docArticleRepository->model->where('status', 'published')->count(),
-            'draft' => $this->docArticleRepository->model->where('status', 'draft')->count(),
-            'public' => $this->docArticleRepository->model->where('visibility', 'public')->count(),
-            'internal' => $this->docArticleRepository->model->where('visibility', 'internal')->count(),
+            'total' => $this->docArticleRepository->getModel()->count(),
+            'published' => $this->docArticleRepository->getModel()->where('status', 'published')->count(),
+            'draft' => $this->docArticleRepository->getModel()->where('status', 'draft')->count(),
+            'public' => $this->docArticleRepository->getModel()->where('visibility', 'public')->count(),
+            'internal' => $this->docArticleRepository->getModel()->where('visibility', 'internal')->count(),
         ];
 
         return view('admin.docs.index', compact('stats'));
@@ -91,7 +91,7 @@ class AdminDocumentationController extends Controller
             'category_id' => 'nullable|exists:doc_categories,id',
             'tags' => 'nullable|array',
             'tags.*' => 'exists:tags,id',
-            'type' => 'nullable|in:getting_started,api_doc,feature_guide,troubleshooting',
+            'type' => 'nullable|in:getting-started,api-doc,feature-guide,troubleshooting,tutorial',
             'difficulty_level' => 'nullable|in:beginner,intermediate,advanced',
             'video_url' => 'nullable|url|max:500',
             'video_type' => 'nullable|in:youtube,vimeo',
@@ -180,7 +180,7 @@ class AdminDocumentationController extends Controller
             'category_id' => 'nullable|exists:doc_categories,id',
             'tags' => 'nullable|array',
             'tags.*' => 'exists:tags,id',
-            'type' => 'nullable|in:getting_started,api_doc,feature_guide,troubleshooting',
+            'type' => 'nullable|in:getting-started,api-doc,feature-guide,troubleshooting,tutorial',
             'difficulty_level' => 'nullable|in:beginner,intermediate,advanced',
             'video_url' => 'nullable|url|max:500',
             'video_type' => 'nullable|in:youtube,vimeo',
@@ -430,15 +430,15 @@ class AdminDocumentationController extends Controller
     {
         try {
             $stats = [
-                'total' => $this->docArticleRepository->model->count(),
-                'published' => $this->docArticleRepository->model->where('status', 'published')->count(),
-                'draft' => $this->docArticleRepository->model->where('status', 'draft')->count(),
-                'archived' => $this->docArticleRepository->model->where('status', 'archived')->count(),
-                'public' => $this->docArticleRepository->model->where('visibility', 'public')->count(),
-                'internal' => $this->docArticleRepository->model->where('visibility', 'internal')->count(),
-                'private' => $this->docArticleRepository->model->where('visibility', 'private')->count(),
-                'with_video' => $this->docArticleRepository->model->whereNotNull('video_url')->count(),
-                'featured' => $this->docArticleRepository->model->where('featured', true)->count(),
+                'total' => $this->docArticleRepository->getModel()->count(),
+                'published' => $this->docArticleRepository->getModel()->where('status', 'published')->count(),
+                'draft' => $this->docArticleRepository->getModel()->where('status', 'draft')->count(),
+                'archived' => $this->docArticleRepository->getModel()->where('status', 'archived')->count(),
+                'public' => $this->docArticleRepository->getModel()->where('visibility', 'public')->count(),
+                'internal' => $this->docArticleRepository->getModel()->where('visibility', 'internal')->count(),
+                'private' => $this->docArticleRepository->getModel()->where('visibility', 'private')->count(),
+                'with_video' => $this->docArticleRepository->getModel()->whereNotNull('video_url')->count(),
+                'featured' => $this->docArticleRepository->getModel()->where('featured', true)->count(),
             ];
 
             return response()->json([

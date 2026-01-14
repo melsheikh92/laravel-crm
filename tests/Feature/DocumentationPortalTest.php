@@ -4,6 +4,10 @@ use App\Models\DocArticle;
 use App\Models\DocCategory;
 use Webkul\User\Models\User;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
+
+uses(RefreshDatabase::class);
+
 test('documentation home page loads successfully', function () {
     $response = $this->get('/docs');
     $response->assertStatus(200);
