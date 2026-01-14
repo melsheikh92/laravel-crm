@@ -39,3 +39,19 @@ Route::prefix('compliance')->name('compliance.')->group(function () {
     Route::get('/export-audit-report', [App\Http\Controllers\ComplianceController::class, 'exportAuditReport'])->name('export-audit-report');
     Route::get('/metrics', [App\Http\Controllers\ComplianceController::class, 'metrics'])->name('metrics');
 });
+
+/*
+|--------------------------------------------------------------------------
+| Documentation Routes
+|--------------------------------------------------------------------------
+|
+| Routes for public documentation portal.
+| All routes are publicly accessible for viewing documentation.
+|
+*/
+
+Route::prefix('docs')->name('docs.')->group(function () {
+    Route::get('/', [App\Http\Controllers\DocumentationController::class, 'index'])->name('index');
+    Route::get('/{id}', [App\Http\Controllers\DocumentationController::class, 'show'])->name('show');
+    Route::post('/{id}/vote', [App\Http\Controllers\DocumentationController::class, 'vote'])->name('vote');
+});
