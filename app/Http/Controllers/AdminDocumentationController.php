@@ -10,6 +10,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Event;
 use Illuminate\View\View;
+use Webkul\Admin\DataGrids\Documentation\DocArticleDataGrid;
 
 class AdminDocumentationController extends Controller
 {
@@ -45,61 +46,9 @@ class AdminDocumentationController extends Controller
      */
     public function index(Request $request)
     {
-        // Build filters from request
-        $filters = [];
-
-        if ($request->has('status')) {
-            $filters['status'] = $request->input('status');
+        if ($request->ajax()) {
+            return datagrid(DocArticleDataGrid::class)->process();
         }
-
-        if ($request->has('visibility')) {
-            $filters['visibility'] = $request->input('visibility');
-        }
-
-        if ($request->has('category_id')) {
-            $filters['category_id'] = $request->input('category_id');
-        }
-
-        if ($request->has('type')) {
-            $filters['type'] = $request->input('type');
-        }
-
-        if ($request->has('difficulty_level')) {
-            $filters['difficulty_level'] = $request->input('difficulty_level');
-        }
-
-        if ($request->has('search')) {
-            $filters['search'] = $request->input('search');
-        }
-
-        if ($request->has('has_video')) {
-            $filters['has_video'] = $request->input('has_video') === 'true';
-        }
-
-        if ($request->has('tag_id')) {
-            $filters['tag_id'] = $request->input('tag_id');
-        }
-
-        if ($request->has('author_id')) {
-            $filters['author_id'] = $request->input('author_id');
-        }
-
-        if ($request->has('order_by')) {
-            $filters['order_by'] = $request->input('order_by');
-        }
-
-        if ($request->has('order_dir')) {
-            $filters['order_dir'] = $request->input('order_dir');
-        }
-
-        // Get filtered articles
-        $query = $this->docArticleRepository->filter($filters);
-
-        // Get paginated articles
-        $articles = $query->paginate($request->input('per_page', 25));
-
-        // Get all categories for filter dropdown
-        $categories = $this->docCategoryRepository->all();
 
         // Get statistics
         $stats = [
@@ -110,12 +59,7 @@ class AdminDocumentationController extends Controller
             'internal' => $this->docArticleRepository->model->where('visibility', 'internal')->count(),
         ];
 
-        return view('admin.docs.index', [
-            'articles' => $articles,
-            'categories' => $categories,
-            'stats' => $stats,
-            'filters' => $filters,
-        ]);
+        return view('admin.docs.index', compact('stats'));
     }
 
     /**
@@ -428,6 +372,51 @@ class AdminDocumentationController extends Controller
             return redirect()
                 ->back()
                 ->with('error', 'Failed to delete articles: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Mass update documentation articles.
+     *
+     * @param Request $request
+     * @return RedirectResponse|JsonResponse
+     */
+    public function massUpdate(Request $request)
+    {
+        $validated = $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'integer|exists:doc_articles,id',
+            'value' => 'required|string|in:draft,published,archived',
+        ]);
+
+        try {
+            $count = 0;
+            foreach ($validated['ids'] as $id) {
+                $this->docArticleRepository->update([
+                    'status' => $validated['value'],
+                ], $id);
+                $count++;
+            }
+
+            if ($request->ajax()) {
+                return response()->json([
+                    'message' => "Successfully updated {$count} articles.",
+                ]);
+            }
+
+            return redirect()
+                ->route('admin.docs.index')
+                ->with('success', "Successfully updated {$count} articles.");
+        } catch (\Exception $e) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'message' => 'Failed to update articles: ' . $e->getMessage(),
+                ], 500);
+            }
+
+            return redirect()
+                ->back()
+                ->with('error', 'Failed to update articles: ' . $e->getMessage());
         }
     }
 

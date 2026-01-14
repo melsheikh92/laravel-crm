@@ -77,5 +77,6 @@ Route::prefix('admin/docs')->name('admin.docs.')->group(function () {
     Route::post('/{id}/publish', [App\Http\Controllers\AdminDocumentationController::class, 'publish'])->name('publish');
     Route::post('/{id}/unpublish', [App\Http\Controllers\AdminDocumentationController::class, 'unpublish'])->name('unpublish');
     Route::post('/mass-destroy', [App\Http\Controllers\AdminDocumentationController::class, 'massDestroy'])->name('mass-destroy');
+    Route::post('/mass-update', [App\Http\Controllers\AdminDocumentationController::class, 'massUpdate'])->name('mass-update');
     Route::get('/stats', [App\Http\Controllers\AdminDocumentationController::class, 'stats'])->name('stats');
 });
