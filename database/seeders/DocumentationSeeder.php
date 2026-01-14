@@ -19,8 +19,9 @@ class DocumentationSeeder extends Seeder
 
         $this->createDocumentationCategories();
         $this->createGettingStartedArticles();
+        $this->createApiDocumentationArticles();
 
-        $this->command->info('Getting Started articles seeded successfully!');
+        $this->command->info('Documentation seeded successfully!');
     }
 
     /**
@@ -918,6 +919,1182 @@ HTML;
 
 <div class="callout-info">
 <strong>Tip:</strong> Review your configuration periodically and adjust as your business grows.
+</div>
+HTML;
+    }
+
+    /**
+     * Create API Documentation articles.
+     *
+     * @return void
+     */
+    protected function createApiDocumentationArticles()
+    {
+        $apiDocsCategory = DB::table('doc_categories')
+            ->where('slug', 'api-docs')
+            ->first();
+
+        if (!$apiDocsCategory) {
+            $this->command->error('API Documentation category not found!');
+            return;
+        }
+
+        $articles = [
+            [
+                'title' => 'Compliance API Documentation',
+                'slug' => 'compliance-api',
+                'content' => $this->getComplianceApiContent(),
+                'excerpt' => 'Advanced Compliance Features for GDPR, HIPAA, and SOC 2 - Complete API reference for consent management, data retention, deletion requests, and compliance reporting.',
+                'type' => 'api',
+                'difficulty_level' => 'advanced',
+                'reading_time_minutes' => 25,
+                'status' => 'published',
+                'visibility' => 'public',
+                'featured' => true,
+                'sort_order' => 1,
+            ],
+        ];
+
+        foreach ($articles as $article) {
+            $existingArticle = DB::table('doc_articles')
+                ->where('slug', $article['slug'])
+                ->first();
+
+            if (!$existingArticle) {
+                $articleId = DB::table('doc_articles')->insertGetId(array_merge($article, [
+                    'category_id' => $apiDocsCategory->id,
+                    'author_id' => 1,
+                    'published_at' => now(),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]));
+
+                $this->command->info("Created API article: {$article['title']}");
+            }
+        }
+    }
+
+    /**
+     * Content for Compliance API Documentation article.
+     */
+    protected function getComplianceApiContent()
+    {
+        return <<<HTML
+<h1>Compliance API Documentation</h1>
+<h2>Advanced Compliance Features for GDPR, HIPAA, and SOC 2</h2>
+
+<hr>
+
+<h2>📖 Overview</h2>
+
+<p>This document provides comprehensive documentation for all compliance-related API endpoints. These APIs enable programmatic access to consent management, data retention policies, right-to-erasure requests, and compliance reporting features.</p>
+
+<h3>Base URL</h3>
+<pre><code>https://your-domain.com/api</code></pre>
+
+<h3>Authentication</h3>
+<p>All API endpoints require authentication using Laravel Sanctum or API tokens. Include your API token in the request header:</p>
+
+<pre><code>Authorization: Bearer YOUR_API_TOKEN</code></pre>
+
+<h3>Response Format</h3>
+<p>All responses follow a consistent JSON structure:</p>
+
+<p><strong>Success Response:</strong></p>
+<pre><code>{
+  "success": true,
+  "message": "Operation completed successfully",
+  "data": { ... }
+}</code></pre>
+
+<p><strong>Error Response:</strong></p>
+<pre><code>{
+  "success": false,
+  "message": "Error description",
+  "errors": { ... }
+}</code></pre>
+
+<h3>Common HTTP Status Codes</h3>
+<ul>
+<li><code>200</code> - OK - Request successful</li>
+<li><code>201</code> - Created - Resource created successfully</li>
+<li><code>400</code> - Bad Request - Invalid request parameters</li>
+<li><code>401</code> - Unauthorized - Authentication required</li>
+<li><code>404</code> - Not Found - Resource not found</li>
+<li><code>422</code> - Unprocessable Entity - Validation failed</li>
+<li><code>500</code> - Internal Server Error - Server error occurred</li>
+</ul>
+
+<hr>
+
+<h2>🔐 Consent Management API</h2>
+
+<p>Manage GDPR-compliant consent records for users.</p>
+
+<h3>1. Get All Consent Records</h3>
+
+<p><strong>Endpoint:</strong> <code>GET /api/consent</code></p>
+
+<p><strong>Description:</strong> Retrieve all consent records for the authenticated user.</p>
+
+<p><strong>Query Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>type</code></td>
+<td>string</td>
+<td>No</td>
+<td>Filter by consent type</td>
+</tr>
+<tr>
+<td><code>active_only</code></td>
+<td>boolean</td>
+<td>No</td>
+<td>Return only active consents (default: false)</td>
+</tr>
+</tbody>
+</table>
+
+<p><strong>Example Request:</strong></p>
+<pre><code>curl -X GET "https://your-domain.com/api/consent?active_only=true" \\
+  -H "Authorization: Bearer YOUR_API_TOKEN" \\
+  -H "Accept: application/json"</code></pre>
+
+<p><strong>Example Response:</strong></p>
+<pre><code>{
+  "success": true,
+  "data": [
+    {
+      "id": 1,
+      "user_id": 123,
+      "consent_type": "marketing",
+      "purpose": "Email marketing communications",
+      "given_at": "2024-01-15T10:30:00.000000Z",
+      "withdrawn_at": null,
+      "ip_address": "192.168.1.1",
+      "user_agent": "Mozilla/5.0...",
+      "metadata": {},
+      "created_at": "2024-01-15T10:30:00.000000Z",
+      "updated_at": "2024-01-15T10:30:00.000000Z"
+    }
+  ]
+}</code></pre>
+
+<h3>2. Record Consent</h3>
+
+<p><strong>Endpoint:</strong> <code>POST /api/consent</code></p>
+
+<p><strong>Description:</strong> Record a new consent for the authenticated user.</p>
+
+<p><strong>Request Body:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>consent_type</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>Type of consent (e.g., 'marketing', 'analytics')</td>
+</tr>
+<tr>
+<td><code>purpose</code></td>
+<td>string</td>
+<td>No</td>
+<td>Purpose of the consent (max 1000 chars)</td>
+</tr>
+<tr>
+<td><code>metadata</code></td>
+<td>object</td>
+<td>No</td>
+<td>Additional metadata</td>
+</tr>
+</tbody>
+</table>
+
+<p><strong>Example Request:</strong></p>
+<pre><code>curl -X POST "https://your-domain.com/api/consent" \\
+  -H "Authorization: Bearer YOUR_API_TOKEN" \\
+  -H "Content-Type: application/json" \\
+  -H "Accept: application/json" \\
+  -d '{
+    "consent_type": "marketing",
+    "purpose": "Email marketing communications",
+    "metadata": {
+      "source": "mobile_app",
+      "version": "2.0"
+    }
+  }'</code></pre>
+
+<p><strong>Example Response:</strong></p>
+<pre><code>{
+  "success": true,
+  "message": "Consent recorded successfully",
+  "data": {
+    "id": 1,
+    "user_id": 123,
+    "consent_type": "marketing",
+    "purpose": "Email marketing communications",
+    "given_at": "2024-01-15T10:30:00.000000Z",
+    "withdrawn_at": null,
+    "ip_address": "192.168.1.1",
+    "user_agent": "Mozilla/5.0...",
+    "metadata": {
+      "source": "mobile_app",
+      "version": "2.0"
+    },
+    "created_at": "2024-01-15T10:30:00.000000Z",
+    "updated_at": "2024-01-15T10:30:00.000000Z"
+  }
+}</code></pre>
+
+<h3>3. Record Multiple Consents</h3>
+
+<p><strong>Endpoint:</strong> <code>POST /api/consent/multiple</code></p>
+
+<p><strong>Description:</strong> Record multiple consents at once for the authenticated user.</p>
+
+<p><strong>Request Body:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>consent_types</code></td>
+<td>array</td>
+<td>Yes</td>
+<td>Array of consent types to record</td>
+</tr>
+<tr>
+<td><code>metadata</code></td>
+<td>object</td>
+<td>No</td>
+<td>Shared metadata for all consents</td>
+</tr>
+</tbody>
+</table>
+
+<p><strong>Example Request:</strong></p>
+<pre><code>curl -X POST "https://your-domain.com/api/consent/multiple" \\
+  -H "Authorization: Bearer YOUR_API_TOKEN" \\
+  -H "Content-Type: application/json" \\
+  -H "Accept: application/json" \\
+  -d '{
+    "consent_types": ["marketing", "analytics", "necessary"],
+    "metadata": {
+      "onboarding": true
+    }
+  }'</code></pre>
+
+<p><strong>Example Response:</strong></p>
+<pre><code>{
+  "success": true,
+  "message": "Consents recorded successfully",
+  "data": [
+    {
+      "id": 1,
+      "consent_type": "marketing",
+      "given_at": "2024-01-15T10:30:00.000000Z"
+    },
+    {
+      "id": 2,
+      "consent_type": "analytics",
+      "given_at": "2024-01-15T10:30:00.000000Z"
+    }
+  ]
+}</code></pre>
+
+<h3>4. Withdraw Consent</h3>
+
+<p><strong>Endpoint:</strong> <code>DELETE /api/consent/{consentType}</code></p>
+
+<p><strong>Description:</strong> Withdraw a specific consent for the authenticated user.</p>
+
+<p><strong>Path Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>consentType</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>Type of consent to withdraw</td>
+</tr>
+</tbody>
+</table>
+
+<p><strong>Request Body:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>metadata</code></td>
+<td>object</td>
+<td>No</td>
+<td>Additional metadata for withdrawal</td>
+</tr>
+</tbody>
+</table>
+
+<p><strong>Example Request:</strong></p>
+<pre><code>curl -X DELETE "https://your-domain.com/api/consent/marketing" \\
+  -H "Authorization: Bearer YOUR_API_TOKEN" \\
+  -H "Content-Type: application/json" \\
+  -H "Accept: application/json" \\
+  -d '{
+    "metadata": {
+      "reason": "User requested via settings"
+    }
+  }'</code></pre>
+
+<p><strong>Example Response:</strong></p>
+<pre><code>{
+  "success": true,
+  "message": "Consent withdrawn successfully"
+}</code></pre>
+
+<h3>5. Get Active Consents</h3>
+
+<p><strong>Endpoint:</strong> <code>GET /api/consent/active</code></p>
+
+<p><strong>Description:</strong> Retrieve all currently active consents for the authenticated user.</p>
+
+<p><strong>Example Request:</strong></p>
+<pre><code>curl -X GET "https://your-domain.com/api/consent/active" \\
+  -H "Authorization: Bearer YOUR_API_TOKEN" \\
+  -H "Accept: application/json"</code></pre>
+
+<p><strong>Example Response:</strong></p>
+<pre><code>{
+  "success": true,
+  "data": [
+    {
+      "id": 1,
+      "consent_type": "necessary",
+      "purpose": "Essential website functionality",
+      "given_at": "2024-01-15T10:30:00.000000Z"
+    },
+    {
+      "id": 3,
+      "consent_type": "analytics",
+      "purpose": "Website usage analytics",
+      "given_at": "2024-01-15T10:35:00.000000Z"
+    }
+  ]
+}</code></pre>
+
+<hr>
+
+<h2>📊 Data Retention Policy API</h2>
+
+<p>Manage data retention policies and monitor expired records.</p>
+
+<h3>1. Get All Retention Policies</h3>
+
+<p><strong>Endpoint:</strong> <code>GET /api/retention-policies</code></p>
+
+<p><strong>Description:</strong> Retrieve all data retention policies.</p>
+
+<p><strong>Query Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>model_type</code></td>
+<td>string</td>
+<td>No</td>
+<td>Filter by model type</td>
+</tr>
+<tr>
+<td><code>active_only</code></td>
+<td>boolean</td>
+<td>No</td>
+<td>Return only active policies (default: false)</td>
+</tr>
+</tbody>
+</table>
+
+<p><strong>Example Request:</strong></p>
+<pre><code>curl -X GET "https://your-domain.com/api/retention-policies?active_only=true" \\
+  -H "Authorization: Bearer YOUR_API_TOKEN" \\
+  -H "Accept: application/json"</code></pre>
+
+<p><strong>Example Response:</strong></p>
+<pre><code>{
+  "success": true,
+  "data": [
+    {
+      "id": 1,
+      "model_type": "App\\Models\\AuditLog",
+      "retention_period_days": 365,
+      "delete_after_days": 730,
+      "conditions": {},
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00.000000Z",
+      "updated_at": "2024-01-01T00:00:00.000000Z"
+    }
+  ]
+}</code></pre>
+
+<h3>2. Create Retention Policy</h3>
+
+<p><strong>Endpoint:</strong> <code>POST /api/retention-policies</code></p>
+
+<p><strong>Description:</strong> Create a new data retention policy.</p>
+
+<p><strong>Request Body:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>model_type</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>Fully qualified model class name</td>
+</tr>
+<tr>
+<td><code>retention_period_days</code></td>
+<td>integer</td>
+<td>Yes</td>
+<td>Days before records are considered expired (min: 1)</td>
+</tr>
+<tr>
+<td><code>delete_after_days</code></td>
+<td>integer</td>
+<td>Yes</td>
+<td>Days before records should be deleted (min: 1)</td>
+</tr>
+<tr>
+<td><code>conditions</code></td>
+<td>object</td>
+<td>No</td>
+<td>Conditions for policy application</td>
+</tr>
+<tr>
+<td><code>is_active</code></td>
+<td>boolean</td>
+<td>No</td>
+<td>Whether policy is active (default: true)</td>
+</tr>
+</tbody>
+</table>
+
+<p><strong>Example Request:</strong></p>
+<pre><code>curl -X POST "https://your-domain.com/api/retention-policies" \\
+  -H "Authorization: Bearer YOUR_API_TOKEN" \\
+  -H "Content-Type: application/json" \\
+  -H "Accept: application/json" \\
+  -d '{
+    "model_type": "App\\Models\\AuditLog",
+    "retention_period_days": 365,
+    "delete_after_days": 730,
+    "conditions": {},
+    "is_active": true
+  }'</code></pre>
+
+<p><strong>Example Response:</strong></p>
+<pre><code>{
+  "success": true,
+  "message": "Retention policy created successfully",
+  "data": {
+    "id": 2,
+    "model_type": "App\\Models\\AuditLog",
+    "retention_period_days": 365,
+    "delete_after_days": 730,
+    "conditions": {},
+    "is_active": true,
+    "created_at": "2024-01-15T10:30:00.000000Z",
+    "updated_at": "2024-01-15T10:30:00.000000Z"
+  }
+}</code></pre>
+
+<h3>3. Apply Retention Policies</h3>
+
+<p><strong>Endpoint:</strong> <code>POST /api/retention-policies/apply</code></p>
+
+<p><strong>Description:</strong> Apply retention policies to delete expired data.</p>
+
+<p><strong>Query Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>dry_run</code></td>
+<td>boolean</td>
+<td>No</td>
+<td>Preview without deleting (default: true)</td>
+</tr>
+<tr>
+<td><code>model_type</code></td>
+<td>string</td>
+<td>No</td>
+<td>Filter by model type</td>
+</tr>
+</tbody>
+</table>
+
+<p><strong>Example Request:</strong></p>
+<pre><code>curl -X POST "https://your-domain.com/api/retention-policies/apply?dry_run=false" \\
+  -H "Authorization: Bearer YOUR_API_TOKEN" \\
+  -H "Accept: application/json"</code></pre>
+
+<p><strong>Example Response:</strong></p>
+<pre><code>{
+  "success": true,
+  "data": {
+    "dry_run": false,
+    "policies_applied": 3,
+    "total_deleted": 125,
+    "total_anonymized": 45,
+    "results": [
+      {
+        "policy_id": 1,
+        "model_type": "App\\Models\\AuditLog",
+        "deleted": 125,
+        "anonymized": 0
+      }
+    ]
+  }
+}</code></pre>
+
+<hr>
+
+<h2>🗑️ Data Deletion Request API</h2>
+
+<p>Manage GDPR right-to-erasure requests and data exports.</p>
+
+<h3>1. Get All Deletion Requests</h3>
+
+<p><strong>Endpoint:</strong> <code>GET /api/deletion-requests</code></p>
+
+<p><strong>Description:</strong> Retrieve all data deletion requests.</p>
+
+<p><strong>Query Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>status</code></td>
+<td>string</td>
+<td>No</td>
+<td>Filter by status (pending, processing, completed, failed, cancelled)</td>
+</tr>
+<tr>
+<td><code>user_id</code></td>
+<td>integer</td>
+<td>No</td>
+<td>Filter by user ID</td>
+</tr>
+<tr>
+<td><code>email</code></td>
+<td>string</td>
+<td>No</td>
+<td>Filter by email</td>
+</tr>
+</tbody>
+</table>
+
+<p><strong>Example Request:</strong></p>
+<pre><code>curl -X GET "https://your-domain.com/api/deletion-requests?status=pending" \\
+  -H "Authorization: Bearer YOUR_API_TOKEN" \\
+  -H "Accept: application/json"</code></pre>
+
+<p><strong>Example Response:</strong></p>
+<pre><code>{
+  "success": true,
+  "data": [
+    {
+      "id": 1,
+      "user_id": 123,
+      "email": "user@example.com",
+      "requested_at": "2024-01-15T10:30:00.000000Z",
+      "processed_at": null,
+      "status": "pending",
+      "notes": "User requested data deletion",
+      "processed_by": null,
+      "user": {
+        "id": 123,
+        "name": "John Doe"
+      },
+      "processedBy": null
+    }
+  ]
+}</code></pre>
+
+<h3>2. Create Deletion Request</h3>
+
+<p><strong>Endpoint:</strong> <code>POST /api/deletion-requests</code></p>
+
+<p><strong>Description:</strong> Create a new data deletion request.</p>
+
+<p><strong>Request Body:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>user_id</code></td>
+<td>integer</td>
+<td>No</td>
+<td>User ID (defaults to authenticated user)</td>
+</tr>
+<tr>
+<td><code>email</code></td>
+<td>string</td>
+<td>No</td>
+<td>Email address for the request</td>
+</tr>
+<tr>
+<td><code>notes</code></td>
+<td>string</td>
+<td>No</td>
+<td>Additional notes (max 1000 chars)</td>
+</tr>
+</tbody>
+</table>
+
+<p><strong>Example Request:</strong></p>
+<pre><code>curl -X POST "https://your-domain.com/api/deletion-requests" \\
+  -H "Authorization: Bearer YOUR_API_TOKEN" \\
+  -H "Content-Type: application/json" \\
+  -H "Accept: application/json" \\
+  -d '{
+    "notes": "User requested data deletion via mobile app"
+  }'</code></pre>
+
+<p><strong>Example Response:</strong></p>
+<pre><code>{
+  "success": true,
+  "message": "Deletion request created successfully",
+  "data": {
+    "id": 2,
+    "user_id": 123,
+    "email": "user@example.com",
+    "requested_at": "2024-01-15T10:30:00.000000Z",
+    "status": "pending",
+    "notes": "User requested data deletion via mobile app"
+  }
+}</code></pre>
+
+<h3>3. Process Deletion Request</h3>
+
+<p><strong>Endpoint:</strong> <code>POST /api/deletion-requests/{id}/process</code></p>
+
+<p><strong>Description:</strong> Process a pending deletion request.</p>
+
+<p><strong>Path Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>integer</td>
+<td>Yes</td>
+<td>Request ID</td>
+</tr>
+</tbody>
+</table>
+
+<p><strong>Request Body:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>force</code></td>
+<td>boolean</td>
+<td>No</td>
+<td>Force deletion instead of anonymization (default: false)</td>
+</tr>
+</tbody>
+</table>
+
+<p><strong>Example Request:</strong></p>
+<pre><code>curl -X POST "https://your-domain.com/api/deletion-requests/1/process" \\
+  -H "Authorization: Bearer YOUR_API_TOKEN" \\
+  -H "Content-Type: application/json" \\
+  -H "Accept: application/json" \\
+  -d '{
+    "force": false
+  }'</code></pre>
+
+<p><strong>Example Response:</strong></p>
+<pre><code>{
+  "success": true,
+  "message": "Deletion request processed successfully",
+  "data": {
+    "request_id": 1,
+    "status": "completed",
+    "method": "anonymized",
+    "processed_at": "2024-01-16T14:20:00.000000Z",
+    "affected_models": {
+      "user": 1,
+      "consents": 3,
+      "tickets": 5
+    }
+  }
+}</code></pre>
+
+<h3>4. Export User Data</h3>
+
+<p><strong>Endpoint:</strong> <code>POST /api/deletion-requests/export</code></p>
+
+<p><strong>Description:</strong> Export user data for GDPR data portability.</p>
+
+<p><strong>Request Body:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>user_id</code></td>
+<td>integer</td>
+<td>No</td>
+<td>User ID (defaults to authenticated user)</td>
+</tr>
+<tr>
+<td><code>format</code></td>
+<td>string</td>
+<td>No</td>
+<td>Export format: json, csv, pdf (default: json)</td>
+</tr>
+<tr>
+<td><code>include_audit_logs</code></td>
+<td>boolean</td>
+<td>No</td>
+<td>Include audit logs in export (default: false)</td>
+</tr>
+<tr>
+<td><code>async</code></td>
+<td>boolean</td>
+<td>No</td>
+<td>Queue export job asynchronously (default: false)</td>
+</tr>
+</tbody>
+</table>
+
+<p><strong>Example Request (Synchronous):</strong></p>
+<pre><code>curl -X POST "https://your-domain.com/api/deletion-requests/export" \\
+  -H "Authorization: Bearer YOUR_API_TOKEN" \\
+  -H "Content-Type: application/json" \\
+  -H "Accept: application/json" \\
+  -d '{
+    "format": "json",
+    "include_audit_logs": true,
+    "async": false
+  }'</code></pre>
+
+<p><strong>Example Response (Synchronous):</strong></p>
+<pre><code>{
+  "success": true,
+  "message": "User data exported successfully",
+  "data": {
+    "user": {
+      "id": 123,
+      "name": "John Doe",
+      "email": "user@example.com"
+    },
+    "consents": [
+      {
+        "type": "marketing",
+        "given_at": "2024-01-15T10:30:00.000000Z"
+      }
+    ],
+    "tickets": [
+      {
+        "id": 1,
+        "subject": "Support Request"
+      }
+    ],
+    "audit_logs": [
+      {
+        "event": "created",
+        "created_at": "2024-01-15T10:30:00.000000Z"
+      }
+    ]
+  }
+}</code></pre>
+
+<hr>
+
+<h2>📈 Compliance Reporting API</h2>
+
+<p>Access compliance metrics, audit reports, and compliance status.</p>
+
+<h3>1. Get Compliance Overview</h3>
+
+<p><strong>Endpoint:</strong> <code>GET /api/compliance/metrics/overview</code></p>
+
+<p><strong>Description:</strong> Get comprehensive compliance metrics overview.</p>
+
+<p><strong>Query Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>start_date</code></td>
+<td>date</td>
+<td>No</td>
+<td>Filter from date (YYYY-MM-DD)</td>
+</tr>
+<tr>
+<td><code>end_date</code></td>
+<td>date</td>
+<td>No</td>
+<td>Filter to date (YYYY-MM-DD)</td>
+</tr>
+</tbody>
+</table>
+
+<p><strong>Example Request:</strong></p>
+<pre><code>curl -X GET "https://your-domain.com/api/compliance/metrics/overview?start_date=2024-01-01&end_date=2024-01-31" \\
+  -H "Authorization: Bearer YOUR_API_TOKEN" \\
+  -H "Accept: application/json"</code></pre>
+
+<p><strong>Example Response:</strong></p>
+<pre><code>{
+  "success": true,
+  "data": {
+    "period": {
+      "start_date": "2024-01-01",
+      "end_date": "2024-01-31"
+    },
+    "audit_logging": {
+      "total_logs": 15234,
+      "events": {
+        "created": 8923,
+        "updated": 4532,
+        "deleted": 1779
+      }
+    },
+    "consent_management": {
+      "total_consents": 3456,
+      "active_consents": 2890,
+      "consent_rate": 83.6
+    },
+    "data_retention": {
+      "active_policies": 4,
+      "expired_records": 456,
+      "deletable_records": 234
+    },
+    "encryption": {
+      "encrypted_models": 2,
+      "encrypted_fields": 4
+    },
+    "compliance_status": {
+      "gdpr": "compliant",
+      "hipaa": "compliant",
+      "soc2": "compliant"
+    }
+  }
+}</code></pre>
+
+<h3>2. Get Compliance Status</h3>
+
+<p><strong>Endpoint:</strong> <code>GET /api/compliance/status</code></p>
+
+<p><strong>Description:</strong> Get overall compliance status with issues and warnings.</p>
+
+<p><strong>Example Request:</strong></p>
+<pre><code>curl -X GET "https://your-domain.com/api/compliance/status" \\
+  -H "Authorization: Bearer YOUR_API_TOKEN" \\
+  -H "Accept: application/json"</code></pre>
+
+<p><strong>Example Response:</strong></p>
+<pre><code>{
+  "success": true,
+  "data": {
+    "overall_status": "compliant",
+    "frameworks": {
+      "gdpr": {
+        "status": "compliant",
+        "issues": [],
+        "warnings": []
+      },
+      "hipaa": {
+        "status": "compliant",
+        "issues": [],
+        "warnings": ["Field encryption not enabled"]
+      },
+      "soc2": {
+        "status": "non_compliant",
+        "issues": ["Audit logging disabled"],
+        "warnings": []
+      }
+    },
+    "features": {
+      "audit_logging": true,
+      "consent_management": true,
+      "data_retention": true,
+      "field_encryption": false
+    }
+  }
+}</code></pre>
+
+<h3>3. Generate Audit Report</h3>
+
+<p><strong>Endpoint:</strong> <code>POST /api/compliance/reports/audit/generate</code></p>
+
+<p><strong>Description:</strong> Generate an audit report in the specified format.</p>
+
+<p><strong>Request Body:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>format</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>Report format: csv, json, pdf</td>
+</tr>
+<tr>
+<td><code>start_date</code></td>
+<td>date</td>
+<td>No</td>
+<td>Filter from date (YYYY-MM-DD)</td>
+</tr>
+<tr>
+<td><code>end_date</code></td>
+<td>date</td>
+<td>No</td>
+<td>Filter to date (YYYY-MM-DD)</td>
+</tr>
+<tr>
+<td><code>event</code></td>
+<td>string</td>
+<td>No</td>
+<td>Filter by event type</td>
+</tr>
+<tr>
+<td><code>limit</code></td>
+<td>integer</td>
+<td>No</td>
+<td>Max records (1-10000)</td>
+</tr>
+<tr>
+<td><code>include_statistics</code></td>
+<td>boolean</td>
+<td>No</td>
+<td>Include summary statistics (default: false)</td>
+</tr>
+</tbody>
+</table>
+
+<p><strong>Example Request (JSON):</strong></p>
+<pre><code>curl -X POST "https://your-domain.com/api/compliance/reports/audit/generate" \\
+  -H "Authorization: Bearer YOUR_API_TOKEN" \\
+  -H "Content-Type: application/json" \\
+  -H "Accept: application/json" \\
+  -d '{
+    "format": "json",
+    "start_date": "2024-01-01",
+    "end_date": "2024-01-31",
+    "event": "created",
+    "limit": 100,
+    "include_statistics": true
+  }'</code></pre>
+
+<p><strong>Example Response (JSON):</strong></p>
+<pre><code>{
+  "success": true,
+  "format": "json",
+  "data": {
+    "metadata": {
+      "title": "Audit Report",
+      "generated_at": "2024-01-15T10:30:00.000000Z",
+      "filters": {
+        "event": "created",
+        "start_date": "2024-01-01",
+        "end_date": "2024-01-31"
+      }
+    },
+    "statistics": {
+      "total_records": 100,
+      "events": {
+        "created": 100
+      }
+    },
+    "records": [
+      {
+        "id": 1,
+        "event": "created",
+        "auditable_type": "App\\Models\\User",
+        "auditable_id": 123,
+        "user_id": 456,
+        "created_at": "2024-01-15T10:30:00.000000Z"
+      }
+    ]
+  }
+}</code></pre>
+
+<hr>
+
+<h2>🔧 Configuration</h2>
+
+<h3>Environment Variables</h3>
+
+<p>Add these to your <code>.env</code> file to configure compliance features:</p>
+
+<pre><code># Compliance Features
+COMPLIANCE_ENABLED=true
+
+# Audit Logging
+AUDIT_LOGGING_ENABLED=true
+AUDIT_LOG_RETENTION_DAYS=365
+
+# Consent Management
+CONSENT_MANAGEMENT_ENABLED=true
+CONSENT_CAPTURE_IP=true
+CONSENT_CAPTURE_USER_AGENT=true
+
+# Data Retention
+DATA_RETENTION_ENABLED=true
+DATA_RETENTION_AUTO_DELETE=false
+DATA_RETENTION_PREFER_ANONYMIZATION=true
+
+# Field Encryption
+FIELD_ENCRYPTION_ENABLED=true
+FIELD_ENCRYPTION_AUTO_DECRYPT=true
+
+# GDPR Right to Erasure
+GDPR_ENABLED=true
+GDPR_ANONYMIZE_INSTEAD_OF_DELETE=true
+GDPR_SEND_CONFIRMATION_EMAIL=true
+
+# Compliance Reporting
+COMPLIANCE_REPORTING_ENABLED=true</code></pre>
+
+<hr>
+
+<h2>🛡️ Security Best Practices</h2>
+
+<h3>1. API Authentication</h3>
+<ul>
+<li>Always use secure API tokens</li>
+<li>Rotate tokens regularly</li>
+<li>Use HTTPS for all API requests</li>
+<li>Never expose tokens in client-side code</li>
+</ul>
+
+<h3>2. Rate Limiting</h3>
+<p>API endpoints are subject to rate limiting. Default limits:</p>
+<ul>
+<li>60 requests per minute per user</li>
+<li>1000 requests per hour per user</li>
+</ul>
+
+<h3>3. Data Privacy</h3>
+<ul>
+<li>Only authorized users can access their own consent records</li>
+<li>Admin privileges required for accessing other users' data</li>
+<li>Deletion requests are logged in audit trail</li>
+<li>Exported data should be transmitted securely</li>
+</ul>
+
+<div class="callout-info">
+<strong>Last Updated:</strong> January 2024
+<strong>API Version:</strong> 1.0.0
 </div>
 HTML;
     }
