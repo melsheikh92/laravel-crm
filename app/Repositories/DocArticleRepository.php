@@ -66,6 +66,7 @@ class DocArticleRepository extends Repository
                 'content' => $article->content,
                 'version_number' => 1,
                 'created_by' => auth()->id(),
+                'created_at' => now(),
             ]);
 
             DB::commit();
@@ -309,6 +310,7 @@ class DocArticleRepository extends Repository
             'user_id' => $data['user_id'] ?? auth()->id(),
             'is_helpful' => $data['is_helpful'],
             'comment' => $data['comment'] ?? null,
+            'created_at' => now(),
         ]);
 
         // Update article counts

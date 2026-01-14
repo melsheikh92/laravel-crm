@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Str;
 use Webkul\Tag\Models\Tag;
+use Webkul\User\Models\User;
 
 class DocArticle extends Model
 {
@@ -84,7 +85,7 @@ class DocArticle extends Model
 
     public function author(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'author_id');
+        return $this->belongsTo(\Webkul\User\Models\User::class, 'author_id');
     }
 
     public function sections(): HasMany
@@ -99,7 +100,7 @@ class DocArticle extends Model
 
     public function tags(): BelongsToMany
     {
-        return $this->belongsToMany(Tag::class, 'doc_article_tags');
+        return $this->belongsToMany(Tag::class, 'doc_article_tags', 'article_id', 'tag_id');
     }
 
     public function attachments(): HasMany
@@ -297,6 +298,7 @@ class DocArticle extends Model
             'content' => $this->getOriginal('content'),
             'version_number' => $versionNumber,
             'created_by' => auth()->id(),
+            'created_at' => now(),
         ]);
     }
 }
