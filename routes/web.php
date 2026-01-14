@@ -55,3 +55,27 @@ Route::prefix('docs')->name('docs.')->group(function () {
     Route::get('/{id}', [App\Http\Controllers\DocumentationController::class, 'show'])->name('show');
     Route::post('/{id}/vote', [App\Http\Controllers\DocumentationController::class, 'vote'])->name('vote');
 });
+
+/*
+|--------------------------------------------------------------------------
+| Admin Documentation Routes
+|--------------------------------------------------------------------------
+|
+| Routes for admin documentation management.
+| All routes are protected by authentication middleware in the controller.
+|
+*/
+
+Route::prefix('admin/docs')->name('admin.docs.')->group(function () {
+    Route::get('/', [App\Http\Controllers\AdminDocumentationController::class, 'index'])->name('index');
+    Route::get('/create', [App\Http\Controllers\AdminDocumentationController::class, 'create'])->name('create');
+    Route::post('/', [App\Http\Controllers\AdminDocumentationController::class, 'store'])->name('store');
+    Route::get('/{id}', [App\Http\Controllers\AdminDocumentationController::class, 'show'])->name('show');
+    Route::get('/{id}/edit', [App\Http\Controllers\AdminDocumentationController::class, 'edit'])->name('edit');
+    Route::put('/{id}', [App\Http\Controllers\AdminDocumentationController::class, 'update'])->name('update');
+    Route::delete('/{id}', [App\Http\Controllers\AdminDocumentationController::class, 'destroy'])->name('destroy');
+    Route::post('/{id}/publish', [App\Http\Controllers\AdminDocumentationController::class, 'publish'])->name('publish');
+    Route::post('/{id}/unpublish', [App\Http\Controllers\AdminDocumentationController::class, 'unpublish'])->name('unpublish');
+    Route::post('/mass-destroy', [App\Http\Controllers\AdminDocumentationController::class, 'massDestroy'])->name('mass-destroy');
+    Route::get('/stats', [App\Http\Controllers\AdminDocumentationController::class, 'stats'])->name('stats');
+});
