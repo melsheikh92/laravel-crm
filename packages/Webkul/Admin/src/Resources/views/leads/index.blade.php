@@ -13,8 +13,13 @@
             <!-- Breadcrumb's -->
             <x-admin::breadcrumbs name="leads" />
 
-            <div class="text-xl font-bold dark:text-white">
-                @lang('admin::app.leads.index.title')
+            <div class="flex items-center gap-2">
+                <div class="text-xl font-bold dark:text-white">
+                    @lang('admin::app.leads.index.title')
+                </div>
+
+                <!-- Help Link -->
+                <x-help-link slug="leads-management" label="Leads Management Guide" />
             </div>
         </div>
 
