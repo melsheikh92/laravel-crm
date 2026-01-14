@@ -14,8 +14,13 @@
 
                 {!! view_render_event('admin.organizations.index.breadcrumbs.before') !!}
                 
-                <div class="text-xl font-bold dark:text-gray-300">
-                    @lang('admin::app.contacts.organizations.index.title')
+                <div class="flex items-center gap-2">
+                    <div class="text-xl font-bold dark:text-gray-300">
+                        @lang('admin::app.contacts.organizations.index.title')
+                    </div>
+
+                    <!-- Help Link -->
+                    <x-help-link slug="contacts-management" label="Contacts Management Guide" />
                 </div>
             </div>
 
