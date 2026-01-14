@@ -8,9 +8,14 @@
 
     <!-- Heading of the page -->
     <div class="mb-7 flex items-center justify-between">
-        <p class="py-3 text-xl font-bold text-gray-800 dark:text-white">
-            @lang('admin::app.settings.title')
-        </p>
+        <div class="flex items-center gap-2">
+            <p class="py-3 text-xl font-bold text-gray-800 dark:text-white">
+                @lang('admin::app.settings.title')
+            </p>
+
+            <!-- Help Link -->
+            <x-help-link slug="basic-configuration" label="Settings Configuration Guide" />
+        </div>
     </div>
 
     <!-- Page Content -->
