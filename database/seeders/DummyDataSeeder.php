@@ -103,5 +103,149 @@ class DummyDataSeeder extends Seeder
             }
         }
         $this->command->info('Seeded 30 Leads.');
+
+        // 5. Create Support Tickets
+        $customers = \Webkul\Contact\Models\Person::all();
+        $users = \Webkul\User\Models\User::all();
+
+        for ($i = 0; $i < 15; $i++) {
+            \Webkul\Support\Models\SupportTicket::create([
+                'ticket_number' => '#' . $faker->unique()->randomNumber(6),
+                'subject' => 'Issue: ' . $faker->sentence(4),
+                'description' => $faker->paragraph,
+                'status' => $faker->randomElement(['open', 'pending', 'closed', 'resolved']),
+                'priority' => $faker->randomElement(['low', 'medium', 'high', 'urgent']),
+                'customer_id' => $customers->random()->id,
+                'assigned_to' => $users->random()->id,
+                'created_at' => $faker->dateTimeBetween('-1 month', 'now'),
+            ]);
+        }
+        $this->command->info('Seeded 15 Support Tickets.');
+
+        // 6. Create Email Templates (Marketing)
+        $templates = [];
+        for ($i = 0; $i < 5; $i++) {
+            $templates[] = \Webkul\Marketing\Models\EmailTemplate::create([
+                'name' => 'Template ' . $faker->word,
+                'subject' => $faker->sentence,
+                'content' => '<p>' . $faker->paragraph . '</p>',
+                'is_active' => 1,
+                'user_id' => $users->random()->id,
+            ]);
+        }
+        $this->command->info('Seeded 5 Email Templates.');
+
+        // 7. Create Campaigns (Marketing)
+        for ($i = 0; $i < 5; $i++) {
+            \Webkul\Marketing\Models\Campaign::create([
+                'name' => 'Campaign ' . $faker->word,
+                'subject' => $faker->sentence,
+                'status' => $faker->randomElement([0, 1]), // Active/Inactive
+                'marketing_template_id' => $faker->randomElement($templates)->id,
+                'marketing_event_id' => null, // Making optional for now
+                'spooling' => false,
+            ]);
+        }
+        $this->command->info('Seeded 5 Marketing Campaigns.');
+
+        // 8. Create Activities (Collaboration)
+        $leads = \Webkul\Lead\Models\Lead::all();
+        for ($i = 0; $i < 20; $i++) {
+            $activity = \Webkul\Activity\Models\Activity::create([
+                'title' => $faker->randomElement(['Meeting with Client', 'Call', 'Lunch', 'Follow up']),
+                'type' => $faker->randomElement(['call', 'meeting', 'lunch']),
+                'location' => $faker->address,
+                'comment' => $faker->sentence,
+                'schedule_from' => $faker->dateTimeBetween('now', '+1 week'),
+                'schedule_to' => $faker->dateTimeBetween('+1 week', '+2 weeks'),
+                'is_done' => $faker->boolean,
+                'user_id' => $users->random()->id,
+            ]);
+
+            // Attach to a random lead
+            if ($leads->count() > 0) {
+                // Using DB insert for pivot to avoid potential proxy/relation issues in raw seeder
+                DB::table('lead_activities')->insert([
+                    'lead_id' => $leads->random()->id,
+                    'activity_id' => $activity->id,
+                ]);
+            }
+
+            // Attach to a random person
+            if ($customers->count() > 0) {
+                DB::table('person_activities')->insert([
+                    'person_id' => $customers->random()->id,
+                    'activity_id' => $activity->id,
+                ]);
+            }
+        }
+        $this->command->info('Seeded 20 Activities.');
+
+        // 9. Create Quotes
+        $products = \Webkul\Product\Models\Product::all();
+
+        for ($i = 0; $i < 10; $i++) {
+            $subTotal = $faker->randomFloat(2, 500, 5000);
+            $taxAmount = $subTotal * 0.1;
+            $grandTotal = $subTotal + $taxAmount;
+
+            $quote = \Webkul\Quote\Models\Quote::create([
+                'subject' => 'Quote: ' . $faker->sentence(3),
+                'description' => $faker->paragraph,
+                'billing_address' => [
+                    'address' => $faker->address,
+                    'city' => $faker->city,
+                    'state' => $faker->state,
+                    'country' => $faker->country,
+                    'zip_code' => $faker->postcode,
+                ],
+                'shipping_address' => [
+                    'address' => $faker->address,
+                    'city' => $faker->city,
+                    'state' => $faker->state,
+                    'country' => $faker->country,
+                    'zip_code' => $faker->postcode,
+                ],
+                'discount_percent' => 0,
+                'discount_amount' => 0,
+                'tax_amount' => $taxAmount,
+                'adjustment_amount' => 0,
+                'sub_total' => $subTotal,
+                'grand_total' => $grandTotal,
+                'expired_at' => $faker->dateTimeBetween('+1 week', '+1 month'),
+                'user_id' => $users->random()->id,
+                'person_id' => $customers->random()->id,
+            ]);
+
+            // Add Items to Quote
+            if ($products->count() > 0) {
+                $randomProducts = $faker->randomElements($products, $faker->numberBetween(1, 4));
+                foreach ($randomProducts as $prod) {
+                    $qty = $faker->numberBetween(1, 5);
+                    // Quote items may use different column names, checking model below if invalid
+                    $total = $prod->price * $qty;
+
+                    \Webkul\Quote\Models\QuoteItem::create([
+                        'sku' => $prod->sku,
+                        'name' => $prod->name,
+                        'quantity' => $qty,
+                        'price' => $prod->price,
+                        'tax_amount' => $total * 0.1,
+                        'total' => $total,
+                        'product_id' => $prod->id,
+                        'quote_id' => $quote->id,
+                    ]);
+                }
+            }
+
+            // Link to a random lead
+            if ($leads->count() > 0) {
+                DB::table('lead_quotes')->insert([
+                    'lead_id' => $leads->random()->id,
+                    'quote_id' => $quote->id,
+                ]);
+            }
+        }
+        $this->command->info('Seeded 10 Quotes.');
     }
 }

@@ -115,6 +115,16 @@ class SupportTicket extends Model
         return $this->belongsToMany(User::class, 'ticket_watchers', 'ticket_id', 'user_id');
     }
 
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(TicketCategory::class, 'category_id');
+    }
+
+    public function contact(): BelongsTo
+    {
+        return $this->belongsTo(Person::class, 'contact_id');
+    }
+
     /**
      * Scopes
      */

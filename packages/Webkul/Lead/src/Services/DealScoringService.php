@@ -543,8 +543,7 @@ class DealScoringService
         $cutoffDate = now()->subDays(self::ENGAGEMENT_PERIOD_DAYS);
 
         // Count activities in the period
-        $activities = $this->activityRepository->getModel()
-            ->where('lead_id', $lead->id)
+        $activities = $lead->activities()
             ->where('created_at', '>=', $cutoffDate)
             ->get();
 
@@ -554,8 +553,7 @@ class DealScoringService
             ->where('created_at', '>=', $cutoffDate)
             ->get();
 
-        $lastActivity = $this->activityRepository->getModel()
-            ->where('lead_id', $lead->id)
+        $lastActivity = $lead->activities()
             ->orderBy('created_at', 'desc')
             ->first();
 
