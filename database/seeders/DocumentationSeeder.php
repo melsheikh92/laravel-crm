@@ -21,6 +21,7 @@ class DocumentationSeeder extends Seeder
         $this->createGettingStartedArticles();
         $this->createFeatureGuidesArticles();
         $this->createApiDocumentationArticles();
+        $this->createTroubleshootingArticles();
 
         $this->command->info('Documentation seeded successfully!');
     }
@@ -4280,6 +4281,1590 @@ HTML;
 <li><a href="#contacts-management">Contacts Management</a> - Customer information</li>
 <li><a href="#sales-forecasting">Sales Forecasting</a> - Revenue by product</li>
 </ul>
+HTML;
+    }
+
+    /**
+     * Create Troubleshooting articles.
+     *
+     * @return void
+     */
+    protected function createTroubleshootingArticles()
+    {
+        $troubleshootingCategory = DB::table('doc_categories')
+            ->where('slug', 'troubleshooting')
+            ->first();
+
+        if (!$troubleshootingCategory) {
+            $this->command->error('Troubleshooting category not found!');
+            return;
+        }
+
+        $articles = [
+            [
+                'title' => 'Login Issues',
+                'slug' => 'login-issues',
+                'content' => $this->getLoginIssuesContent(),
+                'excerpt' => 'Troubleshoot common login problems including redirect loops, forgotten passwords, and authentication failures.',
+                'type' => 'troubleshooting',
+                'difficulty_level' => 'beginner',
+                'reading_time_minutes' => 5,
+                'status' => 'published',
+                'visibility' => 'public',
+                'featured' => true,
+                'sort_order' => 1,
+            ],
+            [
+                'title' => 'Database Connection Problems',
+                'slug' => 'database-connection-problems',
+                'content' => $this->getDatabaseConnectionContent(),
+                'excerpt' => 'Resolve database connectivity issues, connection timeouts, and common configuration errors.',
+                'type' => 'troubleshooting',
+                'difficulty_level' => 'intermediate',
+                'reading_time_minutes' => 8,
+                'status' => 'published',
+                'visibility' => 'public',
+                'featured' => true,
+                'sort_order' => 2,
+            ],
+            [
+                'title' => 'Performance Issues',
+                'slug' => 'performance-issues',
+                'content' => $this->getPerformanceIssuesContent(),
+                'excerpt' => 'Diagnose and fix slow page loads, high memory usage, and other performance bottlenecks.',
+                'type' => 'troubleshooting',
+                'difficulty_level' => 'intermediate',
+                'reading_time_minutes' => 10,
+                'status' => 'published',
+                'visibility' => 'public',
+                'featured' => false,
+                'sort_order' => 3,
+            ],
+            [
+                'title' => 'Email Sending Failures',
+                'slug' => 'email-sending-failures',
+                'content' => $this->getEmailSendingContent(),
+                'excerpt' => 'Fix email notification problems, SMTP configuration issues, and delivery failures.',
+                'type' => 'troubleshooting',
+                'difficulty_level' => 'intermediate',
+                'reading_time_minutes' => 7,
+                'status' => 'published',
+                'visibility' => 'public',
+                'featured' => false,
+                'sort_order' => 4,
+            ],
+            [
+                'title' => 'File Upload Errors',
+                'slug' => 'file-upload-errors',
+                'content' => $this->getFileUploadContent(),
+                'excerpt' => 'Resolve file upload problems including size limits, permission errors, and unsupported formats.',
+                'type' => 'troubleshooting',
+                'difficulty_level' => 'beginner',
+                'reading_time_minutes' => 6,
+                'status' => 'published',
+                'visibility' => 'public',
+                'featured' => false,
+                'sort_order' => 5,
+            ],
+        ];
+
+        foreach ($articles as $article) {
+            $existingArticle = DB::table('doc_articles')
+                ->where('slug', $article['slug'])
+                ->first();
+
+            if (!$existingArticle) {
+                $articleId = DB::table('doc_articles')->insertGetId(array_merge($article, [
+                    'category_id' => $troubleshootingCategory->id,
+                    'author_id' => 1,
+                    'published_at' => now(),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]));
+
+                $this->command->info("Created troubleshooting article: {$article['title']}");
+            }
+        }
+    }
+
+    /**
+     * Content for Login Issues article.
+     */
+    protected function getLoginIssuesContent()
+    {
+        return <<<HTML
+<h1>Login Issues</h1>
+
+<h2>Problem Diagnosis</h2>
+
+<p>Experiencing difficulties accessing the admin panel? This guide covers the most common login problems and their solutions.</p>
+
+<hr>
+
+<h2>Issue: 302 Redirect Loop</h2>
+
+<h3>Problem Diagnosis</h3>
+
+<p>You're experiencing a **302 redirect loop** when attempting to log in to the admin panel at <code>http://127.0.0.1:8001/admin/login</code>. The page appears to refresh continuously without allowing you to log in.</p>
+
+<h3>Root Cause</h3>
+
+<p>The most common cause is that the **database has no users** - the <code>users</code> table is completely empty. This means:</p>
+
+<ul>
+<li>Login credentials cannot be validated</li>
+<li>No user account exists to authenticate</li>
+<li>The system cannot proceed past the login page</li>
+</ul>
+
+<h3>Solution Applied</h3>
+
+<p>Run the database seeder to create the default admin user and role:</p>
+
+<pre><code class="language-bash">php artisan db:seed --class="Webkul\\Installer\\Database\\Seeders\\User\\DatabaseSeeder"</code></pre>
+
+<p>This seeder creates:</p>
+
+<ol>
+<li><strong>Administrator Role</strong> (ID: 1) with full permissions (<code>permission_type: 'all'</code>)</li>
+<li><strong>Admin User</strong> (ID: 1) with the following credentials</li>
+</ol>
+
+<h3>Default Admin Credentials</h3>
+
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Email</strong></td>
+<td><code>admin@example.com</code></td>
+</tr>
+<tr>
+<td><strong>Password</strong></td>
+<td><code>admin123</code></td>
+</tr>
+</tbody>
+</table>
+
+<h3>Verification Results</h3>
+
+<ul>
+<li>✅ User created successfully</li>
+<li>✅ User status: Active</li>
+<li>✅ Role: Administrator (Super Admin)</li>
+<li>✅ Dashboard permission: GRANTED</li>
+</ul>
+
+<h3>Next Steps</h3>
+
+<ol>
+<li>Navigate to <code>http://127.0.0.1:8001/admin/login</code></li>
+<li>Log in using the credentials above</li>
+<li><strong>IMPORTANT:</strong> Change the default password immediately after logging in for security</li>
+<li>You should now be able to access the admin dashboard without any redirect loop</li>
+</ol>
+
+<div class="callout-warning">
+<strong>Security Warning:</strong> Always change the default password after first login. Using default credentials in production is a serious security risk.
+</div>
+
+<h3>Technical Details</h3>
+
+<ul>
+<li>The 302 status code is <strong>normal</strong> for form submissions - it indicates a redirect</li>
+<li>On successful login, you'll be redirected to <code>/admin/dashboard</code></li>
+<li>The issue is not the redirect itself, but the missing user account preventing successful authentication</li>
+</ul>
+
+<hr>
+
+<h2>Issue: Forgotten Password</h2>
+
+<h3>Problem Diagnosis</h3>
+
+<p>You cannot remember your admin password and cannot log in to the system.</p>
+
+<h3>Solutions</h3>
+
+<h4>Solution 1: Use Password Reset (Recommended)</h4>
+
+<ol>
+<li>On the login page, click <strong>"Forgot Password"</strong></li>
+<li>Enter your email address</li>
+<li>Check your email for the reset link</li>
+<li>Create a new secure password</li>
+</ol>
+
+<h4>Solution 2: Reset via Artisan Command</h4>
+
+<p>If email is not configured, use this artisan command:</p>
+
+<pre><code class="language-bash">php artisan tinker</code></pre>
+
+<p>Then in the tinker console:</p>
+
+<pre><code class="language-php">\\App\\Models\\User::where('email', 'admin@example.com')->update(['password' => bcrypt('new_secure_password')]);</code></pre>
+
+<div class="callout-danger">
+<strong>Warning:</strong> Replace <code>'new_secure_password'</code> with a strong, secure password. Use a password manager to generate one.
+</div>
+
+<hr>
+
+<h2>Issue: "Session Expired" Errors</h2>
+
+<h3>Problem Diagnosis</h3>
+
+<p>You're frequently logged out or see "Session expired" messages, even when actively using the system.</p>
+
+<h3>Root Causes</h3>
+
+<ul>
+<li>Session lifetime is too short</li>
+<li>PHP session storage directory has permission issues</li>
+<li>Multiple logins from different locations</li>
+<li>Browser clearing cookies/cookies blocked</li>
+</ul>
+
+<h3>Solutions</h3>
+
+<h4>Solution 1: Increase Session Lifetime</h4>
+
+<p>Edit <code>config/session.php</code>:</p>
+
+<pre><code class="language-php">'lifetime' => env('SESSION_LIFETIME', 120), // Increase from default</code></pre>
+
+<p>Then clear the config cache:</p>
+
+<pre><code class="language-bash">php artisan config:clear</code></pre>
+
+<h4>Solution 2: Fix Session Storage Permissions</h4>
+
+<pre><code class="language-bash">sudo chmod -R 775 storage/framework/sessions
+sudo chown -R www-data:www-data storage/framework/sessions</code></pre>
+
+<h4>Solution 3: Check Browser Settings</h4>
+
+<ul>
+<li>Ensure cookies are enabled for your domain</li>
+<li>Check that the site is not in "Incognito/Private" mode with strict settings</li>
+<li>Clear browser cache and cookies, then try again</li>
+</ul>
+
+<hr>
+
+<h2>Issue: CSRF Token Mismatch</h2>
+
+<h3>Problem Diagnosis</h3>
+
+<p>You see the error: <code>"CSRF token mismatch"</code> when attempting to log in.</p>
+
+<h3>Root Causes</h3>
+
+<ul>
+<li>Browser cache has old CSRF token</li>
+<li>Session storage is not writable</li>
+<li><code>APP_URL</code> in .env is incorrect</li>
+</ul>
+
+<h3>Solutions</h3>
+
+<h4>Solution 1: Clear Application Cache</h4>
+
+<pre><code class="language-bash">php artisan cache:clear
+php artisan config:clear
+php artisan session:clear
+php artisan view:clear</code></pre>
+
+<h4>Solution 2: Verify APP_URL</h4>
+
+<p>Check your <code>.env</code> file:</p>
+
+<pre><code>APP_URL=http://127.0.0.1:8001</code></pre>
+
+<p>Ensure this matches the URL you're using to access the application.</p>
+
+<hr>
+
+<h2>Still Having Issues?</h2>
+
+<p>If none of these solutions resolve your login problem:</p>
+
+<ol>
+<li>Check the Laravel logs: <code>storage/logs/laravel.log</code></li>
+<li>Verify database connection is working</li>
+<li>Ensure all migrations have been run: <code>php artisan migrate:status</code></li>
+<li>Check that the web server is running with correct permissions</li>
+<li>Review PHP error logs for additional details</li>
+</ol>
+
+<div class="callout-info">
+<strong>Need More Help?</strong> Check the <a href="/docs/database-connection-problems">Database Connection Problems</a> guide or contact support with error logs.
+</div>
+HTML;
+    }
+
+    /**
+     * Content for Database Connection Problems article.
+     */
+    protected function getDatabaseConnectionContent()
+    {
+        return <<<HTML
+<h1>Database Connection Problems</h1>
+
+<p>Complete guide to diagnosing and resolving database connectivity issues in the CRM application.</p>
+
+<hr>
+
+<h2>Issue: "SQLSTATE[HY000] [2002] Connection Refused"</h2>
+
+<h3>Problem Diagnosis</h3>
+
+<p>The application cannot connect to the database server. This error typically indicates the database server is not running or is not accessible.</p>
+
+<h3>Root Causes</h3>
+
+<ul>
+<li>MySQL/MariaDB service is not running</li>
+<li>Incorrect host or port in configuration</li>
+<li>Firewall blocking the connection</li>
+<li>Database server not listening on the specified port</li>
+</ul>
+
+<h3>Solutions</h3>
+
+<h4>Solution 1: Start Database Service</h4>
+
+<p><strong>Ubuntu/Debian:</strong></p>
+
+<pre><code class="language-bash">sudo systemctl start mysql
+sudo systemctl status mysql</code></pre>
+
+<p><strong>CentOS/RHEL:</strong></p>
+
+<pre><code class="language-bash">sudo systemctl start mysqld
+sudo systemctl status mysqld</code></pre>
+
+<p><strong>macOS (Homebrew):</strong></p>
+
+<pre><code class="language-bash">brew services start mysql
+brew services list</code></pre>
+
+<h4>Solution 2: Verify Database Credentials</h4>
+
+<p>Check your <code>.env</code> file:</p>
+
+<pre><code>DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=your_database_name
+DB_USERNAME=your_username
+DB_PASSWORD=your_password</code></pre>
+
+<p>Test the connection manually:</p>
+
+<pre><code class="language-bash">mysql -h 127.0.0.1 -P 3306 -u your_username -p</code></pre>
+
+<h4>Solution 3: Check Firewall Settings</h4>
+
+<pre><code class="language-bash">sudo ufw status
+sudo ufw allow 3306/tcp  # If needed</code></pre>
+
+<hr>
+
+<h2>Issue: "Access Denied for User"</h2>
+
+<h3>Problem Diagnosis</h3>
+
+<p>Error: <code>SQLSTATE[HY000] [1698] Access denied for user 'username'@'host'</code></p>
+
+<h3>Root Causes</h3>
+
+<ul>
+<li>Incorrect username or password</li>
+<li>User does not have permission to access the database</li>
+<li>User account is not allowed to connect from the current host</li>
+</ul>
+
+<h3>Solutions</h3>
+
+<h4>Solution 1: Verify User Permissions</h4>
+
+<p>Log in to MySQL as root:</p>
+
+<pre><code class="language-bash">mysql -u root -p</code></pre>
+
+<p>Check user permissions:</p>
+
+<pre><code class="language-sql">SELECT user, host FROM mysql.user;
+SHOW GRANTS FOR 'your_username'@'localhost';</code></pre>
+
+<h4>Solution 2: Grant Necessary Permissions</h4>
+
+<pre><code class="language-sql">GRANT ALL PRIVILEGES ON your_database_name.* TO 'your_username'@'localhost';
+FLUSH PRIVILEGES;</code></pre>
+
+<h4>Solution 3: Create New Database User</h4>
+
+<pre><code class="language-sql">CREATE USER 'crm_user'@'localhost' IDENTIFIED BY 'secure_password';
+GRANT ALL PRIVILEGES ON crm_database.* TO 'crm_user'@'localhost';
+FLUSH PRIVILEGES;</code></pre>
+
+<div class="callout-warning">
+<strong>Security:</strong> Use a strong password. Avoid using root credentials in your application.
+</div>
+
+<hr>
+
+<h2>Issue: "Unknown Database"</h2>
+
+<h3>Problem Diagnosis</h3>
+
+<p>Error: <code>SQLSTATE[HY000] [1049] Unknown database 'database_name'</code></p>
+
+<h3>Solution</h3>
+
+<h4>Create the Database</h4>
+
+<pre><code class="language-bash">mysql -u root -p</code></pre>
+
+<pre><code class="language-sql">CREATE DATABASE your_database_name CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;</code></pre>
+
+<p>Then run migrations:</p>
+
+<pre><code class="language-bash">php artisan migrate</code></pre>
+
+<hr>
+
+<h2>Issue: "MySQL Server Has Gone Away"</h2>
+
+<h3>Problem Diagnosis</h3>
+
+<p>The connection to the database server was lost during a long-running operation.</p>
+
+<h3>Root Causes</h3>
+
+<ul>
+<li>Database connection timed out</li>
+<li>MySQL <code>wait_timeout</code> is too low</li>
+<li>Network issues interrupting the connection</li>
+<li>Long-running query exceeding timeout limits</li>
+</ul>
+
+<h3>Solutions</h3>
+
+<h4>Solution 1: Increase MySQL Timeout</h4>
+
+<p>Edit MySQL configuration (<code>my.cnf</code> or <code>my.ini</code>):</p>
+
+<pre><code>[mysqld]
+wait_timeout = 28800
+interactive_timeout = 28800
+max_allowed_packet = 256M</code></pre>
+
+<p>Restart MySQL:</p>
+
+<pre><code class="language-bash">sudo systemctl restart mysql</code></pre>
+
+<h4>Solution 2: Configure Laravel Reconnect</h4>
+
+<p>In <code>config/database.php</code>, under the MySQL connection:</p>
+
+<pre><code class="language-php">'mysql' => [
+    // ...
+    'options' => [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_PERSISTENT => false,
+        PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8mb4',
+    ],
+],</code></pre>
+
+<h4>Solution 3: Use Queue for Long Operations</h4>
+
+<p>For long-running database operations, use Laravel queues:</p>
+
+<pre><code class="language-bash">php artisan queue:work --tries=3 --timeout=300</code></pre>
+
+<hr>
+
+<h2>Issue: Too Many Connections</h2>
+
+<h3>Problem Diagnosis</h3>
+
+<p>Error: <code>SQLSTATE[HY000] [1040] Too many connections</code></p>
+
+<h3>Root Causes</h3>
+
+<ul>
+<li>MySQL <code>max_connections</code> limit reached</li>
+<li>Connection leaks (not properly closing connections)</li>
+<li>High traffic overwhelming connection pool</li>
+</ul>
+
+<h3>Solutions</h3>
+
+<h4>Solution 1: Increase Connection Limit</h4>
+
+<p>In MySQL configuration:</p>
+
+<pre><code>[mysqld]
+max_connections = 500</code></pre>
+
+<h4>Solution 2: Enable Connection Pooling</h4>
+
+<p>In <code>config/database.php</code>:</p>
+
+<pre><code class="language-php">'mysql' => [
+    'driver' => 'mysql',
+    'pool' => [
+        'max_connections' => 50,
+        'max_wait_time' => 30,
+    ],
+],</code></pre>
+
+<h4>Solution 3: Check for Connection Leaks</h4>
+
+<p>Ensure your code is not creating unnecessary connections in loops:</p>
+
+<pre><code class="language-php">// ❌ BAD - Creates new connection each iteration
+foreach (\$items as \$item) {
+    DB::connection()->select(...);
+}
+
+// ✅ GOOD - Reuses connection
+foreach (\$items as \$item) {
+    DB::select(...);
+}</code></pre>
+
+<hr>
+
+<h2>Prevention Tips</h2>
+
+<h3>1. Use Environment Variables</h3>
+
+<p>Always use <code>.env</code> file for database credentials. Never hardcode them.</p>
+
+<h3>2. Enable Query Logging (Development Only)</h3>
+
+<pre><code class="language-bash">DB::enableQueryLog();
+// Run your queries
+dd(DB::getQueryLog());</code></pre>
+
+<h3>3. Monitor Database Health</h3>
+
+<pre><code class="language-bash">mysqladmin -u root -p processlist
+mysqladmin -u root -p status</code></pre>
+
+<h3>4. Regular Backups</h3>
+
+<pre><code class="language-bash">mysqldump -u root -p database_name > backup.sql</code></pre>
+
+<hr>
+
+<h2>Still Having Issues?</h2>
+
+<div class="callout-danger">
+<strong>Critical:</strong> Before making changes to database configuration, always backup your data first!
+</div>
+
+<ol>
+<li>Check Laravel logs: <code>storage/logs/laravel.log</code></li>
+<li>Check MySQL error logs: <code>/var/log/mysql/error.log</code></li>
+<li>Verify your .env configuration is correct</li>
+<li>Test database connection from command line</li>
+<li>Ensure all required PHP extensions are installed: <code>php-mysql</code>, <code>php-mysqli</code>, <code>php-pdo</code></li>
+</ol>
+
+<div class="callout-info">
+<strong>Need More Help?</strong> Consult the official <a href="https://laravel.com/docs/database" target="_blank">Laravel Database Documentation</a> or contact support.
+</div>
+HTML;
+    }
+
+    /**
+     * Content for Performance Issues article.
+     */
+    protected function getPerformanceIssuesContent()
+    {
+        return <<<HTML
+<h1>Performance Issues</h1>
+
+<p>Diagnose and resolve common performance bottlenecks in your CRM application.</p>
+
+<hr>
+
+<h2>Issue: Slow Page Load Times</h2>
+
+<h3>Problem Diagnosis</h3>
+
+<p>Pages take more than 3-5 seconds to load, causing poor user experience.</p>
+
+<h3>Root Causes</h3>
+
+<ul>
+<li>Unoptimized database queries (N+1 problem)</li>
+<li>Lack of caching</li>
+<li>Large asset files (images, CSS, JS)</li>
+<li>Server resource limitations</li>
+<li>Missing database indexes</li>
+</ul>
+
+<h3>Solutions</h3>
+
+<h4>Solution 1: Enable Query Optimization</h4>
+
+<p><strong>Identify N+1 Queries:</strong></p>
+
+<p>Install Laravel Debugbar in development:</p>
+
+<pre><code class="language-bash">composer require barryvdh/laravel-debugbar --dev</code></pre>
+
+<p>Look for queries being executed in loops. Use eager loading:</p>
+
+<pre><code class="language-php">// ❌ BAD - N+1 Query Problem
+\$leads = Lead::all();
+foreach (\$leads as \$lead) {
+    echo \$lead->contact->name; // Separate query for each lead
+}
+
+// ✅ GOOD - Eager Loading
+\$leads = Lead::with('contact')->get();
+foreach (\$leads as \$lead) {
+    echo \$lead->contact->name; // No additional queries
+}</code></pre>
+
+<h4>Solution 2: Add Database Indexes</h4>
+
+<p>Create a migration for indexes:</p>
+
+<pre><code class="language-bash">php artisan make:migration add_performance_indexes</code></pre>
+
+<pre><code class="language-php">public function up()
+{
+    Schema::table('leads', function (Blueprint \$table) {
+        \$table->index('status');
+        \$table->index('created_at');
+        \$table->index(['user_id', 'status']);
+    });
+}</code></pre>
+
+<h4>Solution 3: Enable Caching</h4>
+
+<p><strong>Configure Cache Driver:</strong> In <code>.env</code>:</p>
+
+<pre><code>CACHE_DRIVER=redis
+SESSION_DRIVER=redis
+QUEUE_CONNECTION=redis</code></pre>
+
+<p><strong>Cache Frequently Accessed Data:</strong></p>
+
+<pre><code class="language-php">// Cache for 1 hour
+\$leads = Cache::remember('leads.active', 3600, function () {
+    return Lead::where('status', 'active')->get();
+});</code></pre>
+
+<h4>Solution 4: Optimize Assets</h4>
+
+<p>Minify and combine assets:</p>
+
+<pre><code class="language-bash">npm run build
+# or
+php artisan optimize:clear</code></pre>
+
+<p>Enable compression in <code>public/.htaccess</code>:</p>
+
+<pre><code><IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css
+    AddOutputFilterByType DEFLATE application/javascript
+</IfModule></code></pre>
+
+<hr>
+
+<h2>Issue: High Memory Usage</h2>
+
+<h3>Problem Diagnosis</h3>
+
+<p>The application consumes excessive memory, leading to slowdowns or crashes.</p>
+
+<h3>Root Causes</h3>
+
+<ul>
+<li>Loading large datasets into memory</li>
+<li>Memory leaks in long-running processes</li>
+<li>Inefficient data processing</li>
+<li>Unoptimized image handling</li>
+</ul>
+
+<h3>Solutions</h3>
+
+<h4>Solution 1: Use Chunking for Large Datasets</h4>
+
+<pre><code class="language-php">// ❌ BAD - Loads all records at once
+\$users = User::all();
+foreach (\$users as \$user) {
+    // Process user
+}
+
+// ✅ GOOD - Processes in chunks
+User::chunk(100, function (\$users) {
+    foreach (\$users as \$user) {
+        // Process user
+    }
+});</code></pre>
+
+<h4>Solution 2: Use Lazy Collections</h4>
+
+<pre><code class="language-php">\$users = User::cursor(); // Uses generator
+foreach (\$users as \$user) {
+    // Process user
+}</code></pre>
+
+<h4>Solution 3: Optimize Image Handling</h4>
+
+<p>Use image optimization:</p>
+
+<pre><code class="language-bash">composer require intervention/image</code></pre>
+
+<pre><code class="language-php">// Resize and compress
+\$image = Image::make(\$file)->resize(800, null, function (\$constraint) {
+    \$constraint->aspectRatio();
+    \$constraint->upsize();
+})->encode('jpg', 80);</code></pre>
+
+<hr>
+
+<h2>Issue: Slow API Responses</h2>
+
+<h3>Problem Diagnosis</h3>
+
+<p>API endpoints take too long to respond, affecting client applications.</p>
+
+<h3>Solutions</h3>
+
+<h4>Solution 1: Implement API Response Caching</h4>
+
+<pre><code class="language-php">// Cache API responses
+public function index()
+{
+    return Cache::remember('api.leads', 300, function () {
+        return LeadResource::collection(Lead::all());
+    });
+}</code></pre>
+
+<h4>Solution 2: Use Pagination</h4>
+
+<pre><code class="language-php">public function index()
+{
+    return LeadResource::collection(
+        Lead::paginate(50) // Returns 50 items per page
+    );
+}</code></pre>
+
+<h4>Solution 3: Implement Rate Limiting</h4>
+
+<p>In <code>routes/api.php</code>:</p>
+
+<pre><code class="language-php">Route::middleware('throttle:60,1')->group(function () {
+    Route::apiResource('leads', LeadController::class);
+});</code></pre>
+
+<hr>
+
+<h2>Issue: Database Query Slowdowns</h2>
+
+<h3>Problem Diagnosis</h3>
+
+<p>Database queries are taking too long to execute.</p>
+
+<h3>Solutions</h3>
+
+<h4>Solution 1: Use Query Logging to Identify Slow Queries</h4>
+
+<pre><code class="language-bash">php artisan tinker</code></pre>
+
+<pre><code class="language-php">DB::enableQueryLog();
+Lead::where('status', 'active')->get();
+dd(DB::getQueryLog());</code></pre>
+
+<h4>Solution 2: Optimize SELECT Statements</h4>
+
+<pre><code class="language-php">// ❌ BAD - Selects all columns
+\$lead = Lead::find(\$id);
+
+// ✅ GOOD - Selects only needed columns
+\$lead = Lead::select('id', 'name', 'email')->find(\$id);</code></pre>
+
+<h4>Solution 3: Use Database Query Cache</h4>
+
+<pre><code class="language-php">// Cache query results for 10 minutes
+\$leads = DB::table('leads')
+    ->where('status', 'active')
+    ->remember(600)
+    ->get();</code></pre>
+
+<hr>
+
+<h2>Prevention Tips</h2>
+
+<h3>1. Enable OPcache</h3>
+
+<p>In <code>php.ini</code>:</p>
+
+<pre><code>opcache.enable=1
+opcache.memory_consumption=256
+opcache.max_accelerated_files=10000</code></pre>
+
+<h3>2. Use Queue for Heavy Operations</h3>
+
+<pre><code class="language-php">dispatch(new SendEmailsJob(\$leads));</code></pre>
+
+<h3>3. Monitor Performance</h3>
+
+<p>Use Laravel Telescope in development:</p>
+
+<pre><code class="language-bash">composer require laravel/telescope --dev
+php artisan telescope:install
+php artisan telescope:publish</code></pre>
+
+<h3>4. Regular Database Maintenance</h3>
+
+<pre><code class="language-bash">mysql -u root -p -e "OPTIMIZE TABLE your_table_name;"
+mysql -u root -p -e "ANALYZE TABLE your_table_name;"</code></pre>
+
+<hr>
+
+<h2>Performance Checklist</h2>
+
+<ul>
+<li>✅ All Eloquent relationships use eager loading</li>
+<li>✅ Frequently queried columns are indexed</li>
+<li>✅ Caching is enabled for expensive operations</li>
+<li>✅ Assets are minified and compressed</li>
+<li>✅ Images are optimized</li>
+<li>✅ Database queries use select() to limit columns</li>
+<li>✅ Large datasets use chunking or cursors</li>
+<li>✅ Queue workers are running for background jobs</li>
+<li>✅ OPcache is enabled</li>
+<li>✅ Regular performance monitoring in place</li>
+</ul>
+
+<div class="callout-success">
+<strong>Best Practice:</strong> Set up application performance monitoring (APM) tools like New Relic or Datadog for production environments.
+</div>
+
+<div class="callout-info">
+<strong>Need More Help?</strong> Check the <a href="https://laravel.com/docs/performance" target="_blank">Laravel Performance Documentation</a> for comprehensive optimization guides.
+</div>
+HTML;
+    }
+
+    /**
+     * Content for Email Sending Failures article.
+     */
+    protected function getEmailSendingContent()
+    {
+        return <<<HTML
+<h1>Email Sending Failures</h1>
+
+<p>Complete troubleshooting guide for email notification problems and SMTP configuration issues.</p>
+
+<hr>
+
+<h2>Issue: Emails Not Sending</h2>
+
+<h3>Problem Diagnosis</h3>
+
+<p>Email notifications are not being delivered to users. No error messages may be visible.</p>
+
+<h3>Root Causes</h3>
+
+<ul>
+<li>SMTP configuration is incorrect</li>
+<li>Mail credentials are wrong</li>
+<li>Mail server is blocking connections</li>
+<li>Queue workers are not running</li>
+<li>SSL/TLS certificate issues</li>
+</ul>
+
+<h3>Solutions</h3>
+
+<h4>Solution 1: Verify SMTP Configuration</h4>
+
+<p>Check your <code>.env</code> file:</p>
+
+<pre><code>MAIL_MAILER=smtp
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USERNAME=your-email@gmail.com
+MAIL_PASSWORD=your-app-password
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS=your-email@gmail.com
+MAIL_FROM_NAME="\${APP_NAME}"</code></pre>
+
+<div class="callout-warning">
+<strong>Important:</strong> For Gmail, use an <a href="https://support.google.com/accounts/answer/185833" target="_blank">App Password</a> instead of your regular password.
+</div>
+
+<h4>Solution 2: Test SMTP Connection</h4>
+
+<p>Use a command-line test:</p>
+
+<pre><code class="language-bash">telnet smtp.gmail.com 587</code></pre>
+
+<p>Or use an online tool like <a href="https://www.smtp-diagnostics.com/" target="_blank">SMTP Diagnostics</a>.</p>
+
+<h4>Solution 3: Clear Configuration Cache</h4>
+
+<pre><code class="language-bash">php artisan config:clear
+php artisan cache:clear</code></pre>
+
+<hr>
+
+<h2>Issue: "Connection Timed Out"</h2>
+
+<h3>Problem Diagnosis</h3>
+
+<p>Error: <code>Swift_TransportException: Connection to smtp.server.com:587 timed out</code></p>
+
+<h3>Root Causes</h3>
+
+<ul>
+<li>Firewall blocking outbound SMTP connections</li>
+<li>Wrong SMTP port</li>
+<li>Server network restrictions</li>
+<li>ISP blocking SMTP ports</li>
+</ul>
+
+<h3>Solutions</h3>
+
+<h4>Solution 1: Check Firewall Rules</h4>
+
+<pre><code class="language-bash">sudo ufw status
+sudo ufw allow 587/tcp
+sudo ufw allow 465/tcp</code></pre>
+
+<h4>Solution 2: Try Alternative Ports</h4>
+
+<ul>
+<li><strong>Port 587:</strong> Submission with TLS</li>
+<li><strong>Port 465:</strong> SMTPS (SMTP over SSL)</li>
+<li><strong>Port 2525:</strong> Alternative (often used by hosting providers)</li>
+</ul>
+
+<h4>Solution 3: Use Encryption from Start</h4>
+
+<p>In <code>config/mail.php</code>:</p>
+
+<pre><code class="language-php">'smtp' => [
+    'transport' => 'smtp',
+    'host' => env('MAIL_HOST', 'smtp.mailgun.org'),
+    'port' => env('MAIL_PORT', 587),
+    'encryption' => env('MAIL_ENCRYPTION', 'tls'),
+    'username' => env('MAIL_USERNAME'),
+    'password' => env('MAIL_PASSWORD'),
+    'timeout' => null,
+    'auth_mode' => null,
+],</code></pre>
+
+<hr>
+
+<h2>Issue: "Authentication Failed"</h2>
+
+<h3>Problem Diagnosis</h3>
+
+<p>Error: <code>Failed to authenticate on SMTP server</code></p>
+
+<h3>Root Causes</h3>
+
+<ul>
+<li>Incorrect username or password</li>
+<li>Two-factor authentication enabled (need App Password)</li>
+<li>Account requires "Less Secure Apps" to be enabled</li>
+<li>Username format is incorrect</li>
+</ul>
+
+<h3>Solutions</h3>
+
+<h4>Solution 1: Use App Password (Gmail)</h4>
+
+<ol>
+<li>Go to Google Account settings</li>
+<li>Enable 2-Step Verification if not already enabled</li>
+<li>Go to Security > App Passwords</li>
+<li>Generate a new App Password for "Mail"</li>
+<li>Use this 16-character password in your <code>.env</code></li>
+</ol>
+
+<h4>Solution 2: Verify Username Format</h4>
+
+<p>Most providers require the full email address as the username:</p>
+
+<pre><code>MAIL_USERNAME=youremail@domain.com
+# NOT: MAIL_USERNAME=youremail</code></pre>
+
+<h4>Solution 3: Test Credentials Manually</h4>
+
+<p>Use Telnet to test authentication:</p>
+
+<pre><code class="language-bash">telnet smtp.gmail.com 587
+EHLO localhost
+STARTTLS
+AUTH PLAIN BASE64(username\0username\0password)</code></pre>
+
+<hr>
+
+<h2>Issue: Queue Emails Not Sending</h2>
+
+<h3>Problem Diagnosis</h3>
+
+<p>Queued emails are stacking up but not being sent.</p>
+
+<h3>Root Causes</h3>
+
+<ul>
+<li>Queue worker is not running</li>
+<li>Queue jobs are failing silently</li>
+<li>Redis/Database connection issues</li>
+</ul>
+
+<h3>Solutions</h3>
+
+<h4>Solution 1: Start Queue Worker</h4>
+
+<pre><code class="language-bash">php artisan queue:work --tries=3 --timeout=300</code></pre>
+
+<p>For production, use Supervisor to keep workers running:</p>
+
+<pre><code class="language-bash">sudo apt install supervisor</code></pre>
+
+<p>Create <code>/etc/supervisor/conf.d/laravel-worker.conf</code>:</p>
+
+<pre><code>[program:laravel-worker]
+process_name=%(program_name)s_%(process_num)02d
+command=php /var/www/html/artisan queue:work --sleep=3 --tries=3 --max-time=3600
+autostart=true
+autorestart=true
+user=www-data
+numprocs=2
+redirect_stderr=true
+stdout_logfile=/var/www/html/storage/logs/worker.log</code></pre>
+
+<h4>Solution 2: Check Queue Status</h4>
+
+<pre><code class="language-bash">php artisan queue:failed</code></pre>
+
+<p>Retry failed jobs:</p>
+
+<pre><code class="language-bash">php artisan queue:retry all</code></pre>
+
+<h4>Solution 3: Monitor Queue in Real-Time</h4>
+
+<pre><code class="language-bash">php artisan queue:work --verbose</code></pre>
+
+<hr>
+
+<h2>Issue: SSL Certificate Errors</h2>
+
+<h3>Problem Diagnosis</h3>
+
+<p>Error: <code>SSL certificate problem: unable to get local issuer certificate</code></p>
+
+<h3>Solutions</h3>
+
+<h4>Solution 1: Update CA Certificate Bundle</h4>
+
+<p><strong>Ubuntu/Debian:</strong></p>
+
+<pre><code class="language-bash">sudo apt update
+sudo apt install ca-certificates</code></pre>
+
+<p><strong>macOS (Homebrew):</strong></p>
+
+<pre><code class="language-bash">brew install ca-certificates</code></pre>
+
+<h4>Solution 2: Disable SSL Verification (Not Recommended for Production)</h4>
+
+<p>In <code>config/mail.php</code>:</p>
+
+<pre><code class="language-php">'stream' => [
+    'ssl' => [
+        'allow_self_signed' => true,
+        'verify_peer' => false,
+        'verify_peer_name' => false,
+    ],
+],</code></pre>
+
+<div class="callout-danger">
+<strong>Warning:</strong> Disabling SSL verification is a security risk. Only use for testing!
+</div>
+
+<hr>
+
+<h2>Common Mail Service Settings</h2>
+
+<h3>Gmail</h3>
+
+<pre><code>MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_ENCRYPTION=tls</code></pre>
+
+<h3>Office 365 / Outlook</h3>
+
+<pre><code>MAIL_HOST=smtp.office365.com
+MAIL_PORT=587
+MAIL_ENCRYPTION=tls</code></pre>
+
+<h3>SendGrid</h3>
+
+<pre><code>MAIL_HOST=smtp.sendgrid.net
+MAIL_PORT=587
+MAIL_ENCRYPTION=tls
+MAIL_USERNAME=apikey
+MAIL_PASSWORD=YOUR_SENDGRID_API_KEY</code></pre>
+
+<h3>Mailgun</h3>
+
+<pre><code>MAIL_HOST=smtp.mailgun.org
+MAIL_PORT=587
+MAIL_ENCRYPTION=tls
+MAIL_USERNAME=YOUR_MAILGUN_USERNAME
+MAIL_PASSWORD=YOUR_MAILGUN_PASSWORD</code></pre>
+
+<h3>Amazon SES</h3>
+
+<pre><code>MAIL_HOST=email-smtp.us-east-1.amazonaws.com
+MAIL_PORT=587
+MAIL_ENCRYPTION=tls
+MAIL_USERNAME=YOUR_SES_SMTP_USERNAME
+MAIL_PASSWORD=YOUR_SES_SMTP_PASSWORD</code></pre>
+
+<hr>
+
+<h2>Testing Email Configuration</h2>
+
+<h3>Test with Tinker</h3>
+
+<pre><code class="language-bash">php artisan tinker</code></pre>
+
+<pre><code class="language-php">Mail::raw('Test email', function (\$message) {
+    \$message->to('test@example.com')->subject('Test');
+});</code></pre>
+
+<h3>Create Test Route</h3>
+
+<p>In <code>routes/web.php</code>:</p>
+
+<pre><code class="language-php">Route::get('/test-email', function () {
+    Mail::raw('Test email body', function (\$message) {
+        \$message->to('your-email@example.com')
+                ->subject('Test Email');
+    });
+    return 'Email sent!';
+});</code></pre>
+
+<hr>
+
+<h2>Prevention Tips</h2>
+
+<ul>
+<li>✅ Use queue workers for sending emails</li>
+<li>✅ Monitor failed queue jobs regularly</li>
+<li>✅ Use environment-specific mail settings</li>
+<li>✅ Implement email logging for debugging</li>
+<li>✅ Test email configuration after deployment</li>
+<li>✅ Use reputable email service providers for better deliverability</li>
+</ul>
+
+<div class="callout-info">
+<strong>Need More Help?</strong> Check the <a href="https://laravel.com/docs/mail" target="_blank">Laravel Mail Documentation</a> or consult your email provider's support documentation.
+</div>
+HTML;
+    }
+
+    /**
+     * Content for File Upload Errors article.
+     */
+    protected function getFileUploadContent()
+    {
+        return <<<HTML
+<h1>File Upload Errors</h1>
+
+<p>Complete guide to resolving file upload problems including size limits, permission errors, and format issues.</p>
+
+<hr>
+
+<h2>Issue: "File Too Large" Error</h2>
+
+<h3>Problem Diagnosis</h3>
+
+<p>Error: <code>The file exceeds the maximum upload size</code> or <code>POST content length exceeds maximum</code></p>
+
+<h3>Root Causes</h3>
+
+<ul>
+<li>PHP <code>upload_max_filesize</code> is too small</li>
+<li>PHP <code>post_max_size</code> is too small</li>
+<li>Nginx <code>client_max_body_size</code> limit</li>
+<li>Application validation rules</li>
+</ul>
+
+<h3>Solutions</h3>
+
+<h4>Solution 1: Increase PHP Upload Limits</h4>
+
+<p>Edit <code>php.ini</code>:</p>
+
+<pre><code>upload_max_filesize = 100M
+post_max_size = 100M
+memory_limit = 256M
+max_execution_time = 300</code></pre>
+
+<p>Find your <code>php.ini</code> location:</p>
+
+<pre><code class="language-bash">php --ini</code></pre>
+
+<p>Restart PHP-FPM after changes:</p>
+
+<pre><code class="language-bash">sudo systemctl restart php8.2-fpm</code></pre>
+
+<h4>Solution 2: Configure Nginx Limits</h4>
+
+<p>Edit Nginx configuration:</p>
+
+<pre><code>server {
+    client_max_body_size 100M;
+    client_body_timeout 300s;
+}</code></pre>
+
+<p>Restart Nginx:</p>
+
+<pre><code class="language-bash">sudo systemctl restart nginx</code></pre>
+
+<h4>Solution 3: Update Laravel Validation</h4>
+
+<pre><code class="language-php">'file' => 'required|file|max:102400', // 100MB in kilobytes</code></pre>
+
+<hr>
+
+<h2>Issue: "Permission Denied" When Uploading</h2>
+
+<h3>Problem Diagnosis</h3>
+
+<p>Error: <code>failed to open stream: Permission denied</code></p>
+
+<h3>Root Causes</h3>
+
+<ul>
+<li>Storage directory is not writable</li>
+<li>Wrong ownership on storage directories</li>
+<li>SELinux is blocking write access</li>
+<li>Cloud storage configuration issues</li>
+</ul>
+
+<h3>Solutions</h3>
+
+<h4>Solution 1: Fix Storage Permissions</h4>
+
+<pre><code class="language-bash">sudo chmod -R 775 storage
+sudo chmod -R 775 bootstrap/cache</code></pre>
+
+<h4>Solution 2: Set Correct Ownership</h4>
+
+<pre><code class="language-bash">sudo chown -R www-data:www-data storage
+sudo chown -R www-data:www-data bootstrap/cache</code></pre>
+
+<h4>Solution 3: Check SELinux (RHEL/CentOS)</h4>
+
+<pre><code class="language-bash">sudo chcon -R -t httpd_sys_rw_content_t storage
+sudo setsebool -P httpd_unified 1</code></pre>
+
+<h4>Solution 4: Create Symbolic Link</h4>
+
+<pre><code class="language-bash">php artisan storage:link</code></pre>
+
+<hr>
+
+<h2>Issue: "Invalid File Type" Error</h2>
+
+<h3>Problem Diagnosis</h3>
+
+<p>Error: <code>The file must be a file of type: jpg, png, pdf</code></p>
+
+<h3>Solutions</h3>
+
+<h4>Solution 1: Update Validation Rules</h4>
+
+<pre><code class="language-php">// Allow multiple file types
+'file' => 'required|mimes:jpg,jpeg,png,gif,pdf,doc,docx'
+
+// Allow any file type (use with caution)
+'file' => 'required|file'</code></pre>
+
+<h4>Solution 2: Check MIME Types</h4>
+
+<p>Common MIME types:</p>
+
+<table>
+<thead>
+<tr>
+<th>Extension</th>
+<th>MIME Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>.jpg / .jpeg</td>
+<td>image/jpeg</td>
+</tr>
+<tr>
+<td>.png</td>
+<td>image/png</td>
+</tr>
+<tr>
+<td>.gif</td>
+<td>image/gif</td>
+</tr>
+<tr>
+<td>.pdf</td>
+<td>application/pdf</td>
+</tr>
+<tr>
+<td>.doc</td>
+<td>application/msword</td>
+</tr>
+<tr>
+<td>.docx</td>
+<td>application/vnd.openxmlformats-officedocument.wordprocessingml.document</td>
+</tr>
+<tr>
+<td>.xls</td>
+<td>application/vnd.ms-excel</td>
+</tr>
+<tr>
+<td>.xlsx</td>
+<td>application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</td>
+</tr>
+</tbody>
+</table>
+
+<h4>Solution 3: Use MIME Type Validation</h4>
+
+<pre><code class="language-php">'file' => 'required|mimetypes:image/jpeg,image/png,application/pdf'</code></pre>
+
+<hr>
+
+<h2>Issue: File Not Saving to Database</h2>
+
+<h3>Problem Diagnosis</h3>
+
+<p>File uploads successfully but no record is created in the database.</p>
+
+<h3>Solutions</h3>
+
+<h4>Solution 1: Check Database Connection</h4>
+
+<pre><code class="language-bash">php artisan db:show
+php artisan migrate:status</code></pre>
+
+<h4>Solution 2: Verify Mass Assignment</h4>
+
+<p>In your model:</p>
+
+<pre><code class="language-php">protected \$fillable = ['filename', 'filepath', 'filesize', 'mime_type'];</code></pre>
+
+<h4>Solution 3: Check Form Submission</h4>
+
+<p>Ensure form has <code>enctype="multipart/form-data"</code>:</p>
+
+<pre><code class="language-html"><form method="POST" enctype="multipart/form-data">
+    @csrf
+    <input type="file" name="file">
+    <button type="submit">Upload</button>
+</form></code></pre>
+
+<hr>
+
+<h2>Issue: Image Upload Problems</h2>
+
+<h3>Problem Diagnosis</h3>
+
+<p>Images fail to upload or display correctly after upload.</p>
+
+<h3>Solutions</h3>
+
+<h4>Solution 1: Verify Image Library</h4>
+
+<pre><code class="language-bash">php -m | grep gd
+php -m | grep imagick</code></pre>
+
+<p>Install GD if missing:</p>
+
+<pre><code class="language-bash">sudo apt install php-gd
+sudo systemctl restart php8.2-fpm</code></pre>
+
+<h4>Solution 2: Resize Large Images</h4>
+
+<pre><code class="language-bash">composer require intervention/image</code></pre>
+
+<pre><code class="language-php">use Intervention\\Image\\ImageManager;
+
+public function upload(Request \$request)
+{
+    \$image = \$request->file('image');
+    \$filename = time() . '.' . \$image->getClientOriginalExtension();
+
+    Image::make(\$image)
+        ->resize(1920, null, function (\$constraint) {
+            \$constraint->aspectRatio();
+            \$constraint->upsize();
+        })
+        ->save(storage_path('app/public/' . \$filename));
+
+    return response()->json(['path' => \$filename]);
+}</code></pre>
+
+<h4>Solution 3: Convert to Consistent Format</h4>
+
+<pre><code class="language-php">Image::make(\$image)->encode('jpg', 80)->save(\$path);</code></pre>
+
+<hr>
+
+<h2>Issue: Cloud Storage Upload Failures</h2>
+
+<h3>Problem Diagnosis</h3>
+
+<p>Files fail to upload to S3, Azure, or other cloud storage.</p>
+
+<h3>Solutions</h3>
+
+<h4>Solution 1: Verify Environment Variables</h4>
+
+<p>For AWS S3:</p>
+
+<pre><code>FILESYSTEM_DISK=s3
+AWS_ACCESS_KEY_ID=your_key
+AWS_SECRET_ACCESS_KEY=your_secret
+AWS_DEFAULT_REGION=us-east-1
+AWS_BUCKET=your-bucket
+AWS_URL=https://your-bucket.s3.amazonaws.com</code></pre>
+
+<h4>Solution 2: Check Bucket Permissions</h4>
+
+<ul>
+<li>Ensure bucket policy allows writes</li>
+<li>Verify IAM user has S3 write permissions</li>
+<li>Check CORS configuration if uploading from browser</li>
+</ul>
+
+<h4>Solution 3: Test Connection</h4>
+
+<pre><code class="language-bash">php artisan tinker</code></pre>
+
+<pre><code class="language-php">Storage::disk('s3')->put('test.txt', 'Hello World');</code></pre>
+
+<hr>
+
+<h2>Best Practices</h2>
+
+<h3>1. Validate Files Properly</h3>
+
+<pre><code class="language-php">\$request->validate([
+    'file' => 'required|file|max:10240|mimes:jpg,jpeg,png,pdf'
+]);</code></pre>
+
+<h3>2. Generate Unique Filenames</h3>
+
+<pre><code class="language-php">\$filename = uniqid() . '_' . \$file->getClientOriginalName();
+// or
+\$filename = Str::uuid() . '.' . \$file->getClientOriginalExtension();</code></pre>
+
+<h3>3. Store Metadata</h3>
+
+<pre><code class="language-php">\$upload = Upload::create([
+    'filename' => \$filename,
+    'original_name' => \$file->getClientOriginalName(),
+    'mime_type' => \$file->getMimeType(),
+    'size' => \$file->getSize(),
+    'path' => \$path,
+]);</code></pre>
+
+<h3>4. Use Storage Facade</h3>
+
+<pre><code class="language-php">// ✅ GOOD - Works with any disk
+Storage::put('uploads/file.txt', \$content);
+
+// ❌ BAD - Tightly coupled to local disk
+file_put_contents(storage_path('app/uploads/file.txt'), \$content);</code></pre>
+
+<h3>5. Implement Virus Scanning</h3>
+
+<pre><code class="language-bash">composer require gramilabs/php-clamav</code></pre>
+
+<hr>
+
+<h2>Common File Size Reference</h2>
+
+<table>
+<thead>
+<tr>
+<th>Size</th>
+<th>Bytes</th>
+<th>Kilobytes</th>
+<th>Megabytes</th>
+<th>Typical Use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1 KB</td>
+<td>1,024</td>
+<td>1</td>
+<td>0.001</td>
+<td>Text files</td>
+</tr>
+<tr>
+<td>100 KB</td>
+<td>102,400</td>
+<td>100</td>
+<td>0.1</td>
+<td>Small images</td>
+</tr>
+<tr>
+<td>1 MB</td>
+<td>1,048,576</td>
+<td>1,024</td>
+<td>1</td>
+<td>High-res images</td>
+</tr>
+<tr>
+<td>10 MB</td>
+<td>10,485,760</td>
+<td>10,240</td>
+<td>10</td>
+<td>PDFs, audio</td>
+</tr>
+<tr>
+<td>100 MB</td>
+<td>104,857,600</td>
+<td>102,400</td>
+<td>100</td>
+<td>Videos, archives</td>
+</tr>
+</tbody>
+</table>
+
+<div class="callout-success">
+<strong>Tip:</strong> For large file uploads, consider using chunked uploads or direct uploads to cloud storage with presigned URLs.
+</div>
+
+<div class="callout-info">
+<strong>Need More Help?</strong> Check the <a href="https://laravel.com/docs/filesystem" target="_blank">Laravel Filesystem Documentation</a> for comprehensive storage management.
+</div>
 HTML;
     }
 }
