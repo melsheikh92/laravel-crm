@@ -1691,6 +1691,7 @@ return [
                     'active' => 'Active',
                     'inactive' => 'Inactive',
                     'none' => 'None',
+                    'unassigned' => 'Unassigned',
                 ],
             ],
 
@@ -1906,6 +1907,14 @@ return [
                 'density-score' => 'Density Score',
                 'entity-density' => 'Entity Density',
                 'error-loading' => 'Failed to load coverage data',
+            ],
+
+            'assignments' => [
+                'index' => [
+                    'lead' => 'Lead',
+                    'organization' => 'Organization',
+                    'person' => 'Person',
+                ],
             ],
         ],
 

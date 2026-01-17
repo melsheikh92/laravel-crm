@@ -1024,7 +1024,7 @@ HTML;
                 'slug' => 'compliance-api',
                 'content' => $this->getComplianceApiContent(),
                 'excerpt' => 'Advanced Compliance Features for GDPR, HIPAA, and SOC 2 - Complete API reference for consent management, data retention, deletion requests, and compliance reporting.',
-                'type' => 'api',
+                'type' => 'api-doc',
                 'difficulty_level' => 'advanced',
                 'reading_time_minutes' => 25,
                 'status' => 'published',

@@ -8,8 +8,13 @@
             <div class="flex flex-col gap-2">
                 <x-admin::breadcrumbs name="contacts.persons" />
 
-                <div class="text-xl font-bold dark:text-white">
-                    @lang('admin::app.contacts.persons.index.title')
+                <div class="flex items-center gap-2">
+                    <div class="text-xl font-bold dark:text-white">
+                        @lang('admin::app.contacts.persons.index.title')
+                    </div>
+
+                    <!-- Help Link -->
+                    <x-help-link slug="contacts-management" label="Contacts Management Guide" />
                 </div>
             </div>
 

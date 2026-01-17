@@ -16,5 +16,6 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(KrayinDatabaseSeeder::class);
         $this->call(ComplianceSeeder::class);
+        $this->call(DocumentationSeeder::class);
     }
 }

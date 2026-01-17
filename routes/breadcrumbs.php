@@ -744,3 +744,21 @@ Breadcrumbs::for('forecasts.scenarios', function (BreadcrumbTrail $trail) {
     $trail->parent('forecasts');
     $trail->push(trans('admin::app.layouts.scenario-modeling'), route('admin.forecasts.analytics.scenarios'));
 });
+
+// Documentation
+Breadcrumbs::for('admin.docs', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push('Documentation', route('admin.docs.index'));
+});
+
+// Documentation > Create
+Breadcrumbs::for('admin.docs.create', function (BreadcrumbTrail $trail) {
+    $trail->parent('admin.docs');
+    $trail->push('Create Article', route('admin.docs.create'));
+});
+
+// Documentation > Edit
+Breadcrumbs::for('admin.docs.edit', function (BreadcrumbTrail $trail, $article) {
+    $trail->parent('admin.docs');
+    $trail->push('Edit: ' . ($article->title ?? 'Article'), route('admin.docs.edit', $article->id));
+});

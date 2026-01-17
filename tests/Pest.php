@@ -13,6 +13,16 @@
 
 uses(\Tests\TestCase::class, \Illuminate\Foundation\Testing\RefreshDatabase::class)->in('Feature');
 
+// Unit Doc tests need TestCase and RefreshDatabase for database models
+uses(\Tests\TestCase::class, \Illuminate\Foundation\Testing\RefreshDatabase::class)
+    ->in('Unit/DocArticleTest.php');
+uses(\Tests\TestCase::class, \Illuminate\Foundation\Testing\RefreshDatabase::class)
+    ->in('Unit/DocCategoryTest.php');
+uses(\Tests\TestCase::class, \Illuminate\Foundation\Testing\RefreshDatabase::class)
+    ->in('Unit/DocSectionTest.php');
+uses(\Tests\TestCase::class, \Illuminate\Foundation\Testing\RefreshDatabase::class)
+    ->in('Unit/DocArticleRepositoryTest.php');
+
 /*
 |--------------------------------------------------------------------------
 | Expectations
